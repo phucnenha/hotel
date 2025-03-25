@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/index', function () {
+    return view('pages.thongtin');
+});
+/*thay đổi đường dẫn view để xem các trang khác 
