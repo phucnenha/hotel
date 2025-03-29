@@ -17,7 +17,7 @@ class HomeController extends Controller
        
        $rooms = Room::all(); // Lấy tất cả phòng từ database
        // Truyền dữ liệu vào view
-       return view('user.home', compact('slides'), compact('rooms'));
+       return view('pages.index', compact('slides'), compact('rooms'));
     }
 }
 

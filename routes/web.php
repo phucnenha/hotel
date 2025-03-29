@@ -16,13 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/index', function () {
-    return view('pages.thongtin');  
-});
-//thay đổi đường dẫn view để xem các trang khác 
+ 
 
 use App\Http\Controllers\User\HomeController;
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/index', [HomeController::class, 'index'])->name('home');
 
 use App\Http\Controllers\User\SearchController;
 Route::post('/search-results', [SearchController::class, 'index'])->name('search_results');
