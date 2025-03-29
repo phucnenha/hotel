@@ -16,16 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/index', function () {
-    return view('pages.thongtin');  
-});
-//thay đổi đường dẫn view để xem các trang khác 
+ 
 
 use App\Http\Controllers\User\HomeController;
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-use App\Http\Controllers\User\SearchController;
-Route::post('/search-results', [SearchController::class, 'index'])->name('search_results');
+Route::get('/index', [HomeController::class, 'index'])->name('home');
 
 use App\Http\Controllers\RoomController;
 Route::get('/rooms', [RoomController::class, 'index']);
@@ -35,3 +29,11 @@ Route::get('/fill_info', [BookingController::class, 'showForm'])->name('fill_inf
 
 use App\Http\Controllers\CartController;
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
+use App\Http\Controllers\SearchController;
+Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchroom.form'); // Hiển thị form
+Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search'); // Xử lý tìm phòng
+Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
+
+Route::post('/cart/add', [SearchController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [SearchController::class, 'viewCart'])->name('cart.view');
