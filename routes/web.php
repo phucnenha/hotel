@@ -33,5 +33,10 @@ Route::get('/rooms', [RoomController::class, 'index']);
 use App\Http\Controllers\BookingController;
 Route::get('/fill_info', [BookingController::class, 'showForm'])->name('fill_info');
 
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\User\CartController;
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
