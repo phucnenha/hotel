@@ -48,7 +48,7 @@
             <h1><span>Book</span> Your Rooms</h1>
         </div>
         <div class="form">
-            <form action="{{ route('search_results') }}" class="grid" method="POST">
+            <form action="{{ route('searchroom.search') }}" class="grid" method="POST">
                 @csrf
                 <table class="table-book">
                     <tr>
@@ -59,8 +59,8 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td><input type="date" name="check_in" required></td>
-                        <td><input type="date" name="check_out" required></td>
+                        <td><input type="date" id="checkin" name="check_in" required></td>
+                        <td><input type="date" id="checkout" name="check_out" required></td>
                         <td><input type="number" name="adults" min="1" value="1" required></td>
                         <td><input type="number" name="children" min="0" value="0" required></td>
                         <td><button type="submit" class="primary-btn">Tìm kiếm</button></td>
@@ -101,6 +101,34 @@
 
             event.target.submit();
         }
+        // -------------------Ngày nhận và ngày trả--------------------
+        document.addEventListener("DOMContentLoaded", function() {
+            const checkinInput = document.getElementById("checkin");
+            const checkoutInput = document.getElementById("checkout");
+            const bookingForm = document.querySelector("form");
+
+            const today = new Date();
+            const tomorrow = new Date(today);
+            const dayAfterTomorrow = new Date(today);
+
+            tomorrow.setDate(today.getDate() + 1);
+            dayAfterTomorrow.setDate(today.getDate() + 2);
+
+            const formatDate = (date) => date.toISOString().split("T")[0];
+
+            checkinInput.value = formatDate(tomorrow);
+            checkoutInput.value = formatDate(dayAfterTomorrow);
+
+            bookingForm.addEventListener("submit", function(event) {
+                const checkinDate = new Date(checkinInput.value);
+                const checkoutDate = new Date(checkoutInput.value);
+
+                if (checkinDate >= checkoutDate) {
+                    event.preventDefault(); // Ngăn form gửi đi
+                    alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
+                }
+            });
+        });
     </script>
 
 <!-- About Section -->
@@ -121,7 +149,6 @@
     </section>
 
 
- 
 <!-- Rooms Section -->
 <section class="room" id="rooms">
     <div class="container top">
