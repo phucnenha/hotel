@@ -21,9 +21,6 @@ Route::get('/', function () {
 use App\Http\Controllers\User\HomeController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-use App\Http\Controllers\User\SearchController;
-Route::post('/search-results', [SearchController::class, 'index'])->name('search_results');
-
 use App\Http\Controllers\RoomController;
 Route::get('/rooms', [RoomController::class, 'index']);
 
@@ -37,3 +34,11 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+//--------------Tìm kiếm phòng--------------------------
+use App\Http\Controllers\SearchController;
+Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchroom.form'); // Hi?n th? form
+Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search'); // X? l� t�m ph�ng
+Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
+
+//Route::post('/cart/add', [SearchController::class, 'addToCart'])->name('cart.add');
+//Route::get('/cart', [SearchController::class, 'viewCart'])->name('cart.view');

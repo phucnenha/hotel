@@ -11,7 +11,8 @@ body {
 
 }
 
-h1, h2 {
+h1,
+h2 {
   font-family: 'Roboto', sans-serif;
 
   font-weight: 400;
@@ -43,16 +44,17 @@ button {
 }
 
 .primary-btn {
-  padding: 10px 20px;  
+  padding: 10px 20px;
   background: #B88A44;
   font-weight: bold;
   color: white;
   min-height: 46px;
   border-radius: 0;
 }
-.primary-btn:hover{
+
+.primary-btn:hover {
   background-color: #965b02;
-    color: #fff;
+  color: #fff;
 }
 
 .secondary-btn {
@@ -62,10 +64,12 @@ button {
   font-weight: bold;
   color: white;
 }
-.secondary-btn:hover{
+
+.secondary-btn:hover {
   background-color: #a09688;
-    color: #fff;
+  color: #fff;
 }
+
 .container {
   max-width: 85%;
   margin: auto;
@@ -76,7 +80,7 @@ button {
 .home {
   height: 100vh;
   color: #fff;
-  
+
 }
 
 .home img {
@@ -134,7 +138,7 @@ input {
   outline: none;
   border: none;
   width: 100%;
-  
+
 }
 
 .book {
@@ -152,7 +156,7 @@ h1 {
 }
 
 .book h1 span {
-  color:#B88A44;
+  color: #B88A44;
 }
 
 .book input {
@@ -169,60 +173,71 @@ h1 {
 .form button {
   margin-top: 0px;
 }
+
 .table-book {
-  width: 100%; 
+  width: 100%;
   border-collapse: collapse;
   margin-left: 90px;
 }
 
-.table-book th, 
+.table-book th,
 .table-book td {
   font-family: 'Roboto', sans-serif;
   text-align: center;
-  padding: 15px;
- 
+  padding: 10px;
+
 }
+
 .table-book td select {
-  width: 150px; 
-  padding: 10px; 
+  width: 150px;
+  padding: 10px;
   font-family: 'Roboto', sans-serif;
 }
+
 .table-book td input[type="number"] {
- width: 150px;
+  width: 150px;
 }
 
 .grid button:hover {
   background-color: #965b02;
   color: #fff;
 }
+
 .table-book td .errormessage {
   margin-top: 0px;
   color: red;
   font-size: 140px;
   font-family: 'Roboto', sans-serif;
-  display: none; /* Ẩn mặc định */
+  display: none;
+  /* Ẩn mặc định */
   background-color: #fc0303;
 }
 
 .table-book .error-message.active {
   color: red;
   font-weight: bold;
-  display: block; /* Đảm bảo hiển thị */
+  display: block;
+  /* Đảm bảo hiển thị */
   margin-top: 10px;
-  z-index: 9999; /* Increased z-index for better visibility */
-  background-color: #fff; /* If hidden behind other elements, a background helps */
+  z-index: 9999;
+  /* Increased z-index for better visibility */
+  background-color: #fff;
+  /* If hidden behind other elements, a background helps */
   padding: 5px;
 }
+
 /*--------about---------*/
-.left, .right {
+.left,
+.right {
   width: 100%;
   padding: 30px;
 }
+
 .right img {
-  width: 100%; 
-  height: 100%; 
-  object-fit: cover; 
-  object-position: center; 
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .top {
@@ -276,8 +291,8 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   padding: 20px;
-  justify-content: center; 
-  max-width: 1200px; 
+  justify-content: center;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -502,7 +517,7 @@ h1 {
 }
 
 .newsletter .container {
-  background:#0033FF;
+  background: #0033FF;
   padding: 40px 30px;
   position: absolute;
   top: -70px;
@@ -595,7 +610,8 @@ footer label {
     height: 50vh;
   }
 
-  .left, .right {
+  .left,
+  .right {
     width: 100%;
   }
 
@@ -619,15 +635,19 @@ footer label {
   .owl-carousel .owl-nav .owl-prev {
     left: 80%;
   }
-  .owl-carousel, .owl-carousel .owl-stage-outer, .owl-carousel .owl-stage {
+
+  .owl-carousel,
+  .owl-carousel .owl-stage-outer,
+  .owl-carousel .owl-stage {
     width: 100% !important;
     max-width: 100vw !important;
     overflow: hidden !important;
-}
+  }
 
   .gallery .owl-nav .owl-prev {
     left: 75%;
   }
+
   .services .flex_space {
     flex-direction: column;
   }
@@ -688,40 +708,45 @@ footer label {
     grid-template-columns: repeat(1, 1fr);
   }
 }
+
 /*---------------------------------ĐIỀN THÔNG TIN ĐẶT PHÒNG---------------------------------------------------*/
-.thongtin{
-  padding:50px 0px;
+.thongtin {
+  padding: 50px 0px;
 
 }
-.cart-top-wrap{
+
+.cart-top-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 10px 0px 50px;
 
 }
-.cart-top
-{
+
+.cart-top {
   height: 2px;
   width: 70%;
   background-color: #dddd;
-  display:flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 50px;
 }
-.cart-top-item{
+
+.cart-top-item {
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #fff;
 }
+
 .cart-top-item i {
-  color:#dddd;
+  color: #dddd;
 }
-.cart-top-fil i{
-  color:#B88A44
+
+.cart-top-fil i {
+  color: #B88A44
 }
 
 .container-fluid {
@@ -797,7 +822,8 @@ input {
   border: 1px solid black;
   padding: 6px 12px;
   cursor: pointer;
-  margin-left: auto; /* Đẩy nút sang phía bên phải */
+  margin-left: auto;
+  /* Đẩy nút sang phía bên phải */
 }
 
 .infor-container-button button:hover {
@@ -831,8 +857,10 @@ input {
 .infor-container-right tfoot td {
   font-weight: bold;
 }
+
 .infor_order {
-  width: 100%; /* Để bảng chiếm toàn bộ chiều rộng có sẵn */
+  width: 100%;
+  /* Để bảng chiếm toàn bộ chiều rộng có sẵn */
   border-collapse: collapse;
   margin-left: 0px;
 }
@@ -845,12 +873,15 @@ input {
 }
 
 .infor_order th {
-  white-space: nowrap; /* Đảm bảo tiêu đề không bị gãy dòng */
+  white-space: nowrap;
+  /* Đảm bảo tiêu đề không bị gãy dòng */
 }
 
 .infor_order td {
-  width: auto; /* Tự động điều chỉnh chiều rộng để vừa với nội dung */
+  width: auto;
+  /* Tự động điều chỉnh chiều rộng để vừa với nội dung */
 }
+
 /*---------CSS SEARCH RESULT-----------------------------*/
 body {
   font-family: Roboto, sans-serif;
@@ -877,8 +908,6 @@ body {
   width: 500px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-
 }
 
 .room-card img {
@@ -909,22 +938,29 @@ body {
 .room-info strong {
   font-size: 16px;
 }
+
 .room-info .discount {
-  color: #e63946; /* Màu chữ đỏ nổi bật */
+  color: #e63946;
+  /* Màu chữ đỏ nổi bật */
   font-weight: bold;
   margin-top: 5px;
 }
 
 .room-info .availability {
-  color: #457b9d; /* Màu chữ xanh nhẹ */
+  color: #457b9d;
+  /* Màu chữ xanh nhẹ */
   font-style: italic;
   margin-top: 5px;
 }
+
 .room-info i {
-  margin-right: 8px; /* Tạo khoảng cách giữa icon và chữ */
-  color: #555; /* Màu xám cho icon */
+  margin-right: 8px;
+  /* Tạo khoảng cách giữa icon và chữ */
+  color: #555;
+  /* Màu xám cho icon */
   font-size: 14px;
-  vertical-align: middle; /* Căn chỉnh icon với văn bản */
+  vertical-align: middle;
+  /* Căn chỉnh icon với văn bản */
 }
 
 button {
@@ -950,4 +986,67 @@ button {
 
 button:hover {
   opacity: 0.9;
+}
+
+/* ------------------- */
+
+/* Book Section */
+.book {
+  background: #333;
+  color: white;
+  text-align: center;
+}
+
+.book .container {
+  margin: auto;
+}
+
+.book .form table {
+  width: 100%;
+}
+
+.book input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Room List */
+.room-list {
+  padding: 40px 0;
+  background-color: #f8f8f8;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  justify-content: center;
+}
+
+.room-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.room-img img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.room-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.room-details {
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
