@@ -43,7 +43,7 @@
 <section class="book">
     <div class="container flex_space">
         <div class="text">
-            <h1><span>Đặt</span> Phòng Ngay</h1>
+            <h1><span>Book</span> Your rooms</h1>
         </div>
         <div class="form">
             <form action="{{ route('searchroom.search') }}" class="grid" method="POST">

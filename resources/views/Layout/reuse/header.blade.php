@@ -157,7 +157,7 @@ header .navlinks span {
 </style>
 <header><div class="content flex_space">
       <div class="logo">
-        <span>GOLDEN TREE APARTMENT</span>
+        <span><b>GOLDEN TREE APARTMENT</b></span>
       </div>
       <div class="navlinks">
         <ul id="menulist">
@@ -174,6 +174,7 @@ header .navlinks span {
           </li>
         </ul>
       </div>
-    </div></header>
+    </div>
+</header>
 
 
