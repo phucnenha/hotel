@@ -165,7 +165,7 @@ header .navlinks span {
           <li><a href="#about">About</a></li>
           <li><a href="#rooms">Rooms</a></li>
           <li>
-            <a href="#" title="Giỏ hàng">
+            <a href="{{ route('cart') }}" title="Giỏ hàng">
               <i class="fa-solid fa-cart-shopping"></i>
             </a>
           </li>
