@@ -9,30 +9,10 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $table = 'room_detail'; // Đúng với tên bảng trong CSDL
+    protected $table = 'room_detail'; // Chỉ định bảng trong database
 
     protected $fillable = [
-        'room_type', 'bed_type', 'area', 'view', 
-        'price_per_night', 'remaining_rooms', 
-        'image_url', 'description', 'file_anh'
+        'room_type', 'bed_type', 'area', 'view',
+        'price_per_night', 'discount_percent', 'image_url'
     ];
-
-    // Liên kết với bảng sức chứa
-    public function capacity()
-    {
-        return $this->hasOne(Capacity::class, 'room_id');
-    }
-
-
-    // Liên kết với chi tiết đặt phòng (trung gian giữa room_booking và room_detail)
-    public function bookingDetails()
-    {
-        return $this->hasMany(RoomBookingDetail::class, 'room_id');
-    }
-
-    // Liên kết với giảm giá
-    public function discounts()
-    {
-        return $this->hasMany(RoomDiscount::class, 'room_id');
-    }
 }
