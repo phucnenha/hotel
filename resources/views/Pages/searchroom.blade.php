@@ -67,10 +67,10 @@
                         <td></td>
                     </tr>
                     <tr>
-                        <td><input type="date" name="check_in" value="{{ old('check_in') }}" required></td>
-                        <td><input type="date" name="check_out" value="{{ old('check_out') }}" required></td>
-                        <td><input type="number" name="adults" min="1" max="10" value="{{ old('adults', 1) }}" required></td>
-                        <td><input type="number" name="children" min="0" max="10" value="{{ old('children', 0) }}" required></td>
+                        <td><input type="date" name="check_in" value="{{ request('check_in', old('check_in')) }}" required></td>
+                        <td><input type="date" name="check_out" value="{{ request('check_out', old('check_out')) }}" required></td>
+                        <td><input type="number" name="adults" min="1" max="10" value="{{ request('adults', old('adults', 1)) }}" required></td>
+                        <td><input type="number" name="children" min="0" max="10" value="{{ request('children', old('children', 0)) }}" required></td>
                         <td><button type="submit" class="primary-btn">Tìm kiếm</button></td>
                     </tr>
                 </table>
