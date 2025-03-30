@@ -76,7 +76,6 @@ button {
 .home {
   height: 100vh;
   color: #fff;
-  
 }
 
 .home img {
@@ -134,7 +133,6 @@ input {
   outline: none;
   border: none;
   width: 100%;
-  
 }
 
 .book {
@@ -152,7 +150,7 @@ h1 {
 }
 
 .book h1 span {
-  color:#B88A44;
+  color: #B88A44;
 }
 
 .book input {
@@ -179,7 +177,7 @@ h1 {
 .table-book td {
   font-family: 'Roboto', sans-serif;
   text-align: center;
-  padding: 15px;
+  padding: 10px;
  
 }
 .table-book td select {
