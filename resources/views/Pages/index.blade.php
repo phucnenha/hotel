@@ -48,7 +48,7 @@
             <h1><span>Book</span> Your Rooms</h1>
         </div>
         <div class="form">
-            <form action="{{ route('search_results') }}" class="grid" method="POST">
+            <form action="{{ route('searchroom.search') }}" class="grid" method="POST">
                 @csrf
                 <table class="table-book">
                     <tr>

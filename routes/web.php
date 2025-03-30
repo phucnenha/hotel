@@ -21,11 +21,6 @@ Route::get('/', function () {
 use App\Http\Controllers\User\HomeController;
 Route::get('/index', [HomeController::class, 'index'])->name('home');
 
-
-use App\Http\Controllers\User\SearchController;
-Route::post('/search-results', [SearchController::class, 'index'])->name('search_results');
-
-
 use App\Http\Controllers\RoomController;
 Route::get('/rooms', [RoomController::class, 'index']);
 
@@ -34,7 +29,7 @@ Route::get('/fill_info', [BookingController::class, 'showForm'])->name('fill_inf
 
 use App\Http\Controllers\CartController;
 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
-
+//--------------Tìm kiếm phòng--------------------------
 use App\Http\Controllers\SearchController;
 Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchroom.form'); // Hi?n th? form
 Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search'); // X? l� t�m ph�ng
