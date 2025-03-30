@@ -21,6 +21,11 @@ Route::get('/', function () {
 use App\Http\Controllers\User\HomeController;
 Route::get('/index', [HomeController::class, 'index'])->name('home');
 
+
+use App\Http\Controllers\User\SearchController;
+Route::post('/search-results', [SearchController::class, 'index'])->name('search_results');
+
+
 use App\Http\Controllers\RoomController;
 Route::get('/rooms', [RoomController::class, 'index']);
 
