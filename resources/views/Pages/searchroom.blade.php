@@ -111,7 +111,7 @@
                                 <button type="submit" class="btn primary-btn">Đặt ngay</button>
                             </form>
 
-                            <form method="POST" action="{{ route('cart.add') }}">
+                            <form method="GET" action="{{ route('cart') }}">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">

@@ -71,36 +71,6 @@
     </div>
 </section>
 <script>
-        function validateBooking(event) {
-            event.preventDefault();
-            const errorMessage = document.getElementById('errorMessage');
-            const checkinDate = document.getElementById('checkin').value;
-            const checkoutDate = document.getElementById('checkout').value;
-            const adults = document.getElementById('adults').value;
-            
-            errorMessage.innerHTML = '';
-            errorMessage.classList.remove('active');
-
-            if (!checkinDate || !checkoutDate) {
-                errorMessage.innerHTML = "Vui lòng chọn cả ngày nhận phòng và ngày trả phòng!";
-                errorMessage.classList.add('active');
-                return false;
-            }
-
-            if (new Date(checkinDate) >= new Date(checkoutDate)) {
-                errorMessage.innerHTML = "Ngày nhận phòng phải nhỏ hơn ngày trả phòng!";
-                errorMessage.classList.add('active');
-                return false;
-            }
-
-            if (adults <= 0) {
-                errorMessage.innerHTML = "Số lượng người lớn phải lớn hơn 0!";
-                errorMessage.classList.add('active');
-                return false;
-            }
-
-            event.target.submit();
-        }
         // -------------------Ngày nhận và ngày trả--------------------
         document.addEventListener("DOMContentLoaded", function() {
             const checkinInput = document.getElementById("checkin");
@@ -132,7 +102,7 @@
     </script>
 
 <!-- About Section -->
-<section class="about top">
+<section class="about top" id="about">
         <div class="container flex">
             <div class="left">
                 <div class="heading">
