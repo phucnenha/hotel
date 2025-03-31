@@ -80,6 +80,7 @@ button {
 .home {
   height: 100vh;
   color: #fff;
+  margin-top: 10vh;
 
 }
 
@@ -1041,6 +1042,7 @@ button:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
+  gap: 10px;
 }
 
 .room-details {
@@ -1067,10 +1069,4 @@ button:hover {
   left: 50%;
   transform: translateX(-50%);
   font-weight: bold;  
-}
-
-.room-actions {
-  display: flex;
-  gap: 10px;
-  /* Khoảng cách giữa các nút */
 }

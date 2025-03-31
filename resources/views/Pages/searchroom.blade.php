@@ -4,7 +4,7 @@
 
 @section("content")
 
-<section class="book">
+<section class="book" style="margin-top: 10vh">
     <div class="container flex_space">
         <div class="text">
             <h1><span>Book</span> Your rooms</h1>
@@ -62,8 +62,8 @@
             <div class="room-grid">
                 @foreach($available_rooms as $room)
                 <div class="room-card" style="width:600px">
-                    <img src="{{ asset($room->image_url ?? 'images/default-room.jpg') }}" alt="{{ $room->room_name }}" style="width: 300px">
-                    <div class="room-details">
+                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">
+                <div class="room-details">
                         <h3>{{ $room->room_type }}</h3>
                         <p><i class="fas fa-bed"></i> Loại giường: <strong>{{ $room->bed_type ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-ruler-combined"></i> Diện tích: <strong>{{ $room->area ?? 'Không xác định' }} m²</strong></p>

@@ -27,6 +27,7 @@
         padding: 20px 0;
         color: white;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 10vh;
       }
 
       .phandau h1 {
