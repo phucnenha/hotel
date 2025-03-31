@@ -83,13 +83,14 @@
                                 <button type="submit" class="btn primary-btn">Đặt ngay</button>
                             </form>
 
-                            <form method="POST" action="{{ route('cart.add') }}">
+                            <form id="addToCartForm">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
                                 <button type="submit" class="btn primary-btn">Thêm vào giỏ hàng</button>
                             </form>
+                            <div id="cart-message" style="color: green; display: none;">✅ Đã thêm vào giỏ hàng!</div>
                         </div>
                     </div>
                 </div>
@@ -99,6 +100,32 @@
     </div>
 </section>
 @endif
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll("form#addToCartForm").forEach(function (form) {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Ngăn trang tải lại
+
+            let formData = new FormData(this);
+
+            fetch("{{ route('cart.add') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("✅ " + data.message); // Chỉ hiển thị alert khi thành công
+                }
+            })
+            .catch(error => console.error("Lỗi:", error));
+        });
+    });
+});
+</script>
 
 
 

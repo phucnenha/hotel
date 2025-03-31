@@ -73,7 +73,9 @@ class CartController extends Controller
             'children' => $request->children ?? 0,
             'quantity' => 1, // Giả định mặc định số lượng là 1
         ]);
-
-        return redirect()->route('cart')->with('success', 'Phòng đã được thêm vào giỏ hàng!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Phòng đã được thêm vào giỏ hàng!',
+        ]);
     }
 }
