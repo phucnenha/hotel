@@ -143,7 +143,7 @@ input {
 }
 
 .book {
-  padding: 40px 0;
+  padding: 20px 0;
   background: #3a3434;
   color: #fff;
 }
@@ -976,7 +976,7 @@ button {
 .book-now {
   background-color: #B88A44;
   color: white;
-  width: 220px;
+  width: 150px;
 }
 
 
