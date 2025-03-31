@@ -157,7 +157,7 @@
                 <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
                 <input type="hidden" name="adults" value="1">
                 <input type="hidden" name="children" value="0">
-                <button type="submit" class="book-now">Đặt ngay</button>
+                <button type="submit" class="book-now" style="width:100px;">Đặt ngay</button>
             </form>
 
              
