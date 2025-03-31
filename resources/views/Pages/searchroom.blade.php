@@ -63,7 +63,7 @@
                 @foreach($available_rooms as $room)
                 <div class="room-card" style="width:600px">
                 <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">
-                <div class="room-details">
+                    <div class="room-details">
                         <h3>{{ $room->room_type }}</h3>
                         <p><i class="fas fa-bed"></i> Loại giường: <strong>{{ $room->bed_type ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-ruler-combined"></i> Diện tích: <strong>{{ $room->area ?? 'Không xác định' }} m²</strong></p>
@@ -75,13 +75,14 @@
                         
                         <div class="room-actions">
                             <form method="GET" action="{{ route('thongtin') }}">
-                                <input type="hidden" name="room_id" value="{{ $room->id }}">
-                                <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
-                                <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
-                                <input type="hidden" name="adults" value="{{ $data['adults'] }}">
-                                <input type="hidden" name="children" value="{{ $data['children'] }}">
-                                <button type="submit" class="btn primary-btn">Đặt ngay</button>
-                            </form>
+                                @csrf
+                                    <input type="hidden" name="room_id" value="{{ $room->id }}">
+                                    <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
+                                    <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
+                                    <input type="hidden" name="adults" value="{{ $data['adults'] }}">
+                                    <input type="hidden" name="children" value="{{ $data['children'] }}">
+                                    <button type="submit" class="btn primary-btn">Đặt ngay</button>
+                                </form>
 
                             <form id="addToCartForm">
                                 @csrf
