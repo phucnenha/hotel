@@ -102,7 +102,7 @@
     </script>
 
 <!-- About Section -->
-<section class="about top">
+<section class="about top" id="about">
         <div class="container flex">
             <div class="left">
                 <div class="heading">
