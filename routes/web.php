@@ -39,4 +39,9 @@ Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('c
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
 //-----------ĐIỀN THÔNG TIN-----------------//
 use App\Http\Controllers\BookingController;
+Route::post('/xoa-phong/{index}', 'BookingController@xoaMotPhong')->name('xoa.phong');
+Route::post('/xoa-tat-ca', 'BookingController@xoaTatCaPhong')->name('xoa.tatca');
+
+
+
 

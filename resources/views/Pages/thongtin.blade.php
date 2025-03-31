@@ -5,66 +5,68 @@
 @section('content')
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <div class="container">
-        <div class="row infor-container">
-            <!-- Hiển thị thông tin đặt phòng -->
-            <div class="col-md-6 infor-container-right">
-                <h2>Thông tin đặt phòng</h2>
-                <table class="table table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Loại phòng</th>
-                            <th>Ngày check-in</th>
-                            <th>Ngày check-out</th>
-                            <th>Số người</th>
-                            <th>Giá phòng/đêm</th>
-                            <th>Giảm giá</th>
-                            <th>Giá phòng sau khi giảm</th>
-                            <th>Thành tiền</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{ $room->room_type }}</td>
-                            <td>{{ $data['check_in'] }}</td>
-                            <td>{{ $data['check_out'] }}</td>
-                            <td>{{ ($data['adults'] ?? 0) + ($data['children'] ?? 1) }}</td>
-                            <td> {{ number_format($room->price_per_night) }} VND
-                            </td>
-                            <td>
-                                @if(isset($room->discount_percent) && $room->discount_percent > 0)
-                                    <span class="badge bg-success">{{ $room->discount_percent }}% OFF</span>
-                                @else
-                                    <span class="badge bg-secondary">Không giảm giá</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if(isset($room->discount_percent) && $room->discount_percent > 0)
-                                    <span class="text-muted text-decoration-line-through">
-                                        {{ number_format($room->price_per_night) }} VND
-                                    </span>
-                                    <br>
-                                    <span class="fw-bold">
-                                        {{ number_format($room->price_per_night - ($room->price_per_night * ($room->discount_percent / 100))) }} VND/đêm
-                                    </span>
-                                @else
-                                    {{ number_format($room->price_per_night) }} VND
-                                @endif
-                            </td>
-                            <td>
-                                <span class="fw-bold text-primary">
-                                    {{ number_format(($room->price_per_night - ($room->price_per_night * ($room->discount_percent / 100))) * $data['stay_days']) }} VND
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div class="infor-container-right">
+    <h2>Thông tin đặt phòng</h2>
+<table class="table table-bordered">
+    <thead class="table-light">
+        <tr>
+            <th>Loại phòng</th>
+            <th>Ngày check-in</th>
+            <th>Ngày check-out</th>
+            <th>Số người</th>
+            <th>Giá phòng/đêm</th>
+            <th>Giảm giá</th>
+            <th>Giá phòng sau khi giảm</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ $roomData['room_type'] }}</td>
+            <td>{{ $roomData['check_in'] }}</td>
+            <td>{{ $roomData['check_out'] }}</td>
+            <td>{{ ($roomData['adults'] ?? 0) + ($roomData['children'] ?? 0) }}</td>
+            <td>{{ number_format($roomData['price_per_night']) }} VND</td>
+            <td>
+                @if($roomData['discount_percent'] > 0)
+                    <span class="badge bg-success">{{ $roomData['discount_percent'] }}% OFF</span>
+                @else
+                    <span class="badge bg-secondary">Không giảm giá</span>
+                @endif
+            </td>
+            <td>
+                @if($roomData['discount_percent'] > 0)
+                    <span class="text-muted text-decoration-line-through">
+                        {{ number_format($roomData['price_per_night']) }} VND
+                    </span>
+                    <br>
+                    <span class="fw-bold">{{ number_format($roomData['discounted_price']) }} VND/đêm</span>
+                @else
+                    {{ number_format($roomData['price_per_night']) }} VND
+                @endif
+            </td>
+            <td>
+                <span class="fw-bold text-primary">{{ number_format($roomData['room_total']) }} VND</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
+<!-- Nút quay lại để thêm phòng -->
+<div class="mt-3">
+    <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
+</div>
+</div>
 
             <!-- Thông tin khách hàng -->
             <div class="col-md-6 infor-container-left">

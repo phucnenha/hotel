@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Slideshow;
 use Illuminate\Support\Facades\DB;
 
+
 class SearchController extends Controller
 {
     // Hiển thị form tìm phòng
@@ -52,41 +53,58 @@ class SearchController extends Controller
 }
 public function hienThiThongTin(Request $request)
 {
-    $data = $request->all();
+    $data = $request->validate([
+        'room_id' => 'required|exists:room_detail,id',
+        'check_in' => 'nullable|date|after_or_equal:today',
+        'check_out' => 'nullable|date|after:check_in',
+        'adults' => 'nullable|integer|min:1|max:10',
+        'children' => 'nullable|integer|min:0|max:10'
+    ]);
 
-    // Kiểm tra nếu không có room_id thì báo lỗi ngay
-    if (!isset($data['room_id'])) {
-        return redirect()->back()->withErrors(['message' => 'Không tìm thấy phòng']);
-    }
-
-    // Tìm phòng trong database
-    $room = Room::find($data['room_id']);
-    if (!$room) {
-        return redirect()->back()->withErrors(['message' => 'Phòng không tồn tại']);
-    }
-
-    // Thiết lập giá trị mặc định nếu thiếu thông tin
+    // Xử lý dữ liệu mặc định nếu thiếu thông tin
     $data['check_in'] = $data['check_in'] ?? now()->toDateString();
     $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
     $data['adults'] = $data['adults'] ?? 1;
     $data['children'] = $data['children'] ?? 0;
 
-    // Tính số ngày lưu trú
-    $checkInDate = \Carbon\Carbon::parse($data['check_in']);
-    $checkOutDate = \Carbon\Carbon::parse($data['check_out']);
-    $data['stay_days'] = $checkInDate->diffInDays($checkOutDate) ?: 1;
+    // Tìm thông tin phòng
+    $room = Room::find($data['room_id']);
+    if (!$room) {
+        return redirect()->back()->withErrors(['message' => 'Phòng không tồn tại']);
+    }
 
-    // Lấy thông tin giảm giá nếu có
+    // Tính số ngày lưu trú
+    $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
+
+    // Tìm giảm giá (nếu có)
     $discount = DB::table('discount')
         ->where('room_id', $room->id)
         ->where('start_date', '<=', $data['check_in'])
         ->where('end_date', '>=', $data['check_out'])
         ->first();
 
-    // Gán phần trăm giảm giá vào đối tượng phòng
-    $room->discount_percent = $discount->discount_percent ?? 0;
+    $discountPercent = $discount->discount_percent ?? 0;
 
-    return view('Pages.thongtin', compact('room', 'data'));
+    // Tính giá sau giảm và tổng tiền của phòng
+    $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
+    $roomTotal = $discountedPrice * $stayDays;
+
+    // Dữ liệu của phòng được truyền trực tiếp
+    $roomData = [
+        'room_type' => $room->room_type,
+        'check_in' => $data['check_in'],
+        'check_out' => $data['check_out'],
+        'adults' => $data['adults'],
+        'children' => $data['children'],
+        'price_per_night' => $room->price_per_night,
+        'discount_percent' => $discountPercent,
+        'stay_days' => $stayDays,
+        'discounted_price' => $discountedPrice, // Giá đã giảm
+        'room_total' => $roomTotal // Tổng tiền của phòng
+    ];
+
+    // Truyền dữ liệu qua view mà không cần session
+    return view('Pages.thongtin', compact('roomData'));
 }
 
 
