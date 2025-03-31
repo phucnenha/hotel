@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Room;
 use Illuminate\Support\Facades\Session;
 use App\Models\Slideshow;
+use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
@@ -12,31 +13,43 @@ class SearchController extends Controller
     public function showForm()
     {
         $slides = Slideshow::all(); // Lấy dữ liệu slide từ database
-    return view("Pages.searchroom", compact('slides')); // Truyền vào view
+        return view("Pages.searchroom", compact('slides')); // Truyền vào view
     }
 
     // Xử lý tìm phòng
     public function searchRoom(Request $request)
-    {
-        $data = $request->validate([
-            'check_in'  => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
-            'adults'    => 'required|integer|min:1|max:10',
-            'children'  => 'required|integer|min:0|max:10',
-        ]);
+{
+    $data = $request->validate([
+        'check_in'  => 'required|date|after_or_equal:today',
+        'check_out' => 'required|date|after:check_in',
+        'adults'    => 'required|integer|min:1|max:10',
+        'children'  => 'required|integer|min:0|max:10',
+    ]);
 
-        $total_guests = $data['adults'] + $data['children'];
+    $total_guests = $data['adults'] + $data['children'];
 
-        $available_rooms = Room::with('capacity')
-            ->whereHas('capacity', function ($query) use ($total_guests) {
-                $query->where('max_capacity', '>=', $total_guests);
-            })
-            ->where('remaining_rooms', '>', 0)
-            ->get();
+    // Lấy danh sách phòng và giảm giá
+    $available_rooms = Room::with('capacity')
+        ->whereHas('capacity', function ($query) use ($total_guests) {
+            $query->where('max_capacity', '>=', $total_guests);
+        })
+        ->where('remaining_rooms', '>', 0)
+        ->get()
+        ->map(function ($room) use ($data) {
+            // Tìm giảm giá phù hợp trong khoảng ngày
+            $discount = DB::table('discount')
+                ->where('room_id', $room->id)
+                ->where('start_date', '<=', $data['check_in'])
+                ->where('end_date', '>=', $data['check_out'])
+                ->first();
+            
+            $room->discount_percent = $discount->discount_percent ?? 0;
+            return $room;
+        });
 
-        $slides = Slideshow::all(); // Thêm phần này
-        return view("Pages.searchroom", compact('data', 'available_rooms', 'slides'));
-    }
+    $slides = Slideshow::all();
+    return view("Pages.searchroom", compact('data', 'available_rooms', 'slides'));
+}
     public function hienThiThongTin(Request $request)
     {
         $data = $request->all();
