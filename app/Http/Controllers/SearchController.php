@@ -61,22 +61,18 @@ public function hienThiThongTin(Request $request)
         'children' => 'nullable|integer|min:0|max:10'
     ]);
 
-    // Xử lý dữ liệu mặc định nếu thiếu thông tin
     $data['check_in'] = $data['check_in'] ?? now()->toDateString();
     $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
     $data['adults'] = $data['adults'] ?? 1;
     $data['children'] = $data['children'] ?? 0;
 
-    // Tìm thông tin phòng
     $room = Room::find($data['room_id']);
     if (!$room) {
         return redirect()->back()->withErrors(['message' => 'Phòng không tồn tại']);
     }
 
-    // Tính số ngày lưu trú
     $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
-
-    // Tìm giảm giá (nếu có)
+    
     $discount = DB::table('discount')
         ->where('room_id', $room->id)
         ->where('start_date', '<=', $data['check_in'])
@@ -84,13 +80,11 @@ public function hienThiThongTin(Request $request)
         ->first();
 
     $discountPercent = $discount->discount_percent ?? 0;
-
-    // Tính giá sau giảm và tổng tiền của phòng
     $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
     $roomTotal = $discountedPrice * $stayDays;
 
-    // Dữ liệu của phòng được truyền trực tiếp
     $roomData = [
+        'room_id' => $room->id,
         'room_type' => $room->room_type,
         'check_in' => $data['check_in'],
         'check_out' => $data['check_out'],
@@ -99,15 +93,17 @@ public function hienThiThongTin(Request $request)
         'price_per_night' => $room->price_per_night,
         'discount_percent' => $discountPercent,
         'stay_days' => $stayDays,
-        'discounted_price' => $discountedPrice, // Giá đã giảm
-        'room_total' => $roomTotal // Tổng tiền của phòng
+        'discounted_price' => $discountedPrice,
+        'room_total' => $roomTotal
     ];
 
-    // Truyền dữ liệu qua view mà không cần session
-    return view('Pages.thongtin', compact('roomData'));
+    // Lưu thông tin phòng vào session
+    $bookedRooms = session()->get('bookedRooms', []);
+    $bookedRooms[] = $roomData;
+    session()->put('bookedRooms', $bookedRooms);
+
+    return redirect()->route('showBooking');
 }
-
-
     public function addToCart(Request $request)
     {
         $room = Room::find($request->room_id);
