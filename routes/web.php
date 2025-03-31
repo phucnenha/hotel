@@ -37,4 +37,6 @@ Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+//-----------ĐIỀN THÔNG TIN-----------------//
+use App\Http\Controllers\BookingController;
 
