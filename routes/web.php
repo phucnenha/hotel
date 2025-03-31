@@ -42,6 +42,8 @@ Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->nam
 use App\Http\Controllers\BookingController;
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
+Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
 
 
 

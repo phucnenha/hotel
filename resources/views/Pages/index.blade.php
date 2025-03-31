@@ -133,8 +133,8 @@
     <div class="grid-container">
     @foreach ($rooms as $room)
      <div class="item">
-         <img src="{{ $room->image_url }}" alt="{{ $room->room_type }}" width="400px">
-         <div class="infor_room">
+     <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
+     <div class="infor_room">
              <h3>{{ $room->room_type }}</h3>
              <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
              <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>

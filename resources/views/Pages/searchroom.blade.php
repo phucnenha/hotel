@@ -62,7 +62,7 @@
             <div class="room-grid">
                 @foreach($available_rooms as $room)
                 <div class="room-card" style="width:600px">
-                    <img src="{{ asset($room->image_url ?? 'images/default-room.jpg') }}" alt="{{ $room->room_name }}" style="width: 300px">
+                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">
                     <div class="room-details">
                         <h3>{{ $room->room_type }}</h3>
                         <p><i class="fas fa-bed"></i> Loại giường: <strong>{{ $room->bed_type ?? 'Không xác định' }}</strong></p>
