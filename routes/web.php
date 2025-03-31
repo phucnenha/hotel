@@ -39,3 +39,9 @@ Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+//-----------ĐIỀN THÔNG TIN-----------------//
+
+Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
+Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
+Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
