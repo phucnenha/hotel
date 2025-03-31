@@ -23,6 +23,7 @@
                             <th>Số người</th>
                             <th>Giá phòng/đêm</th>
                             <th>Giảm giá</th>
+                            <th>Giá phòng sau khi giảm</th>
                             <th>Thành tiền</th>
                         </tr>
                     </thead>
@@ -32,14 +33,7 @@
                             <td>{{ $data['check_in'] }}</td>
                             <td>{{ $data['check_out'] }}</td>
                             <td>{{ ($data['adults'] ?? 0) + ($data['children'] ?? 1) }}</td>
-                            <td>
-                                @if(isset($room->discount_percent) && $room->discount_percent > 0)
-                                    <span class="text-muted text-decoration-line-through">
-                                        {{ number_format($room->price_per_night) }} VND
-                                    </span>
-                                @else
-                                    {{ number_format($room->price_per_night) }} VND
-                                @endif
+                            <td> {{ number_format($room->price_per_night) }} VND
                             </td>
                             <td>
                                 @if(isset($room->discount_percent) && $room->discount_percent > 0)
@@ -49,14 +43,28 @@
                                 @endif
                             </td>
                             <td>
+                                @if(isset($room->discount_percent) && $room->discount_percent > 0)
+                                    <span class="text-muted text-decoration-line-through">
+                                        {{ number_format($room->price_per_night) }} VND
+                                    </span>
+                                    <br>
+                                    <span class="fw-bold">
+                                        {{ number_format($room->price_per_night - ($room->price_per_night * ($room->discount_percent / 100))) }} VND/đêm
+                                    </span>
+                                @else
+                                    {{ number_format($room->price_per_night) }} VND
+                                @endif
+                            </td>
+                            <td>
                                 <span class="fw-bold text-primary">
-                                    {{ number_format($room->price_per_night - ($room->price_per_night * ($room->discount_percent / 100))) }} VND
+                                    {{ number_format(($room->price_per_night - ($room->price_per_night * ($room->discount_percent / 100))) * $data['stay_days']) }} VND
                                 </span>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
 
             <!-- Thông tin khách hàng -->
             <div class="col-md-6 infor-container-left">

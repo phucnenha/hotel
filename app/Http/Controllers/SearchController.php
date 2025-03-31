@@ -54,7 +54,7 @@ public function hienThiThongTin(Request $request)
 {
     $data = $request->all();
 
-    // Kiểm tra nếu không có room_id thì báo lỗi
+    // Kiểm tra nếu không có room_id thì báo lỗi ngay
     if (!isset($data['room_id'])) {
         return redirect()->back()->withErrors(['message' => 'Không tìm thấy phòng']);
     }
@@ -70,6 +70,21 @@ public function hienThiThongTin(Request $request)
     $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
     $data['adults'] = $data['adults'] ?? 1;
     $data['children'] = $data['children'] ?? 0;
+
+    // Tính số ngày lưu trú
+    $checkInDate = \Carbon\Carbon::parse($data['check_in']);
+    $checkOutDate = \Carbon\Carbon::parse($data['check_out']);
+    $data['stay_days'] = $checkInDate->diffInDays($checkOutDate) ?: 1;
+
+    // Lấy thông tin giảm giá nếu có
+    $discount = DB::table('discount')
+        ->where('room_id', $room->id)
+        ->where('start_date', '<=', $data['check_in'])
+        ->where('end_date', '>=', $data['check_out'])
+        ->first();
+
+    // Gán phần trăm giảm giá vào đối tượng phòng
+    $room->discount_percent = $discount->discount_percent ?? 0;
 
     return view('Pages.thongtin', compact('room', 'data'));
 }
