@@ -102,7 +102,7 @@
     </script>
 
 <!-- About Section -->
-<section class="about top">
+<section class="about top" id="about">
         <div class="container flex">
             <div class="left">
                 <div class="heading">
@@ -132,39 +132,39 @@
 
     <div class="grid-container">
     @foreach ($rooms as $room)
-     <div class="item">
-         <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
-         <div class="infor_room">
-             <h3>{{ $room->room_type }}</h3>
-             <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
-             <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>
-             <p><i class="fas fa-umbrella-beach"></i> <strong>Hướng phòng:</strong> {{ $room->view }}</p>
-             <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
- 
-             <!-- Hiển thị giảm giá nếu có -->
-             @if (!empty($room->discount_percent))
-                 <p class="discount"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%</p>
-             @else
-                 <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
-             @endif
-             
-             <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
-             
-             <form method="GET" action="{{ route('fill_info') }}">
-                 <input type="hidden" name="room_id" value="{{ $room->id }}">
-                 <button type="submit" class="book-now">Đặt ngay</button>
-             </form>
-             
-             <form method="POST" action="{{ route('cart.add') }}">
-                 @csrf
-                 <input type="hidden" name="room_id" value="{{ $room->id }}">
-                 <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                 <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                 <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
-             </form>
-         </div>
-     </div>
- @endforeach
+    <div class="item">
+        <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
+        <div class="infor_room">
+            <h4>{{ $room->room_type }}</h4>
+            <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
+            <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>
+            <p><i class="fas fa-umbrella-beach"></i> <strong>Hướng phòng:</strong> {{ $room->view }}</p>
+            <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
+
+            <!-- Hiển thị giảm giá nếu có -->
+            @if (!empty($room->discount_percent))
+                <p class="discount"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%</p>
+            @else
+                <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
+            @endif
+            
+            <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
+            <div class="room-actions">
+            <form method="POST" action="{{ route('cart.add') }}">
+                @csrf
+                <input type="hidden" name="room_id" value="{{ $room->id }}">
+                <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
+                <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
+                <button type="submit" class="add-cart btn primary-btn">Thêm vào giỏ hàng</button>
+            </form>
+            <form method="GET" action="{{ route('thongtin') }}">
+                <input type="hidden" name="room_id" value="{{ $room->id }}">
+                <button type="submit" class="btn primary-btn">Đặt ngay</button>
+            </form>
+        </div>
+    </div>
+    </div>
+@endforeach
     </div>
 </section>
 
@@ -180,7 +180,7 @@
 <section class="services top">
     <div class="container">
         <div class="heading">
-            <h1>Our Services</h1>
+            <h1 style="font-family: serif; font-size: 45px;">Our Services</h1>
             <p>Nơi bạn tận hưởng không gian lý tưởng và dịch vụ hoàn hảo cho mọi chuyến đi!</p>
         </div>
         <div class="content flex_space">
@@ -195,7 +195,7 @@
                 @endforeach
             </div>
             <div class="right">
-                <img src="{{ asset('img/slide3.jpg') }}" alt="">
+                <img src="{{ asset('room_img/service.jpg') }}" alt="">
             </div>
         </div>
     </div>

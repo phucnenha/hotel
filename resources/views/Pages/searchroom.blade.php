@@ -4,7 +4,7 @@
 
 @section("content")
 
-<section class="book">
+<section class="book" style="margin-top: 10vh">
     <div class="container flex_space">
         <div class="text">
             <h1><span>Book</span> Your rooms</h1>

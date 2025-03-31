@@ -3,8 +3,8 @@
 @section('title', 'Cart')
 
 @section('content')
-<div class="container">
-    <h2>GIỎ HÀNG CỦA BẠN</h2>
+<div class="cart-container">
+    <p class="cart-title">GIỎ HÀNG CỦA BẠN</p>
     @if(session('noti'))
         <p style='color: green;'>{{ session('noti') }}</p>
     @endif
@@ -29,10 +29,10 @@
             <hr>
         @endforeach
     @else
-        <p>Giỏ hàng rỗng.</p>
+        <p style="color: gray; font-weight: bold; font-size: 25px; ">🛒 Giỏ hàng rỗng!</p>
     @endif
     
-    <a href="{{ url('/') }}" class="btn-back">Quay lại trang chính</a>
+    <a href="{{ url('/') }}" class="primary-btn">Quay lại trang chính</a>
 </div>
 @endsection
 
