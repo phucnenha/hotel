@@ -37,6 +37,6 @@ Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('sear
 Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
 
 // ----------------Giỏ hàng-----------------------
-Route::get('/cart', [CartController::class, 'index'])->name('cart');
-Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::delete('/cart/remove/{roomId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');

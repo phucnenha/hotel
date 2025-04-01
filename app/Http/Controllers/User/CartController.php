@@ -36,17 +36,34 @@ class CartController extends Controller
     }
 
     public function remove($roomId)
-    {
-        $cart = session('shoppingCart', []);
-        foreach ($cart as $key => $item) {
-            if ($item['room_id'] == $roomId) {
-                unset($cart[$key]);
-                break;
-            }
-        }
-        session(['shoppingCart' => array_values($cart)]);
-        return redirect()->route('cart.index')->with('noti', 'Đã xóa phòng khỏi giỏ hàng!');
-    }
+{
+    $sessionId = session()->getId(); 
+
+    // Xóa phòng khỏi CSDL theo session_id
+    Cart::where('session_id', $sessionId)
+        ->where('room_id', $roomId)
+        ->delete();
+
+    // Lấy lại danh sách giỏ hàng sau khi xóa
+    $cartItems = Cart::where('session_id', $sessionId)->get();
+    $shoppingCart = $cartItems->map(function ($cart) {
+        $room = Room::find($cart->room_id);
+        return [
+            'room_id' => $cart->room_id,
+            'room_type' => $room->room_type ?? 'Không xác định',
+            'image_url' => $room->image_url ?? '',
+            'price_per_night' => $room->price_per_night ?? 0,
+            'check_in' => $cart->check_in,
+            'check_out' => $cart->check_out
+        ];
+    });
+
+    // Cập nhật lại giỏ hàng trong session để giao diện cũng thay đổi
+    session(['shoppingCart' => $shoppingCart]);
+
+    return redirect()->route('cart.index')->with('noti', 'Đã xóa phòng khỏi giỏ hàng!');
+}
+
 
     public function checkout($roomId)
     {
@@ -74,6 +91,6 @@ class CartController extends Controller
             'quantity' => 1, // Giả định mặc định số lượng là 1
         ]);
 
-        return redirect()->route('cart')->with('success', 'Phòng đã được thêm vào giỏ hàng!');
+        return redirect()->route('cart')->with('noti', 'Phòng đã được thêm vào giỏ hàng!');
     }
 }
