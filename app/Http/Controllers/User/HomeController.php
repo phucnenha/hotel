@@ -23,4 +23,5 @@ class HomeController extends Controller
        // Truyền dữ liệu vào view
        return view('pages.index', compact('slides', 'rooms'));
     }
+    
 }

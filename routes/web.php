@@ -36,11 +36,11 @@ Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchr
 Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search'); 
 Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
 
-
 // ----------------Giỏ hàng-----------------------
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+
 //-----------ĐIỀN THÔNG TIN-----------------//
 use App\Http\Controllers\BookingController;
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');

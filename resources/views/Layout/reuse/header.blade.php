@@ -79,6 +79,12 @@ header {
   line-height: 10vh;
   padding: 0 20px;
   margin-bottom: 10px;
+  box-shadow: 0px 4px 10px rgba(39, 38, 38, 0.04);
+  position: fixed; /* Giữ header cố định khi cuộn trang */
+  width: 100%; /* Đảm bảo header phủ toàn bộ chiều rộng */
+  top: 0;
+  z-index: 1000;
+  background: white;
 }
 
 header img {
@@ -157,15 +163,17 @@ header .navlinks span {
 </style>
 <header><div class="content flex_space">
       <div class="logo">
+        <a href="{{ route('home') }}" style="text-decoration: none; color: inherit;">
         <span>GOLDEN TREE APARTMENT</span>
+        </a>
       </div>
       <div class="navlinks">
         <ul id="menulist">
-          <li><a href="index.php">Home</a></li>
+          <li><a href="{{ route('home') }}">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#rooms">Rooms</a></li>
           <li>
-            <a href="#" title="Giỏ hàng">
+            <a href="{{ route('cart') }}" title="Giỏ hàng">
               <i class="fa-solid fa-cart-shopping"></i>
             </a>
           </li>
@@ -174,6 +182,7 @@ header .navlinks span {
           </li>
         </ul>
       </div>
-    </div></header>
+    </div>
+</header>
 
 
