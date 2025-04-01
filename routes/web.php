@@ -41,9 +41,7 @@ Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->nam
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+
+//---------Thanh toán-----------//
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
 
-//---------------THANH TOÁN---------------
-Route::get('/thanhtoan', function () {
-    return view('pages.thanhtoan');
-});
