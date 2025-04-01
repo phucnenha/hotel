@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/thanhtoan', function () {
-    return view('pages.thanhtoan');
-});
  
 
 use App\Http\Controllers\User\HomeController;
@@ -45,3 +42,8 @@ Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->n
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+
+//---------------THANH TOÁN---------------
+Route::get('/thanhtoan', function () {
+    return view('pages.thanhtoan');
+});
