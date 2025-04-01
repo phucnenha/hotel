@@ -62,7 +62,7 @@ class BookingController extends Controller
         return redirect()->route('showBooking')->with('error', 'Vui lòng nhập thông tin khách hàng trước khi thanh toán.');
     }
 
-    return view('Pages.payment', compact('customerInfo'));
+    return view('Pages.thanhtoan', compact('customerInfo'));
 }
 
 
