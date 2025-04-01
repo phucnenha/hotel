@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/thanhtoan', function () {
+    return view('pages.thanhtoan');
+});
  
 
 use App\Http\Controllers\User\HomeController;
