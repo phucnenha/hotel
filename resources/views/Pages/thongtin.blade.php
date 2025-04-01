@@ -16,7 +16,13 @@
 
     <div class="container">
     <div class="infor-container-right">
-    <h2>Thông tin đặt phòng</h2>
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+<h2>Thông tin đặt phòng</h2>
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>
@@ -28,7 +34,6 @@
             <th>Giảm giá</th>
             <th>Giá phòng sau khi giảm</th>
             <th>Thành tiền</th>
-            
         </tr>
     </thead>
     <tbody>
@@ -67,16 +72,15 @@
         @endforeach
     </tbody>
 </table>
-    <!-- Hiển thị tổng tiền -->
-    <div class="mt-3">
-        <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
-    </div>
 
-    <!-- Nút quay lại để thêm phòng -->
-    <div class="mt-3">
-        <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
-    </div>
-    </div>
+<div class="mt-3">
+    <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
+</div>
+
+<div class="mt-3">
+    <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
+</div>
+</div>
             <!-- Thông tin khách hàng -->
     <div class="infor-container-left" style="margin:10px;">
     <h2>Điền thông tin đặt phòng</h2>

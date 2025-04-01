@@ -73,32 +73,36 @@
 <script>
         // -------------------Ngày nhận và ngày trả--------------------
         document.addEventListener("DOMContentLoaded", function() {
-            const checkinInput = document.getElementById("checkin");
-            const checkoutInput = document.getElementById("checkout");
-            const bookingForm = document.querySelector("form");
+        const checkinInput = document.querySelector("[name='check_in']");
+        const checkoutInput = document.querySelector("[name='check_out']");
+        const bookingForm = document.querySelector("form");
 
-            const today = new Date();
-            const tomorrow = new Date(today);
-            const dayAfterTomorrow = new Date(today);
+        // Lấy ngày hiện tại và ngày mai
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Ngày mai
 
-            tomorrow.setDate(today.getDate() + 1);
-            dayAfterTomorrow.setDate(today.getDate() + 2);
+        // Định dạng ngày thành YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split("T")[0];
 
-            const formatDate = (date) => date.toISOString().split("T")[0];
+        // Thiết lập giá trị mặc định & min cho input ngày
+        checkinInput.value = formatDate(today);
+        checkinInput.setAttribute("min", formatDate(today));
 
-            checkinInput.value = formatDate(tomorrow);
-            checkoutInput.value = formatDate(dayAfterTomorrow);
+        checkoutInput.value = formatDate(tomorrow);
+        checkoutInput.setAttribute("min", formatDate(today));
 
-            bookingForm.addEventListener("submit", function(event) {
-                const checkinDate = new Date(checkinInput.value);
-                const checkoutDate = new Date(checkoutInput.value);
+        //  Kiểm tra trước khi gửi form
+        bookingForm.addEventListener("submit", function(event) {
+            const checkinDate = new Date(checkinInput.value);
+            const checkoutDate = new Date(checkoutInput.value);
 
-                if (checkinDate >= checkoutDate) {
-                    event.preventDefault(); // Ngăn form gửi đi
-                    alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
-                }
-            });
+            if (checkinDate >= checkoutDate) {
+                alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
+                event.preventDefault(); // Ngăn form gửi đi
+            }
         });
+    });
     </script>
 
 <!-- About Section -->

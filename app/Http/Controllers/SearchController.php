@@ -47,34 +47,37 @@ class SearchController extends Controller
             'adults' => 'nullable|integer|min:1|max:10',
             'children' => 'nullable|integer|min:0|max:10'
         ]);
-
-
+    
+        // Thiết lập giá trị mặc định
         $data['check_in'] = $data['check_in'] ?? now()->toDateString();
         $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
         $data['adults'] = $data['adults'] ?? 1;
         $data['children'] = $data['children'] ?? 0;
-
-
+    
         $room = Room::find($data['room_id']);
         if (!$room) {
             return redirect()->back()->withErrors(['message' => 'Phòng không tồn tại']);
         }
-
-
-        $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
     
+        // Kiểm tra số lượng phòng đã thêm
+        $maxRooms = 5; // Giới hạn số phòng tối đa có thể thêm vào
+        $bookedRooms = session()->get('bookedRooms', []);
+        if (count($bookedRooms) >= $maxRooms) {
+            return redirect()->route('showBooking')->with('error', 'Bạn chỉ có thể thêm tối đa ' . $maxRooms . ' phòng.');
+        }
+    
+        // Tính toán giá phòng và các chi tiết liên quan
+        $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
         $discount = DB::table('discount')
             ->where('room_id', $room->id)
             ->where('start_date', '<=', $data['check_in'])
             ->where('end_date', '>=', $data['check_out'])
             ->first();
-
-
+    
         $discountPercent = $discount->discount_percent ?? 0;
         $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
         $roomTotal = $discountedPrice * $stayDays;
-
-
+    
         $roomData = [
             'room_id' => $room->id,
             'room_type' => $room->room_type,
@@ -88,17 +91,14 @@ class SearchController extends Controller
             'discounted_price' => $discountedPrice,
             'room_total' => $roomTotal
         ];
-
-
+    
         // Lưu thông tin phòng vào session
-        $bookedRooms = session()->get('bookedRooms', []);
         $bookedRooms[] = $roomData;
         session()->put('bookedRooms', $bookedRooms);
-
-
+    
         return redirect()->route('showBooking');
     }
-
+    
 
     public function addToCart(Request $request)
     {
