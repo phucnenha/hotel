@@ -164,7 +164,7 @@ header .navlinks span {
 <header><div class="content flex_space">
       <div class="logo">
         <a href="{{ route('home') }}" style="text-decoration: none; color: inherit;">
-        <span>GOLDEN TREE APARTMENT</span>
+        <span><b>GOLDEN TREE APARTMENT</b></span>
         </a>
       </div>
       <div class="navlinks">
