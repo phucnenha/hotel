@@ -27,12 +27,14 @@ class SearchController extends Controller
     ]);
 
     $total_guests = $data['adults'] + $data['children'];
-
+    $sort_by = $request->input('sort_by', 'asc');
+    
         $available_rooms = Room::with('capacity')
             ->whereHas('capacity', function ($query) use ($total_guests) {
                 $query->where('max_capacity', '>=', $total_guests);
             })
             ->where('remaining_rooms', '>', 0)
+            ->orderBy('price_per_night', $sort_by)
             ->get();
 
         $slides = Slideshow::all(); // Thêm phần này

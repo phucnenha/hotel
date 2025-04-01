@@ -25,7 +25,7 @@
                         <td><input type="date" name="check_out" value="{{ request('check_out', old('check_out')) }}" required></td>
                         <td><input type="number" name="adults" min="1" max="10" value="{{ request('adults', old('adults', 1)) }}" required></td>
                         <td><input type="number" name="children" min="0" max="10" value="{{ request('children', old('children', 0)) }}" required></td>
-                        <td><button type="submit" class="primary-btn">Tìm kiếm</button></td>
+                        <td><button type="submit" class="btn primary-btn">Tìm kiếm</button></td>
                     </tr>
                 </table>
             </form>
@@ -54,8 +54,23 @@
 @if(isset($data))
 <section class="room-list">
     <div class="container">
-        <h2 class="section-title">Danh sách phòng trống</h2>
-        
+        <div style="display: grid; grid-template-columns: auto auto; align-items: center; width: 100%;">
+            <h2 class="section-title">Danh sách phòng trống</h2>
+            <form id="sort-form" method="POST" action="{{ route('searchroom.search') }}" style="text-align: right;">
+                @csrf
+                <input type="hidden" name="check_in" value="{{ request('check_in') }}">
+                <input type="hidden" name="check_out" value="{{ request('check_out') }}">
+                <input type="hidden" name="adults" value="{{ request('adults') }}">
+                <input type="hidden" name="children" value="{{ request('children') }}">
+
+                <label for="sort_by">Sắp xếp theo giá:</label>
+                <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+                    <option value="asc" {{ request('sort_by') == 'asc' ? 'selected' : '' }}>Tăng dần</option>
+                    <option value="desc" {{ request('sort_by') == 'desc' ? 'selected' : '' }}>Giảm dần</option>
+                </select>
+            </form>
+        </div>
+
         @if($available_rooms->isEmpty())
             <p class="no-rooms">Không có phòng trống phù hợp!</p>
         @else
@@ -102,31 +117,39 @@
 </section>
 @endif
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("form#addToCartForm").forEach(function (form) {
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Ngăn trang tải lại
+        // -------------------Ngày nhận và ngày trả--------------------
+        document.addEventListener("DOMContentLoaded", function() {
+        const checkinInput = document.querySelector("[name='check_in']");
+        const checkoutInput = document.querySelector("[name='check_out']");
+        const bookingForm = document.querySelector("form");
 
-            let formData = new FormData(this);
+        // Lấy ngày hiện tại và ngày mai
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Ngày mai
 
-            fetch("{{ route('cart.add') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("✅ " + data.message); // Chỉ hiển thị alert khi thành công
-                }
-            })
-            .catch(error => console.error("Lỗi:", error));
+        // Định dạng ngày thành YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split("T")[0];
+
+        // Thiết lập giá trị mặc định & min cho input ngày
+        checkinInput.value = formatDate(today);
+        checkinInput.setAttribute("min", formatDate(today));
+
+        checkoutInput.value = formatDate(tomorrow);
+        checkoutInput.setAttribute("min", formatDate(today));
+
+        //  Kiểm tra trước khi gửi form
+        bookingForm.addEventListener("submit", function(event) {
+            const checkinDate = new Date(checkinInput.value);
+            const checkoutDate = new Date(checkoutInput.value);
+
+            if (checkinDate >= checkoutDate) {
+                alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
+                event.preventDefault(); // Ngăn form gửi đi
+            }
         });
     });
-});
-</script>
+    </script>
 
 
 

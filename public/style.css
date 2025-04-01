@@ -143,7 +143,7 @@ input {
 }
 
 .book {
-  padding: 40px 0;
+  padding: 20px 0;
   background: #3a3434;
   color: #fff;
 }
@@ -1014,7 +1014,7 @@ button:hover {
 
 /* Room List */
 .room-list {
-  padding: 40px 0;
+  padding: 20px 0;
   background-color: #f8f8f8;
 }
 
