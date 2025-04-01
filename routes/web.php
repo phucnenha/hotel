@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/thanhtoan', function () {
     return view('pages.thanhtoan');
 });
