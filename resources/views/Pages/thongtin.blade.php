@@ -5,11 +5,7 @@
 @section('content')
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+ 
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +17,28 @@
         {{ session('error') }}
     </div>
 @endif
+@if(session('success'))
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('success') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var toastEl = document.getElementById("liveToast");
+        var toast = new bootstrap.Toast(toastEl, {
+            delay: 8000 // Hiển thị trong 8 giây
+        });
+        toast.show();
+    });
+</script>
+@endif
 <h2>Thông tin đặt phòng</h2>
 <table class="table table-bordered">
     <thead class="table-light">

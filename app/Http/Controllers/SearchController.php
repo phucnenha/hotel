@@ -28,16 +28,28 @@ class SearchController extends Controller
 
     $total_guests = $data['adults'] + $data['children'];
 
-        $available_rooms = Room::with('capacity')
-            ->whereHas('capacity', function ($query) use ($total_guests) {
-                $query->where('max_capacity', '>=', $total_guests);
-            })
-            ->where('remaining_rooms', '>', 0)
-            ->get();
+    // Lấy danh sách phòng và giảm giá
+    $available_rooms = Room::with('capacity')
+        ->whereHas('capacity', function ($query) use ($total_guests) {
+            $query->where('max_capacity', '>=', $total_guests);
+        })
+        ->where('remaining_rooms', '>', 0)
+        ->get()
+        ->map(function ($room) use ($data) {
+            // Tìm giảm giá phù hợp trong khoảng ngày
+            $discount = DB::table('discount')
+                ->where('room_id', $room->id)
+                ->where('start_date', '<=', $data['check_in'])
+                ->where('end_date', '>=', $data['check_out'])
+                ->first();
+            
+            $room->discount_percent = $discount->discount_percent ?? 0;
+            return $room;
+        });
 
-        $slides = Slideshow::all(); // Thêm phần này
-        return view("Pages.searchroom", compact('data', 'available_rooms', 'slides'));
-    }
+    $slides = Slideshow::all();
+    return view("Pages.searchroom", compact('data', 'available_rooms', 'slides'));
+}
     public function hienThiThongTin(Request $request)
     {
         $data = $request->validate([
@@ -63,7 +75,7 @@ class SearchController extends Controller
         $maxRooms = 5; // Giới hạn số phòng tối đa có thể thêm vào
         $bookedRooms = session()->get('bookedRooms', []);
         if (count($bookedRooms) >= $maxRooms) {
-            return redirect()->route('showBooking')->with('error', 'Bạn chỉ có thể thêm tối đa ' . $maxRooms . ' phòng.');
+            return redirect()->route('showBooking')->with('error', 'Bạn chỉ có thể thêm tối đa ' . $maxRooms . ' phòng. Vui lòng xóa bớt phòng trước khi thêm phòng mới.');
         }
     
         // Tính toán giá phòng và các chi tiết liên quan
@@ -96,10 +108,12 @@ class SearchController extends Controller
         $bookedRooms[] = $roomData;
         session()->put('bookedRooms', $bookedRooms);
     
+        // Thêm thông báo thành công vào session
+        session()->flash('success', 'Phòng đã được thêm thành công!');
+    
         return redirect()->route('showBooking');
     }
     
-
     public function addToCart(Request $request)
     {
         $room = Room::find($request->room_id);
