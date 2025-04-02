@@ -18,34 +18,37 @@ class SearchController extends Controller
 
     // Xử lý tìm phòng
     public function searchRoom(Request $request)
-{
-    $data = $request->validate([
-        'check_in'  => 'required|date|after_or_equal:today',
-        'check_out' => 'required|date|after:check_in',
-        'adults'    => 'required|integer|min:1|max:10',
-        'children'  => 'required|integer|min:0|max:10',
-        'sort_by'   => 'nullable|in:asc,desc',
-    ]);
+    {
+        $data = $request->validate([
+            'check_in'  => 'required|date|after_or_equal:today',
+            'check_out' => 'required|date|after:check_in',
+            'adults'    => 'required|integer|min:1|max:10',
+            'children'  => 'required|integer|min:0|max:10',
+            'sort_by'   => 'nullable|in:asc,desc',
+        ]);
 
-    // Lưu vào session
-    session([
-        'check_in'  => $data['check_in'],
-        'check_out' => $data['check_out'],
-        'adults'    => $data['adults'],
-        'children'  => $data['children'],
-        'sort_by'   => $data['sort_by'] ?? 'asc',  // Nếu không có sort_by thì mặc định là 'asc'
-    ]);
-    
-    $total_guests = $data['adults'] + $data['children'];
-    $sort_by = $request->input('sort_by', 'asc');
-    
+        // Lưu vào session
+        session([
+            'check_in'  => $data['check_in'],
+            'check_out' => $data['check_out'],
+            'adults'    => $data['adults'],
+            'children'  => $data['children'],
+            'sort_by'   => $data['sort_by'] ?? 'asc',  // Nếu không có sort_by thì mặc định là 'asc'
+        ]);
+        
+        $total_guests = $data['adults'] + $data['children'];
+        $sort_by = $request->input('sort_by', 'asc');
+        
         $available_rooms = Room::with('capacity')
-            ->whereHas('capacity', function ($query) use ($total_guests) {
-                $query->where('max_capacity', '>=', $total_guests);
-            })
-            ->where('remaining_rooms', '>', 0)
-            ->orderBy('price_per_night', $sort_by)
-            ->get();
+        ->leftJoin('discount', 'room_detail.id', '=', 'discount.room_id')  // Kết hợp bảng discount
+        ->select('room_detail.*', 'discount.discount_percent')  // Chọn các trường cần thiết
+        ->whereHas('capacity', function ($query) use ($total_guests) {
+            $query->where('max_capacity', '>=', $total_guests);  // Lọc theo số lượng khách
+        })
+        ->where('remaining_rooms', '>', 0)  // Kiểm tra số phòng còn lại
+        ->orderBy('price_per_night', $sort_by)  // Sắp xếp theo giá
+        ->distinct()  // Đảm bảo các phòng không bị trùng
+        ->get();
 
         $slides = Slideshow::all(); // Thêm phần này
         return view("Pages.searchroom", compact('data', 'available_rooms', 'slides'));
