@@ -136,46 +136,48 @@
 
     <div class="grid-container">
     @foreach ($rooms as $room)
-    <div class="item">
-        <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
-        <div class="infor_room">
-            <h4>{{ $room->room_type }}</h4>
-            <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
-            <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>
-            <p><i class="fas fa-umbrella-beach"></i> <strong>Hướng phòng:</strong> {{ $room->view }}</p>
-            <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
+        @if ($loop->index < 6)
+        <div class="item">
+            <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
+            <div class="infor_room">
+                <h4>{{ $room->room_type }}</h4>
+                <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
+                <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>
+                <p><i class="fas fa-umbrella-beach"></i> <strong>Hướng phòng:</strong> {{ $room->view }}</p>
+                <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
 
-            <!-- Hiển thị giảm giá nếu có -->
-            @if (!empty($room->discount_percent))
-                <p class="discount"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%</p>
-            @else
-                <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
-            @endif
-            
-            <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
-            <div class="room-actions">
-                <form method="GET" action="{{ route('thongtin') }}">
-                @csrf
-                    <input type="hidden" name="room_id" value="{{ $room->id }}">
-                    <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
-                    <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
-                    <input type="hidden" name="adults" value="1">
-                    <input type="hidden" name="children" value="0">
-                    <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
-                </form>
-
+                <!-- Hiển thị giảm giá nếu có -->
+                @if (!empty($room->discount_percent))
+                    <p class="discount"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%</p>
+                @else
+                    <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
+                @endif
                 
-                <form method="POST" action="{{ route('cart.add') }}">
+                <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
+                <div class="room-actions">
+                    <form method="GET" action="{{ route('thongtin') }}">
                     @csrf
-                    <input type="hidden" name="room_id" value="{{ $room->id }}">
-                    <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                    <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                    <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
-                </form>
+                        <input type="hidden" name="room_id" value="{{ $room->id }}">
+                        <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
+                        <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
+                        <input type="hidden" name="adults" value="1">
+                        <input type="hidden" name="children" value="0">
+                        <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
+                    </form>
+
+                    
+                    <form method="POST" action="{{ route('cart.add') }}">
+                        @csrf
+                        <input type="hidden" name="room_id" value="{{ $room->id }}">
+                        <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
+                        <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
+                        <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-@endforeach
+        @endif
+    @endforeach
     </div>
 </section>
 

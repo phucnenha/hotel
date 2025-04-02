@@ -17,62 +17,60 @@
     <div class="container">
     <div class="infor-container-right">
     <h2>Thông tin đặt phòng</h2>
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>Loại phòng</th>
-            <th>Ngày check-in</th>
-            <th>Ngày check-out</th>
-            <th>Số người</th>
-            <th>Giá phòng/đêm</th>
-            <th>Giảm giá</th>
-            <th>Giá phòng sau khi giảm</th>
-            <th>Thành tiền</th>
-            
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($bookedRooms as $index => $room)
-        <tr>
-            <td>{{ $room['room_type'] }}</td>
-            <td>{{ $room['check_in'] }}</td>
-            <td>{{ $room['check_out'] }}</td>
-            <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
-            <td>{{ number_format($room['price_per_night']) }} VND</td>
-            <td>
-                @if($room['discount_percent'] > 0)
-                    <span class="badge bg-success">{{ $room['discount_percent'] }}% OFF</span>
-                @else
-                    <span class="badge bg-secondary">Không giảm giá</span>
-                @endif
-            </td>
-            <td>
-                @if($room['discount_percent'] > 0)
-                    <span class="text-muted text-decoration-line-through">
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Loại phòng</th>
+                <th>Ngày check-in</th>
+                <th>Ngày check-out</th>
+                <th>Số người</th>
+                <th>Giá phòng/đêm</th>
+                <th>Giảm giá</th>
+                <th>Giá phòng sau khi giảm</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($bookedRooms as $index => $room)
+            <tr>
+                <td>{{ $room['room_type'] }}</td>
+                <td>{{ $room['check_in'] }}</td>
+                <td>{{ $room['check_out'] }}</td>
+                <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
+                <td>{{ number_format($room['price_per_night']) }} VND</td>
+                <td>
+                    @if($room['discount_percent'] > 0)
+                        <span class="badge bg-success">{{ $room['discount_percent'] }}% OFF</span>
+                    @else
+                        <span class="badge bg-secondary">Không giảm giá</span>
+                    @endif
+                </td>
+                <td>
+                    @if($room['discount_percent'] > 0)
+                        <span class="text-muted text-decoration-line-through">
+                            {{ number_format($room['price_per_night']) }} VND
+                        </span>
+                        <br>
+                        <span class="fw-bold">{{ number_format($room['discounted_price']) }} VND/đêm</span>
+                    @else
                         {{ number_format($room['price_per_night']) }} VND
-                    </span>
-                    <br>
-                    <span class="fw-bold">{{ number_format($room['discounted_price']) }} VND/đêm</span>
-                @else
-                    {{ number_format($room['price_per_night']) }} VND
-                @endif
-            </td>
-            <td>
-                <span class="fw-bold text-primary">{{ number_format($room['room_total']) }} VND</span>
-            </td>
-            <td>
-                <a href="{{ route('xoaPhong', $index) }}" class="btn btn-danger btn-sm">Xóa</a>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-    <!-- Hiển thị tổng tiền -->
+                    @endif
+                </td>
+                <td>
+                    <span class="fw-bold text-primary">{{ number_format($room['room_total']) }} VND</span>
+                </td>
+                <td>
+                    <a href="{{ route('xoaPhong', $index) }}" class="btn btn-danger btn-sm">Xóa</a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
     <div class="mt-3">
         <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
     </div>
 
-    <!-- Nút quay lại để thêm phòng -->
     <div class="mt-3">
         <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
     </div>

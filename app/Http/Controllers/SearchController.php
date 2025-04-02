@@ -24,8 +24,18 @@ class SearchController extends Controller
         'check_out' => 'required|date|after:check_in',
         'adults'    => 'required|integer|min:1|max:10',
         'children'  => 'required|integer|min:0|max:10',
+        'sort_by'   => 'nullable|in:asc,desc',
     ]);
 
+    // Lưu vào session
+    session([
+        'check_in'  => $data['check_in'],
+        'check_out' => $data['check_out'],
+        'adults'    => $data['adults'],
+        'children'  => $data['children'],
+        'sort_by'   => $data['sort_by'] ?? 'asc',  // Nếu không có sort_by thì mặc định là 'asc'
+    ]);
+    
     $total_guests = $data['adults'] + $data['children'];
     $sort_by = $request->input('sort_by', 'asc');
     
@@ -61,7 +71,12 @@ class SearchController extends Controller
         if (!$room) {
             return redirect()->back()->withErrors(['message' => 'Phòng không tồn tại']);
         }
-
+        // Kiểm tra số lượng phòng đã thêm
+        $maxRooms = 5; // Giới hạn số phòng tối đa có thể thêm vào
+        $bookedRooms = session()->get('bookedRooms', []);
+        if (count($bookedRooms) >= $maxRooms) {
+            return redirect()->route('showBooking')->with('error', 'Bạn chỉ có thể thêm tối đa ' . $maxRooms . ' phòng.');
+        }
 
         $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
     
@@ -102,31 +117,4 @@ class SearchController extends Controller
     }
 
 
-    public function addToCart(Request $request)
-    {
-        $room = Room::find($request->room_id);
-        if (!$room) {
-            return back()->with('error', 'Không tìm thấy phòng.');
-        }
-
-        $cart = session()->get('cart', []);
-
-        $cart[$room->id] = [
-            'room_id' => $room->id,
-            'room_name' => $room->room_type,
-            'price' => $room->price_per_night,
-            'check_in' => $request->check_in,
-            'check_out' => $request->check_out
-        ];
-
-        session()->put('cart', $cart);
-        return redirect()->route('cart.view')->with('success', 'Phòng đã được thêm vào giỏ hàng.');
-    }
-
-    // Phương thức hiển thị giỏ hàng
-    public function viewCart()
-    {
-        $cart = session()->get('cart', []); // Lấy giỏ hàng từ session
-        return view('pages.cart', compact('cart')); // Trả về view giỏ hàng
-    }
 }

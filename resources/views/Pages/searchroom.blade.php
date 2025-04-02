@@ -116,41 +116,59 @@
     </div>
 </section>
 @endif
-<script>
+    <script>
+        //------------------------thêm giỏ hàng----------------------
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("form#addToCartForm").forEach(function (form) {
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault(); // Ngăn trang tải lại
+        
+                    let formData = new FormData(this);
+        
+                    fetch("{{ route('cart.add') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
+                        },
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("✅ " + data.message); // Chỉ hiển thị alert khi thành công
+                        }
+                    })
+                    .catch(error => console.error("Lỗi:", error));
+                });
+            });
+        });
         // -------------------Ngày nhận và ngày trả--------------------
         document.addEventListener("DOMContentLoaded", function() {
-        const checkinInput = document.querySelector("[name='check_in']");
-        const checkoutInput = document.querySelector("[name='check_out']");
-        const bookingForm = document.querySelector("form");
+            const checkinInput = document.querySelector("[name='check_in']");
+            const checkoutInput = document.querySelector("[name='check_out']");
+            const bookingForm = document.querySelector("form");
 
-        // Lấy ngày hiện tại và ngày mai
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1); // Ngày mai
+            // Định dạng ngày thành YYYY-MM-DD
+            const formatDate = (date) => date.toISOString().split("T")[0];
 
-        // Định dạng ngày thành YYYY-MM-DD
-        const formatDate = (date) => date.toISOString().split("T")[0];
+            // Thiết lập giá trị mặc định & min cho input ngày
+            checkinInput.value = formatDate(today);
+            checkinInput.setAttribute("min", formatDate(today));
 
-        // Thiết lập giá trị mặc định & min cho input ngày
-        checkinInput.value = formatDate(today);
-        checkinInput.setAttribute("min", formatDate(today));
+            checkoutInput.value = formatDate(tomorrow);
+            checkoutInput.setAttribute("min", formatDate(today));
 
-        checkoutInput.value = formatDate(tomorrow);
-        checkoutInput.setAttribute("min", formatDate(today));
+            //  Kiểm tra trước khi gửi form
+            bookingForm.addEventListener("submit", function(event) {
+                const checkinDate = new Date(checkinInput.value);
+                const checkoutDate = new Date(checkoutInput.value);
 
-        //  Kiểm tra trước khi gửi form
-        bookingForm.addEventListener("submit", function(event) {
-            const checkinDate = new Date(checkinInput.value);
-            const checkoutDate = new Date(checkoutInput.value);
-
-            if (checkinDate >= checkoutDate) {
-                alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
-                event.preventDefault(); // Ngăn form gửi đi
-            }
+                if (checkinDate >= checkoutDate) {
+                    alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
+                    event.preventDefault(); // Ngăn form gửi đi
+                }
+            });
         });
-    });
     </script>
-
-
 
 @endsection
