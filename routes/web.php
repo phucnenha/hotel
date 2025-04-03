@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
- 
+
 
 use App\Http\Controllers\User\HomeController;
 Route::get('/index', [HomeController::class, 'index'])->name('home');
@@ -44,4 +44,5 @@ Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'
 
 //---------Thanh toán-----------//
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+
 
