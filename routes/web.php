@@ -13,6 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/thanhtoan', function () {
-    return view('pages.thanhtoan');
-});
+Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
