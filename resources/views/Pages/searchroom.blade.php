@@ -104,6 +104,8 @@
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
+                                <input type="hidden" name="adults" value="{{ $data['adults'] }}">
+                                <input type="hidden" name="children" value="{{ $data['children'] }}">
                                 <button type="submit" class="btn primary-btn">Thêm vào giỏ hàng</button>
                             </form>
                         </div>

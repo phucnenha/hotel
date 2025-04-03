@@ -47,6 +47,7 @@
             <th>Ngày check-in</th>
             <th>Ngày check-out</th>
             <th>Số người</th>
+            <th>Số phòng</th> <!-- New column for number of rooms -->
             <th>Giá phòng/đêm</th>
             <th>Giảm giá</th>
             <th>Giá phòng sau khi giảm</th>
@@ -60,6 +61,8 @@
             <td>{{ $room['check_in'] }}</td>
             <td>{{ $room['check_out'] }}</td>
             <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
+            <td>
+            {{ $room['rooms'] ?? 1 }}            </td>
             <td>{{ number_format($room['price_per_night']) }} VND</td>
             <td>
                 @if($room['discount_percent'] > 0)
@@ -82,9 +85,7 @@
             <td>
                 <span class="fw-bold text-primary">{{ number_format($room['room_total']) }} VND</span>
             </td>
-            <td>
-                <a href="{{ route('xoaPhong', $index) }}" class="btn btn-danger btn-sm">Xóa</a>
-            </td>
+           
         </tr>
         @endforeach
     </tbody>
@@ -95,7 +96,7 @@
 </div>
 
 <div class="mt-3">
-    <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
+
 </div>
 </div>
             <!-- Thông tin khách hàng -->
@@ -129,7 +130,7 @@
         </select>
     </div>
     <div class="d-flex justify-content-between mt-3">
-        <a href="{{ route('showBooking') }}" class="btn btn-outline-secondary">Quay lại</a>
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary">Quay lại</a>
         <button type="submit" class="btn btn-primary">Tiếp tục thanh toán</button>
     </div>
 </form>

@@ -4,78 +4,147 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
 use App\Models\Room;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 class CartController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $sessionId = session()->getId(); 
-
-        // Lấy dữ liệu giỏ hàng theo session_id
-        $cartItems = Cart::where('session_id', $sessionId)->get();
-
-        // Kiểm tra nếu giỏ hàng trống
-        if ($cartItems->isEmpty()) {
-            return view('user.cart', ['shoppingCart' => []]);
-        }
-        
-        $shoppingCart = $cartItems->map(function ($cart) {
-            $room = Room::find($cart->room_id);
-            return [
-                'room_id' => $cart->room_id,
-                'room_type' => $room->room_type ?? 'Không xác định',
-                'image_url' => $room->image_url ?? '',
-                'price_per_night' => $room->price_per_night ?? 0,
-                'check_in' => $cart->check_in,
-                'check_out' => $cart->check_out
-            ];
-        });
-
+        // Lấy giỏ hàng từ session
+        $shoppingCart = session('bookedRooms', []);
         return view('user.cart', compact('shoppingCart'));
     }
 
-    public function remove($roomId)
+    public function remove($index)
     {
-        $cart = session('shoppingCart', []);
-        foreach ($cart as $key => $item) {
-            if ($item['room_id'] == $roomId) {
-                unset($cart[$key]);
-                break;
-            }
-        }
-        session(['shoppingCart' => array_values($cart)]);
-        return redirect()->route('cart.index')->with('noti', 'Đã xóa phòng khỏi giỏ hàng!');
-    }
+        $bookedRooms = session('bookedRooms', []);
 
-    public function checkout($roomId)
-    {
-        return redirect()->route('cart.index')->with('noti', 'Chuyển đến trang đặt phòng!');
+        if (isset($bookedRooms[$index])) {
+            unset($bookedRooms[$index]);
+            session(['bookedRooms' => array_values($bookedRooms)]); // Cập nhật lại session sau khi xóa
+            return redirect()->route('cart')->with('success', 'Đã xóa phòng khỏi giỏ hàng!');
+        }
+
+        return redirect()->route('cart')->with('error', 'Không tìm thấy phòng để xóa!');
     }
     public function addToCart(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'room_id' => 'required|exists:room_detail,id',
-            'check_in' => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
+            'check_in' => 'nullable|date|after_or_equal:today',
+            'check_out' => 'nullable|date|after:check_in',
+            'adults' => 'nullable|integer|min:1|max:10',
+            'children' => 'nullable|integer|min:0|max:10',
+            'rooms' => 'nullable|integer|min:1|max:5',
         ]);
-
-        // Lấy session_id (dùng để phân biệt khách hàng chưa đăng nhập)
-        $session_id = session()->getId();
-
-        // Thêm vào giỏ hàng
-        Cart::create([
-            'session_id' => $session_id,
-            'room_id' => $request->room_id,
-            'check_in' => $request->check_in,
-            'check_out' => $request->check_out,
-            'adults' => $request->adults ?? 1,
-            'children' => $request->children ?? 0,
-            'quantity' => 1, // Giả định mặc định số lượng là 1
-        ]);
-        return response()->json([
-            'success' => true,
-            'message' => 'Phòng đã được thêm vào giỏ hàng!',
-        ]);
+    
+        $data['check_in'] = $data['check_in'] ?? now()->toDateString();
+        $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
+        $data['adults'] = $data['adults'] ?? 1;
+        $data['children'] = $data['children'] ?? 0;
+        $data['rooms'] = $data['rooms'] ?? 1;
+    
+        // Tổng số người (người lớn + trẻ em)
+        $totalPeople = $data['adults'] + $data['children'];
+    
+        // Kiểm tra nếu số phòng vượt quá số người
+        if ($data['rooms'] > $totalPeople) {
+            return redirect()->back()->with('error', 'Số phòng không được lớn hơn số người. Vui lòng cập nhật số người hoặc số phòng để phù hợp!');
+        }
+    
+        // Lấy thông tin phòng
+        $room = Room::find($data['room_id']);
+        if (!$room) {
+            return redirect()->back()->with('error', 'Phòng không tồn tại!');
+        }
+    
+        // Kiểm tra nếu giỏ hàng đã có 4 loại phòng
+        $bookedRooms = session()->get('bookedRooms', []);
+        $roomTypesInCart = collect($bookedRooms)->pluck('room_type')->unique();
+    
+        if ($roomTypesInCart->count() >= 4 && !in_array($room->room_type, $roomTypesInCart->toArray())) {
+            return redirect()->route('home')->with('error', 'Giỏ hàng đã đầy, vui lòng xóa để thêm phòng mới!');
+        }
+    
+        $stayDays = Carbon::parse($data['check_out'])->diffInDays(Carbon::parse($data['check_in']));
+    
+        $discount = DB::table('discount')
+            ->where('room_id', $room->id)
+            ->where('start_date', '<=', $data['check_in'])
+            ->where('end_date', '>=', $data['check_out'])
+            ->first();
+    
+        $discountPercent = $discount->discount_percent ?? 0;
+        $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
+        $roomTotal = $discountedPrice * $stayDays * $data['rooms'];
+    
+        $roomExists = false;
+    
+        foreach ($bookedRooms as &$bookedRoom) {
+            if ($bookedRoom['room_id'] === $room->id &&
+                $bookedRoom['check_in'] === $data['check_in'] &&
+                $bookedRoom['check_out'] === $data['check_out']) {
+                $bookedRoom['rooms'] += $data['rooms'];
+                $bookedRoom['room_total'] += $roomTotal;
+                $roomExists = true;
+                break;
+            }
+        }
+    
+        if (!$roomExists) {
+            $bookedRooms[] = [
+                'room_id' => $room->id,
+                'room_type' => $room->room_type,
+                'check_in' => $data['check_in'],
+                'check_out' => $data['check_out'],
+                'adults' => $data['adults'],
+                'children' => $data['children'],
+                'rooms' => $data['rooms'],
+                'price_per_night' => $room->price_per_night,
+                'discount_percent' => $discountPercent,
+                'stay_days' => $stayDays,
+                'discounted_price' => $discountedPrice,
+                'room_total' => $roomTotal
+            ];
+        }
+    
+        session()->put('bookedRooms', $bookedRooms);
+    
+        return redirect()->route('home')->with('success', 'Phòng đã được thêm vào giỏ hàng!');
     }
+    
+    // UPATE số lượng phòng
+    public function Update_Soluong(Request $request, $index)
+{
+    $data = $request->validate([
+        'rooms' => 'required|integer|min:1|max:5',
+    ]);
+
+    $bookedRooms = session('bookedRooms', []);
+    if (isset($bookedRooms[$index])) {
+        $totalPeople = ($bookedRooms[$index]['adults'] ?? 0) + ($bookedRooms[$index]['children'] ?? 0);
+
+        // Check if the number of rooms exceeds the number of guests
+        if ($data['rooms'] > $totalPeople) {
+            return redirect()->route('cart')->with('error', 'Số phòng không đủ với số người. Vui lòng giảm số phòng hoặc tăng số người!');
+        }
+
+        // Update room quantity and recalculate total price
+        $bookedRooms[$index]['rooms'] = $data['rooms'];
+        $bookedRooms[$index]['room_total'] = $bookedRooms[$index]['discounted_price'] 
+                                            * $bookedRooms[$index]['stay_days'] 
+                                            * $data['rooms'];
+
+        session(['bookedRooms' => $bookedRooms]);
+        return redirect()->route('cart')->with('success', 'Đã cập nhật số lượng phòng thành công!');
+    }
+
+    return redirect()->route('cart')->with('error', 'Không tìm thấy phòng để cập nhật!');
+}
+
+    
+    
+    
 }

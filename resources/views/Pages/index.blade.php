@@ -3,7 +3,52 @@
 @section('title', 'Golden Tree Apartment')
 
 @section('content')
+    <!-- Hiển thị thông báo thành công -->
+    @if(session('success'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: green;">
+        <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toastEl = document.getElementById("liveToast");
+            var toast = new bootstrap.Toast(toastEl, {
+                delay: 8000 // Hiển thị trong 8 giây
+            });
+            toast.show();
+        });
+    </script>
+@endif
+    <!-- Hiển thị thông báo lỗi -->
+    @if(session('error'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: red;">
+        <div id="liveToastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toastEl = document.getElementById("liveToastError");
+            var toast = new bootstrap.Toast(toastEl, {
+                delay: 8000 // Hiển thị trong 8 giây
+            });
+            toast.show();
+        });
+    </script>
+    @endif
      <!-- Home Section -->
      <section class="home">
     <div class="content">
@@ -164,13 +209,12 @@
                     <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
                 </form>
 
-                
                 <form method="POST" action="{{ route('cart.add') }}">
                     @csrf
                     <input type="hidden" name="room_id" value="{{ $room->id }}">
                     <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
                     <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                    <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
+                    <button type="submit" class="add-cart btn primary-btn">Thêm vào giỏ hàng</button>
                 </form>
             </div>
         </div>
