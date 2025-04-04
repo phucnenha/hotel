@@ -76,35 +76,43 @@
         @else
             <div class="room-grid">
                 @foreach($available_rooms as $room)
-                <div class="room-card" style="width:600px">
-                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">
-                    <div class="room-details">
-                        <h3>{{ $room->room_type }}</h3>
+                <div class="room-card" style="width:1000px;height: 350px">
+                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width:60%">
+                    <div class="room-details" style="width:40%">
+                        <h4>{{ $room->room_type }}</h4>
                         <p><i class="fas fa-bed"></i> Loại giường: <strong>{{ $room->bed_type ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-ruler-combined"></i> Diện tích: <strong>{{ $room->area ?? 'Không xác định' }} m²</strong></p>
                         <p><i class="fas fa-umbrella-beach"></i> Hướng phòng: <strong>{{ $room->view ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-tag"></i> Giá phòng/đêm: <strong>{{ number_format($room->price_per_night, 0, ',', '.') }} VNĐ</strong></p>
-                        <p class="discount"><i class="fas fa-percent"></i> Giảm giá:<strong>{{ $room->discount_percent }}%</strong></p>
+                        <p class="discount"><i class="fas fa-percent"></i> Giảm giá: 
+                            @if($room['discount_percent'] > 0)
+                                <span class="badge bg-success">{{ $room['discount_percent'] }}%</span>
+                            @else
+                                <span class="badge bg-secondary">Không giảm giá</span>
+                            @endif
+                        </p>
                         <p><i class="fas fa-door-open"></i> Số phòng còn lại: <strong>{{ $room->remaining_rooms ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-user-friends"></i> Sức chứa: <strong>{{ optional($room->capacity)->max_capacity ?? 'Không xác định' }} người</strong></p>
                         
-                        <div class="room-actions">
-                            <form method="GET" action="{{ route('thongtin') }}">
+                        <div class="room-actions" >
+                            <form method="GET" action="{{ route('thongtin') }}" >
                                 @csrf
                                     <input type="hidden" name="room_id" value="{{ $room->id }}">
                                     <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                     <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
                                     <input type="hidden" name="adults" value="{{ $data['adults'] }}">
                                     <input type="hidden" name="children" value="{{ $data['children'] }}">
-                                    <button type="submit" class="btn primary-btn">Đặt ngay</button>
+                                    <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Đặt ngay</button>
                                 </form>
 
+                                
                             <form id="addToCartForm">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
-                                <button type="submit" class="btn primary-btn">Thêm vào giỏ hàng</button>
+                                <input type="number" id="quantity" value="1" min="1" class="quantity-input">
+                                <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
                             </form>
                             <div id="cart-message" style="color: green; display: none;">✅ Đã thêm vào giỏ hàng!</div>
                         </div>
@@ -170,5 +178,7 @@
             });
         });
     </script>
+    <input type="number" id="quantity" value="1" min="1" class="quantity-input" >
+
 
 @endsection
