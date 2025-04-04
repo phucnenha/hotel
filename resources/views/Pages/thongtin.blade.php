@@ -46,7 +46,6 @@
             <th>Loại phòng</th>
             <th>Ngày check-in</th>
             <th>Ngày check-out</th>
-            <th>Số người</th>
             <th>Số phòng</th> <!-- New column for number of rooms -->
             <th>Giá phòng/đêm</th>
             <th>Giảm giá</th>
@@ -60,9 +59,7 @@
             <td>{{ $room['room_type'] }}</td>
             <td>{{ $room['check_in'] }}</td>
             <td>{{ $room['check_out'] }}</td>
-            <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
-            <td>
-            {{ $room['rooms'] ?? 1 }}            </td>
+            <td> {{ $room['rooms'] ?? 1 }}            </td>
             <td>{{ number_format($room['price_per_night']) }} VND</td>
             <td>
                 @if($room['discount_percent'] > 0)

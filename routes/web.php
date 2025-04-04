@@ -41,7 +41,8 @@ Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::post('/cart/update/{index}', [CartController::class, 'Update_Soluong'])->name('cart.update');
+Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
+Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
 
 
 

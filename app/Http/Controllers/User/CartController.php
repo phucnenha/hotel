@@ -116,35 +116,30 @@ class CartController extends Controller
     }
     
     // UPATE số lượng phòng
-    public function Update_Soluong(Request $request, $index)
-{
-    $data = $request->validate([
-        'rooms' => 'required|integer|min:1|max:5',
-    ]);
-
-    $bookedRooms = session('bookedRooms', []);
-    if (isset($bookedRooms[$index])) {
-        $totalPeople = ($bookedRooms[$index]['adults'] ?? 0) + ($bookedRooms[$index]['children'] ?? 0);
-
-        // Check if the number of rooms exceeds the number of guests
-        if ($data['rooms'] > $totalPeople) {
-            return redirect()->route('cart')->with('error', 'Số phòng không đủ với số người. Vui lòng giảm số phòng hoặc tăng số người!');
+    public function update(Request $request, $index)
+    {
+        $bookedRooms = session('bookedRooms', []);
+    
+        if (!isset($bookedRooms[$index])) {
+            return redirect()->route('cart')->with('error', 'Phòng không tồn tại trong giỏ hàng.');
         }
-
-        // Update room quantity and recalculate total price
-        $bookedRooms[$index]['rooms'] = $data['rooms'];
-        $bookedRooms[$index]['room_total'] = $bookedRooms[$index]['discounted_price'] 
-                                            * $bookedRooms[$index]['stay_days'] 
-                                            * $data['rooms'];
-
+    
+        $validated = $request->validate([
+            'rooms' => 'required|integer|min:1|max:5',
+        ]);
+    
+        $rooms = $validated['rooms'];
+    
+        // Cập nhật lại session
+        $room = &$bookedRooms[$index];
+        $room['rooms'] = $rooms;
+    
+        // Cập nhật lại thành tiền
+        $room['room_total'] = $room['discounted_price'] * $room['stay_days'] * $rooms;
+    
         session(['bookedRooms' => $bookedRooms]);
-        return redirect()->route('cart')->with('success', 'Đã cập nhật số lượng phòng thành công!');
+    
+        return redirect()->route('cart')->with('success', 'Cập nhật giỏ hàng thành công!');
     }
-
-    return redirect()->route('cart')->with('error', 'Không tìm thấy phòng để cập nhật!');
-}
-
-    
-    
     
 }

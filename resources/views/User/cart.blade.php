@@ -44,7 +44,6 @@
             <th>Loại phòng</th>
             <th>Ngày check-in</th>
             <th>Ngày check-out</th>
-            <th>Số người</th>
             <th>Số phòng</th> <!-- New column for number of rooms -->
             <th>Giá phòng/đêm</th>
             <th>Giảm giá</th>
@@ -60,18 +59,17 @@
     <td>{{ $room['check_in'] }}</td>
     <td>{{ $room['check_out'] }}</td>
 
-    <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
     <td>
     <form action="{{ route('cart.update', $index) }}" method="POST">
         @csrf
-        <input type="number" name="rooms" value="{{ $room['rooms'] ?? 1 }}" min="1" max="5" class="form-control" onchange="this.form.submit()" />
+        <input type="number" name="rooms" value="{{ old('rooms', $room['rooms'] ?? 1) }}" 
+               min="1" max="5" class="form-control @error('rooms') is-invalid @enderror"
+               onchange="this.form.submit()" />
+        @if ($errors->has('rooms') && session('last_error_index') == $index)
+            <small class="text-danger">{{ $errors->first('rooms') }}</small>
+        @endif
     </form>
-    @if ($errors->has('rooms') && $errors->get('index')[0] == $index)
-        <small class="text-danger">{{ $errors->first('rooms') }}</small>
-    @endif
 </td>
-
-
     <td>{{ number_format($room['price_per_night']) }} VND</td>
     <td>
         @if($room['discount_percent'] > 0)
