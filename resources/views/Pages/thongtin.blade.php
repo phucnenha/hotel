@@ -1,14 +1,18 @@
 @extends('layout.main')
 
+
 @section('title', 'Thông Tin Khách Hàng')
+
 
 @section('content')
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
  
 
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <div class="container">
     <div class="infor-container-right">
@@ -16,37 +20,38 @@
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
-    @endif
-    @if(session('success'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-        <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    {{ session('success') }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+@endif
+@if(session('success'))
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('success') }}
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var toastEl = document.getElementById("liveToast");
-            var toast = new bootstrap.Toast(toastEl, {
-                delay: 8000 // Hiển thị trong 8 giây
-            });
-            toast.show();
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var toastEl = document.getElementById("liveToast");
+        var toast = new bootstrap.Toast(toastEl, {
+            delay: 8000 // Hiển thị trong 8 giây
         });
-    </script>
-    @endif
-    <h2>Thông tin đặt phòng</h2>
+        toast.show();
+    });
+</script>
+@endif
+<h2>Thông tin đặt phòng</h2>
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>
             <th>Loại phòng</th>
             <th>Ngày check-in</th>
             <th>Ngày check-out</th>
-            <th>Số người</th>
+            <th>Số phòng</th> <!-- New column for number of rooms -->
             <th>Giá phòng/đêm</th>
             <th>Giảm giá</th>
             <th>Giá phòng sau khi giảm</th>
@@ -59,7 +64,7 @@
             <td>{{ $room['room_type'] }}</td>
             <td>{{ $room['check_in'] }}</td>
             <td>{{ $room['check_out'] }}</td>
-            <td>{{ ($room['adults'] ?? 0) + ($room['children'] ?? 0) }}</td>
+            <td> {{ $room['rooms'] }}  </td>
             <td>{{ number_format($room['price_per_night']) }} VND</td>
             <td>
                 @if($room['discount_percent'] > 0)
@@ -82,23 +87,23 @@
             <td>
                 <span class="fw-bold text-primary">{{ number_format($room['room_total']) }} VND</span>
             </td>
-            <td>
-                <a href="{{ route('xoaPhong', $index) }}" class="btn btn-danger btn-sm">Xóa</a>
-            </td>
+           
         </tr>
         @endforeach
     </tbody>
 </table>
 
+
 <div class="mt-3">
     <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
 </div>
 
-<div class="mt-3">
-    <a href="{{ route('home') }}" class="btn btn-primary">Thêm phòng</a>
-</div>
-</div>
 
+<div class="mt-3">
+
+
+</div>
+</div>
             <!-- Thông tin khách hàng -->
     <div class="infor-container-left" style="margin:10px;">
     <h2>Điền thông tin đặt phòng</h2>
@@ -130,15 +135,22 @@
         </select>
     </div>
     <div class="d-flex justify-content-between mt-3">
-        <a href="{{ route('showBooking') }}" class="btn btn-outline-secondary">Quay lại</a>
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary">Quay lại</a>
         <button type="submit" class="btn btn-primary">Tiếp tục thanh toán</button>
     </div>
 </form>
 
+
 </div>
+
+
 
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+
 @endsection
+
+
+

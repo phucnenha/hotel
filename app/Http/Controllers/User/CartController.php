@@ -1,81 +1,161 @@
 <?php
 
+
 namespace App\Http\Controllers\User;
+
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
 use App\Models\Room;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+
 class CartController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $sessionId = session()->getId(); 
-
-        // Lấy dữ liệu giỏ hàng theo session_id
-        $cartItems = Cart::where('session_id', $sessionId)->get();
-
-        // Kiểm tra nếu giỏ hàng trống
-        if ($cartItems->isEmpty()) {
-            return view('user.cart', ['shoppingCart' => []]);
-        }
-        
-        $shoppingCart = $cartItems->map(function ($cart) {
-            $room = Room::find($cart->room_id);
-            return [
-                'room_id' => $cart->room_id,
-                'room_type' => $room->room_type ?? 'Không xác định',
-                'image_url' => $room->image_url ?? '',
-                'price_per_night' => $room->price_per_night ?? 0,
-                'check_in' => $cart->check_in,
-                'check_out' => $cart->check_out
-            ];
-        });
-
+        // Lấy giỏ hàng từ session
+        $shoppingCart = session('bookedRooms', []);
         return view('user.cart', compact('shoppingCart'));
     }
 
-    public function remove($roomId)
+
+    public function remove($index)
     {
-        $cart = session('shoppingCart', []);
-        foreach ($cart as $key => $item) {
-            if ($item['room_id'] == $roomId) {
-                unset($cart[$key]);
+        $bookedRooms = session('bookedRooms', []);
+
+
+        if (isset($bookedRooms[$index])) {
+            unset($bookedRooms[$index]);
+            session(['bookedRooms' => array_values($bookedRooms)]); // Cập nhật lại session sau khi xóa
+            return redirect()->route('cart')->with('success', 'Đã xóa phòng khỏi giỏ hàng!');
+        }
+
+
+        return redirect()->route('cart')->with('error', 'Không tìm thấy phòng để xóa!');
+    }
+    public function add(Request $request)
+    {
+        // Validate dữ liệu đầu vào
+        $data = $request->validate([
+            'room_id' => 'required|exists:room_detail,id',
+            'check_in' => 'nullable|date|after_or_equal:today',
+            'check_out' => 'nullable|date|after:check_in',
+            'rooms' => 'nullable|integer|min:1|max:10'
+        ]);    
+
+        // Set giá trị mặc định nếu không có
+        $data['check_in'] = $data['check_in'] ?? now()->toDateString();
+        $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
+        $data['adults'] = $data['adults'] ?? 1;
+        $data['children'] = $data['children'] ?? 0;
+
+        // Tính tổng số người (người lớn + trẻ em)
+        $totalPeople = $data['adults'] + $data['children'];
+
+        // Kiểm tra nếu số phòng vượt quá số người
+        if ($data['rooms'] > $totalPeople) {
+            return redirect()->back()->with('error', 'Số phòng không được lớn hơn số người. Vui lòng cập nhật số người hoặc số phòng để phù hợp!');
+        }
+
+        // Lấy thông tin phòng từ database
+        $room = Room::find($data['room_id']);
+        if (!$room) {
+            return redirect()->back()->with('error', 'Phòng không tồn tại!');
+        }
+
+        // Kiểm tra nếu giỏ hàng đã có 4 loại phòng
+        $bookedRooms = session()->get('bookedRooms', []);
+        $roomTypesInCart = collect($bookedRooms)->pluck('room_type')->unique();
+
+        if ($roomTypesInCart->count() >= 4 && !in_array($room->room_type, $roomTypesInCart->toArray())) {
+            return redirect()->route('home')->with('error', 'Giỏ hàng đã đầy, vui lòng xóa để thêm phòng mới!');
+        }
+
+        // Tính số ngày ở
+        $stayDays = Carbon::parse($data['check_out'])->diffInDays(Carbon::parse($data['check_in']));
+
+        // Kiểm tra khuyến mãi
+        $discount = DB::table('discount')
+            ->where('room_id', $room->id)
+            ->where('start_date', '<=', $data['check_in'])
+            ->where('end_date', '>=', $data['check_out'])
+            ->first();
+
+        $discountPercent = $discount->discount_percent ?? 0;
+        $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
+        $roomTotal = $discountedPrice * $stayDays * $data['rooms'];
+
+        // Kiểm tra xem phòng đã có trong giỏ hàng chưa
+        $roomExists = false;
+
+        foreach ($bookedRooms as &$bookedRoom) {
+            if ($bookedRoom['room_id'] === $room->id &&
+                $bookedRoom['check_in'] === $data['check_in'] &&
+                $bookedRoom['check_out'] === $data['check_out']) {
+                // Nếu phòng đã có trong giỏ hàng, chỉ cần cập nhật số lượng
+                $bookedRoom['rooms'] += $data['rooms'];
+                $bookedRoom['room_total'] = $bookedRoom['rooms'] * $bookedRoom['discounted_price'] * $stayDays;
+                $roomExists = true;
                 break;
             }
         }
-        session(['shoppingCart' => array_values($cart)]);
-        return redirect()->route('cart.index')->with('noti', 'Đã xóa phòng khỏi giỏ hàng!');
+
+        if (!$roomExists) {
+            // Nếu phòng chưa có trong giỏ hàng, thêm mới
+            $bookedRooms[] = [
+                'room_id' => $room->id,
+                'room_type' => $room->room_type,
+                'check_in' => $data['check_in'],
+                'check_out' => $data['check_out'],
+                'rooms' => $data['rooms'],
+                'price_per_night' => $room->price_per_night,
+                'discount_percent' => $discountPercent,
+                'stay_days' => $stayDays,
+                'discounted_price' => $discountedPrice,
+                'room_total' => $roomTotal
+            ];
+        }
+        // Cập nhật giỏ hàng trong session
+        session()->put('bookedRooms', $bookedRooms);
+
+            // Thêm thông báo thành công
+        session()->flash('success', 'Phòng đã được thêm vào giỏ hàng!');
+
+        return response()->json(['success' => '✅ Đã thêm vào giỏ hàng!'], 200);
     }
 
-    public function checkout($roomId)
+   
+    // UPATE số lượng phòng
+    public function update(Request $request, $index)
     {
-        return redirect()->route('cart.index')->with('noti', 'Chuyển đến trang đặt phòng!');
+        $bookedRooms = session('bookedRooms', []);
+    
+        if (!isset($bookedRooms[$index])) {
+            return redirect()->route('cart')->with('error', 'Phòng không tồn tại trong giỏ hàng.');
+        }
+    
+        try {
+            $validated = $request->validate([
+                'rooms' => 'required|integer|min:1|max:5',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            session()->flash('last_error_index', $index); // Đánh dấu dòng nào lỗi
+            throw $e; // Laravel sẽ tự redirect lại với errors
+        }
+    
+        $rooms = $validated['rooms'];
+    
+        // Cập nhật dữ liệu
+        $room = &$bookedRooms[$index];
+        $room['rooms'] = $rooms;
+        $room['room_total'] = $room['discounted_price'] * $room['stay_days'] * $rooms;
+    
+        session(['bookedRooms' => $bookedRooms]);
+    
+        return redirect()->route('cart')->with('success', 'Cập nhật giỏ hàng thành công!');
     }
-    public function addToCart(Request $request)
-    {
-        $request->validate([
-            'room_id' => 'required|exists:room_detail,id',
-            'check_in' => 'required|date|after_or_equal:today',
-            'check_out' => 'required|date|after:check_in',
-        ]);
-
-        // Lấy session_id (dùng để phân biệt khách hàng chưa đăng nhập)
-        $session_id = session()->getId();
-
-        // Thêm vào giỏ hàng
-        Cart::create([
-            'session_id' => $session_id,
-            'room_id' => $request->room_id,
-            'check_in' => $request->check_in,
-            'check_out' => $request->check_out,
-            'adults' => $request->adults ?? 1,
-            'children' => $request->children ?? 0,
-            'quantity' => 1, // Giả định mặc định số lượng là 1
-        ]);
-        return response()->json([
-            'success' => true,
-            'message' => 'Phòng đã được thêm vào giỏ hàng!',
-        ]);
-    }
+    
+   
 }
