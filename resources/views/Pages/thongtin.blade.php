@@ -1,17 +1,22 @@
 @extends('layout.main')
 
+
 @section('title', 'Thông Tin Khách Hàng')
+
 
 @section('content')
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
  
 
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+
     <div class="container">
     <div class="infor-container-right">
+<<<<<<< .mine
     @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -40,6 +45,38 @@
 </script>
 @endif
 <h2>Thông tin đặt phòng</h2>
+
+=======
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+@if(session('success'))
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('success') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var toastEl = document.getElementById("liveToast");
+        var toast = new bootstrap.Toast(toastEl, {
+            delay: 8000 // Hiển thị trong 8 giây
+        });
+        toast.show();
+    });
+</script>
+@endif
+<h2>Thông tin đặt phòng</h2>
+>>>>>>> .theirs
 <table class="table table-bordered">
     <thead class="table-light">
         <tr>
@@ -59,7 +96,11 @@
             <td>{{ $room['room_type'] }}</td>
             <td>{{ $room['check_in'] }}</td>
             <td>{{ $room['check_out'] }}</td>
+<<<<<<< .mine
             <td> {{ $room['rooms'] ?? 1 }}            </td>
+=======
+            <td> {{ $room['rooms'] }}  </td>
+>>>>>>> .theirs
             <td>{{ number_format($room['price_per_night']) }} VND</td>
             <td>
                 @if($room['discount_percent'] > 0)
@@ -88,6 +129,7 @@
     </tbody>
 </table>
 
+<<<<<<< .mine
 <div class="mt-3">
     <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
 </div>
@@ -96,6 +138,22 @@
 
 </div>
 </div>
+
+
+
+=======
+
+<div class="mt-3">
+    <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format($totalAmount) }} VND</span></h4>
+</div>
+
+
+<div class="mt-3">
+
+
+</div>
+</div>
+>>>>>>> .theirs
             <!-- Thông tin khách hàng -->
     <div class="infor-container-left" style="margin:10px;">
     <h2>Điền thông tin đặt phòng</h2>
@@ -132,10 +190,17 @@
     </div>
 </form>
 
+
 </div>
+
+
 
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+
 @endsection
+
+
+

@@ -41,7 +41,15 @@ Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+<<<<<<< .mine
 Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
+
+
+=======
+Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
+Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+>>>>>>> .theirs
 
 
 
@@ -64,6 +72,5 @@ Route::prefix('admins')
         Route::resource('rooms', \App\Http\Controllers\Admin\RoomManagementController::class);
         Route::resource('bookings', \App\Http\Controllers\Admin\BookingManagementController::class);
     });
-
 
 
