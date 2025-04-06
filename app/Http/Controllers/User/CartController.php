@@ -46,30 +46,33 @@ class CartController extends Controller
         $data['children'] = $data['children'] ?? 0;
         $data['rooms'] = $data['rooms'] ?? 1;
     
-        // Tổng số người (người lớn + trẻ em)
         $totalPeople = $data['adults'] + $data['children'];
-    
-        // Kiểm tra nếu số phòng vượt quá số người
         if ($data['rooms'] > $totalPeople) {
-            return redirect()->back()->with('error', 'Số phòng không được lớn hơn số người. Vui lòng cập nhật số người hoặc số phòng để phù hợp!');
+            $message = 'Số phòng không được lớn hơn số người. Vui lòng cập nhật lại!';
+            return $request->ajax()
+                ? response()->json(['error' => $message], 422)
+                : redirect()->back()->with('error', $message);
         }
     
-        // Lấy thông tin phòng
         $room = Room::find($data['room_id']);
         if (!$room) {
-            return redirect()->back()->with('error', 'Phòng không tồn tại!');
+            $message = 'Phòng không tồn tại!';
+            return $request->ajax()
+                ? response()->json(['error' => $message], 404)
+                : redirect()->back()->with('error', $message);
         }
     
-        // Kiểm tra nếu giỏ hàng đã có 4 loại phòng
         $bookedRooms = session()->get('bookedRooms', []);
         $roomTypesInCart = collect($bookedRooms)->pluck('room_type')->unique();
     
         if ($roomTypesInCart->count() >= 4 && !in_array($room->room_type, $roomTypesInCart->toArray())) {
-            return redirect()->route('home')->with('error', 'Giỏ hàng đã đầy, vui lòng xóa để thêm phòng mới!');
+            $message = 'Giỏ hàng đã đầy, vui lòng xóa để thêm phòng mới!';
+            return $request->ajax()
+                ? response()->json(['error' => $message], 422)
+                : redirect()->route('home')->with('error', $message);
         }
     
         $stayDays = Carbon::parse($data['check_out'])->diffInDays(Carbon::parse($data['check_in']));
-    
         $discount = DB::table('discount')
             ->where('room_id', $room->id)
             ->where('start_date', '<=', $data['check_in'])
@@ -81,7 +84,6 @@ class CartController extends Controller
         $roomTotal = $discountedPrice * $stayDays * $data['rooms'];
     
         $roomExists = false;
-    
         foreach ($bookedRooms as &$bookedRoom) {
             if ($bookedRoom['room_id'] === $room->id &&
                 $bookedRoom['check_in'] === $data['check_in'] &&
@@ -112,8 +114,12 @@ class CartController extends Controller
     
         session()->put('bookedRooms', $bookedRooms);
     
-        return redirect()->route('home')->with('success', 'Phòng đã được thêm vào giỏ hàng!');
+        $successMessage = 'Phòng đã được thêm vào giỏ hàng!';
+        return $request->ajax()
+            ? response()->json(['success' => $successMessage])
+            : redirect()->route('home')->with('success', $successMessage);
     }
+    
     
     // UPATE số lượng phòng
     public function update(Request $request, $index)

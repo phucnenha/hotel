@@ -4,7 +4,7 @@
 
 @section("content")
 
-<section class="book">
+<section class="book" style="margin-top: 10vh">
     <div class="container flex_space">
         <div class="text">
             <h1><span>Book</span> Your rooms</h1>
@@ -33,28 +33,11 @@
     </div>
 </section>
 <script>
-        // -------------------Ngày nhận và ngày trả--------------------
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
         const checkinInput = document.querySelector("[name='check_in']");
         const checkoutInput = document.querySelector("[name='check_out']");
         const bookingForm = document.querySelector("form");
 
-        // Lấy ngày hiện tại và ngày mai
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1); // Ngày mai
-
-        // Định dạng ngày thành YYYY-MM-DD
-        const formatDate = (date) => date.toISOString().split("T")[0];
-
-        // Thiết lập giá trị mặc định & min cho input ngày
-        checkinInput.value = formatDate(today);
-        checkinInput.setAttribute("min", formatDate(today));
-
-        checkoutInput.value = formatDate(tomorrow);
-        checkoutInput.setAttribute("min", formatDate(today));
-
-        //  Kiểm tra trước khi gửi form
         bookingForm.addEventListener("submit", function(event) {
             const checkinDate = new Date(checkinInput.value);
             const checkoutDate = new Date(checkoutInput.value);
@@ -62,10 +45,12 @@
             if (checkinDate >= checkoutDate) {
                 alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
                 event.preventDefault(); // Ngăn form gửi đi
+                return;
             }
         });
     });
-    </script>
+</script>
+
 @if(isset($data))
 <section class="room-list">
     <div class="container">
@@ -130,18 +115,6 @@
 
                         <div class="room-actions" >
                             <form method="GET" action="{{ route('thongtin') }}" >
-<<<<<<< .mine
-                            @csrf
-                                <input type="hidden" name="room_id" value="{{ $room->id }}">
-                                <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
-                                <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
-                                <input type="hidden" name="adults" value="{{ $data['adults'] }}">
-                                <input type="hidden" name="children" value="{{ $data['children'] }}">
-                                <button type="submit" class="btn primary-btn">Đặt ngay</button>
-                            </form>
-
-                            <form method="POST" action="{{ route('cart.add') }}">
-=======
                                 @csrf
                                     <input type="hidden" name="room_id" value="{{ $room->id }}">
                                     <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
@@ -150,52 +123,13 @@
                                     <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Đặt ngay</button>
                             </form>
                             <form method="POST" action="{{ route('cart.add') }}" id="formAdd_{{ $room->id }}">
-
-
->>>>>>> .theirs
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
-<<<<<<< .mine
-                                <input type="hidden" name="adults" value="{{ $data['adults'] }}">
-                                <input type="hidden" name="children" value="{{ $data['children'] }}">
-                                <button type="submit" class="btn primary-btn">Thêm vào giỏ hàng</button>
-=======
                                 <input type="hidden" name="rooms" id="hiddenRooms_{{ $room->id }}" value="1">
                                 <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
-
->>>>>>> .theirs
                             </form>
-<<<<<<< .mine
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
                             
                             <div class="cart-message" style="color: green; display: none;">✅ Đã thêm vào giỏ hàng!</div>
 
@@ -223,7 +157,6 @@
                                     });
                                 });
                             </script>
->>>>>>> .theirs
                         </div>
                     </div>
                 </div>
@@ -233,15 +166,6 @@
     </div>
 </section>
 @endif
-<<<<<<< .mine
-
-
-
-
-
-
-
-=======
  
     <script>
         // --------------------đồng bộ giá trị số phòng----------------
@@ -249,36 +173,7 @@
             // Lắng nghe sự thay đổi trong từng trường nhập liệu số lượng phòng
             document.querySelectorAll('.room-card').forEach(function(roomCard) {
                 const roomsInput = roomCard.querySelector('input[name^="rooms_"]');  // Lấy input theo tên riêng biệt của từng phòng
->>>>>>> .theirs
 
-<<<<<<< .mine
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
                 roomsInput.addEventListener('change', function() {
                     const roomId = roomCard.querySelector('input[name^="rooms_"]').name.split('_')[1];  // Lấy id của phòng
                     const roomsValue = this.value;
@@ -305,38 +200,7 @@
                 });
             });
         });
->>>>>>> .theirs
 
-<<<<<<< .mine
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
         // -------------------Ngày nhận và ngày trả--------------------
         document.addEventListener("DOMContentLoaded", function() {
             const checkinInput = document.querySelector("[name='check_in']");
@@ -365,11 +229,6 @@
             });
         });
     </script>
->>>>>>> .theirs
 
-<<<<<<< .mine
 
-=======
-
->>>>>>> .theirs
 @endsection

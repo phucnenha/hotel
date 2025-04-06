@@ -49,6 +49,7 @@
         });
     </script>
     @endif
+
      <!-- Home Section -->
      <section class="home">
     <div class="content">
@@ -96,13 +97,11 @@
             <form action="{{ route('searchroom.search') }}" class="grid" method="POST">
                 @csrf
                 <table class="table-book">
-                    <tr>
-                        <td>Ngày nhận phòng</td>
-                        <td>Ngày trả phòng</td>
-                        <td>Người lớn</td>
-                        <td>Trẻ em</td>
+                  <td style="color: white;">Ngày nhận phòng</td>
+                        <td style="color: white;">Ngày trả phòng</td>
+                        <td style="color: white;">Người lớn</td>
+                        <td style="color: white;">Trẻ em</td>
                         <td></td>
-                    </tr>
                     <tr>
                         <td><input type="date" id="checkin" name="check_in" required></td>
                         <td><input type="date" id="checkout" name="check_out" required></td>
@@ -197,29 +196,11 @@
                 @else
                     <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
                 @endif
+                
                 <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
                 <div class="room-actions">
                     <form method="GET" action="{{ route('thongtin') }}">
                     @csrf
-<<<<<<< .mine
-                    <input type="hidden" name="room_id" value="{{ $room->id }}">
-                    <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                    <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                    <button type="submit" class="add-cart btn primary-btn">Thêm vào giỏ hàng</button>
-                </form>
-
-
-
-
-
-
-
-
-
-
-
-
-=======
                         <input type="hidden" name="room_id" value="{{ $room->id }}">
                         <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
                         <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
@@ -237,7 +218,6 @@
                         <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
                     </form>
                 </div>
->>>>>>> .theirs
             </div>
         </div>
         @endif
