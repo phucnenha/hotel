@@ -49,3 +49,14 @@ Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->n
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+// Admin
+
+Route::prefix('admins')
+    ->as('admin.')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('customers', \App\Http\Controllers\Admin\CustomerManagementController::class);
+        Route::resource('rooms', \App\Http\Controllers\Admin\RoomManagementController::class);
+        Route::resource('bookings', \App\Http\Controllers\Admin\BookingManagementController::class);
+    });

@@ -1,6 +1,9 @@
 @extends('admin.layout.main')
 
 @section('content')
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <!--begin::App Content Header-->
     <div class="app-content-header">
         <!--begin::Container-->
@@ -35,38 +38,46 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th style="width: 10px">#</th>
-                                    <th>Full name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>National</th>
-                                    <th>Actions</th>
+                             <table id="book-table" class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th>Full name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>National</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($customers as $customer)
+                                <tr class="align-middle">
+                                    <td>{{$customer->id}}.</td>
+                                    <td>{{$customer->full_name}}</td>
+                                    <td>{{$customer->email}}</td>
+                                    <td>{{$customer->phone}}</td>
+                                    <td>{{$customer->nationality}}</td>
+                                    <td>
+                                        <button class="btn btn-info"><i class="fa-solid fa-eye"></i></button>
+                                        <button class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
+                                    </td>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                @foreach($customers as $customer)
-                                    <tr class="align-middle">
-                                        <td>{{$customer->id}}.</td>
-                                        <td>{{$customer->full_name}}</td>
-                                        <td>{{$customer->email}}</td>
-                                        <td>
-                                            {{$customer->phone}}
-                                        </td>
-                                        <td>
-                                            {{$customer->nationality}}
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-info"><i class="fa-solid fa-eye"></i></button>
-                                            <button class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>
-                                            <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                </tbody>
-                            </table>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        <script>
+                    $(document).ready(function(){
+                        new DataTable('#book-table', {
+                            paging: false,       // tắt phân trang
+                            ordering: false,     // tắt sắp xếp cột
+                            info: false,         // tắt dòng "Showing 1 to n of n entries"
+                            responsive: false,   // tắt responsive (nếu không cần)
+                            searching: true      // giữ lại tính năng tìm kiếm
+                        });
+                    });
+                    </script>
+
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer clearfix">

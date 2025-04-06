@@ -10,12 +10,33 @@ use Carbon\Carbon;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Lấy giỏ hàng từ session
-        $shoppingCart = session('bookedRooms', []);
+        $sessionId = session()->getId();
+
+        // Lấy dữ liệu giỏ hàng theo session_id
+        $cartItems = Cart::where('session_id', $sessionId)->get();
+
+        // Kiểm tra nếu giỏ hàng trống
+        if ($cartItems->isEmpty()) {
+            return view('user.cart', ['shoppingCart' => []]);
+        }
+
+        $shoppingCart = $cartItems->map(function ($cart) {
+            $room = Room::find($cart->room_id);
+            return [
+                'room_id' => $cart->room_id,
+                'room_type' => $room->room_type ?? 'Không xác định',
+                'image_url' => $room->image_url ?? '',
+                'price_per_night' => $room->price_per_night ?? 0,
+                'check_in' => $cart->check_in,
+                'check_out' => $cart->check_out
+            ];
+        });
+
         return view('user.cart', compact('shoppingCart'));
     }
+
 
     public function remove($index)
     {
