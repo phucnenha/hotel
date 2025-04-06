@@ -102,4 +102,5 @@ public function hienThiThongTin(Request $request)
 
     return view('pages.thongtin', compact('bookedRooms', 'totalAmount'));
 }
+
 }

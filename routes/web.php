@@ -42,7 +42,6 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
-Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
 
 
 
@@ -52,6 +51,8 @@ Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->n
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+Route::post('/update-booking-rooms', [BookingController::class, 'updateRooms'])->name('updateRooms');
+
 
 // Admin
 Route::prefix('admins')
