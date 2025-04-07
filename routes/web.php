@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,18 +46,34 @@ Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
+//-----------ĐIỀN THÔNG TIN-----------------//
+
+Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
+Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
+Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+
+//---------Thanh toán-----------//
+Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
 
 
-Route::post('/payment', [\App\Http\Controllers\User\OrderControler::class, 'payment'])->name('payment');
-Route::get('/payment/callBack', [\App\Http\Controllers\User\OrderControler::class, 'paymentCallback'])->name('payment.callback');
+
+//---------Thanh toán-----------//
+
+Route::post('/payment', [BookingController::class, 'payment'])->name('payment');
+Route::get('/payment/callBack', [BookingController::class, 'paymentCallback'])->name('payment.callback');
 
 
 // Admin
 
 
 Route::prefix('admins')
+//    ->middleware(['admin'])
     ->as('admin.')
     ->group(function () {
+
+        Route::get('/login', [\App\Http\Controllers\Admin\AuthController::class, 'showFormLogin'])->name('login');
+        Route::post('/login', [\App\Http\Controllers\Admin\AuthController::class, 'login'])->name('login');
+
         Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('customers', \App\Http\Controllers\Admin\CustomerManagementController::class);
