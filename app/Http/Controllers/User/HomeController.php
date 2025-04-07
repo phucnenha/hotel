@@ -14,12 +14,15 @@ class HomeController extends Controller
     {
        // Lấy tất cả dữ liệu từ bảng slideshow
        $slides = Slideshow::all();  
-       
+         
+       // Lấy tất cả phòng từ database
        $rooms = Room::leftJoin('discount', 'room_detail.id', '=', 'discount.room_id')
-                    ->select('room_detail.*', 'discount.discount_percent')
-                    ->get();
+                   ->select('room_detail.*', 'discount.discount_percent')
+                   ->distinct()
+                   ->get();
+   
        // Truyền dữ liệu vào view
-       return view('pages.index', compact('slides'), compact('rooms'));
+       return view('pages.index', compact('slides', 'rooms'));
     }
-}
 
+}

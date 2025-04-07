@@ -3,7 +3,52 @@
 @section('title', 'Golden Tree Apartment')
 
 @section('content')
+    <!-- Hiển thị thông báo thành công -->
+    @if(session('success'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: green;">
+        <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('success') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toastEl = document.getElementById("liveToast");
+            var toast = new bootstrap.Toast(toastEl, {
+                delay: 8000 // Hiển thị trong 8 giây
+            });
+            toast.show();
+        });
+    </script>
+@endif
+    <!-- Hiển thị thông báo lỗi -->
+    @if(session('error'))
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: red;">
+        <div id="liveToastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ session('error') }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var toastEl = document.getElementById("liveToastError");
+            var toast = new bootstrap.Toast(toastEl, {
+                delay: 8000 // Hiển thị trong 8 giây
+            });
+            toast.show();
+        });
+    </script>
+    @endif
      <!-- Home Section -->
      <section class="home">
     <div class="content">
@@ -73,32 +118,36 @@
 <script>
         // -------------------Ngày nhận và ngày trả--------------------
         document.addEventListener("DOMContentLoaded", function() {
-            const checkinInput = document.getElementById("checkin");
-            const checkoutInput = document.getElementById("checkout");
-            const bookingForm = document.querySelector("form");
+        const checkinInput = document.querySelector("[name='check_in']");
+        const checkoutInput = document.querySelector("[name='check_out']");
+        const bookingForm = document.querySelector("form");
 
-            const today = new Date();
-            const tomorrow = new Date(today);
-            const dayAfterTomorrow = new Date(today);
+        // Lấy ngày hiện tại và ngày mai
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Ngày mai
 
-            tomorrow.setDate(today.getDate() + 1);
-            dayAfterTomorrow.setDate(today.getDate() + 2);
+        // Định dạng ngày thành YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split("T")[0];
 
-            const formatDate = (date) => date.toISOString().split("T")[0];
+        // Thiết lập giá trị mặc định & min cho input ngày
+        checkinInput.value = formatDate(today);
+        checkinInput.setAttribute("min", formatDate(today));
 
-            checkinInput.value = formatDate(tomorrow);
-            checkoutInput.value = formatDate(dayAfterTomorrow);
+        checkoutInput.value = formatDate(tomorrow);
+        checkoutInput.setAttribute("min", formatDate(today));
 
-            bookingForm.addEventListener("submit", function(event) {
-                const checkinDate = new Date(checkinInput.value);
-                const checkoutDate = new Date(checkoutInput.value);
+        //  Kiểm tra trước khi gửi form
+        bookingForm.addEventListener("submit", function(event) {
+            const checkinDate = new Date(checkinInput.value);
+            const checkoutDate = new Date(checkoutInput.value);
 
-                if (checkinDate >= checkoutDate) {
-                    event.preventDefault(); // Ngăn form gửi đi
-                    alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
-                }
-            });
+            if (checkinDate >= checkoutDate) {
+                alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
+                event.preventDefault(); // Ngăn form gửi đi
+            }
         });
+    });
     </script>
 
 <!-- About Section -->
@@ -132,8 +181,9 @@
 
     <div class="grid-container">
     @foreach ($rooms->take(3) as $room)
-    <div class="item">
-            <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">        <div class="infor_room">
+        <div class="item">
+        <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
+        <div class="infor_room">
             <h4>{{ $room->room_type }}</h4>
             <p><i class="fas fa-bed"></i> <strong>Loại giường:</strong> {{ $room->bed_type }}</p>
             <p><i class="fas fa-ruler-combined"></i> <strong>Diện tích:</strong> {{ $room->area }}m²</p>
@@ -149,19 +199,25 @@
             
             <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
             <div class="room-actions">
-            <form method="POST" action="{{ route('cart.add') }}">
+                <form method="GET" action="{{ route('thongtin') }}">
                 @csrf
-                <input type="hidden" name="room_id" value="{{ $room->id }}">
-                <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                <button type="submit" class="add-cart btn primary-btn">Thêm vào giỏ hàng</button>
-            </form>
-            <form method="GET" action="{{ route('thongtin') }}">
-                <input type="hidden" name="room_id" value="{{ $room->id }}">
-                <button type="submit" class="btn primary-btn">Đặt ngay</button>
-            </form>
+                    <input type="hidden" name="room_id" value="{{ $room->id }}">
+                    <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
+                    <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
+                    <input type="hidden" name="adults" value="1">
+                    <input type="hidden" name="children" value="0">
+                    <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
+                </form>
+
+                <form method="POST" action="{{ route('cart.add') }}">
+                    @csrf
+                    <input type="hidden" name="room_id" value="{{ $room->id }}">
+                    <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
+                    <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
+                    <button type="submit" class="add-cart btn primary-btn">Thêm vào giỏ hàng</button>
+                </form>
+            </div>
         </div>
-    </div>
     </div>
 @endforeach
     </div>

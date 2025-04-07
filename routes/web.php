@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
- 
 
 use App\Http\Controllers\User\HomeController;
-Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/index', [HomeController::class, 'index'])->name('home');
 
 use App\Http\Controllers\RoomController;
 
@@ -28,7 +28,7 @@ Route::get('/rooms', [RoomController::class, 'index']);
 
 use App\Http\Controllers\User\CartController;
 
-Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 
 //--------------Tìm kiếm phòng--------------------------
 use App\Http\Controllers\SearchController;
@@ -37,13 +37,11 @@ Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchr
 Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search');
 Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
 
-// ----------------Giỏ hàng-----------------------
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+/// ----------------Giỏ hàng-----------------------
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
 Route::get('/cart/remove/{room_id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::post('/cart/update/{index}', [CartController::class, 'Update_Soluong'])->name('cart.update');
-
-
+Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
 
 //-----------ĐIỀN THÔNG TIN-----------------//
 use App\Http\Controllers\BookingController;
@@ -51,7 +49,6 @@ Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->n
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
-
 // Admin
 Route::prefix('admins')
     ->as('admin.')
@@ -62,3 +59,5 @@ Route::prefix('admins')
         Route::resource('rooms', \App\Http\Controllers\Admin\RoomManagementController::class);
         Route::resource('bookings', \App\Http\Controllers\Admin\BookingManagementController::class);
     });
+
+

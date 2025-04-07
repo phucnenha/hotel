@@ -170,18 +170,37 @@ header .navlinks span {
       <div class="navlinks">
         <ul id="menulist">
           <li><a href="{{ route('home') }}">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#rooms">Rooms</a></li>
+          <li><a href="{{ route('home') }}#about">About</a></li>
+          <li><a href="{{ route('home') }}#rooms">Rooms</a></li>
           <li>
-            <a href="{{ route('cart.index') }}" title="Giỏ hàng">
-              <i class="fa-solid fa-cart-shopping"></i>
-            </a>
-          </li>
+    <a href="{{ route('cart') }}" title="Giỏ hàng" style="color: inherit; position: relative; display: inline-block;">
+        <i class="fa-solid fa-cart-shopping fa-lg"></i>
+        <span style="
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            width: 16px;
+            height: 16px;
+            background-color:#B88A44;
+            color: white;
+            font-size: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;">
+            {{ collect(session('bookedRooms', []))->sum('rooms') }}
+
+        </span>
+    </a>
+</li>
+
+
+
+
           <li>
             <a  href="#"><button class="btn">Login</button></a>
           </li>
         </ul>
       </div>
     </div></header>
-
 

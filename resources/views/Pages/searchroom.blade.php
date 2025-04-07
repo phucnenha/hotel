@@ -4,7 +4,7 @@
 
 @section("content")
 
-<section class="book" style="margin-top:10vh">
+<section class="book">
     <div class="container flex_space">
         <div class="text">
             <h1><span>Book</span> Your rooms</h1>
@@ -33,11 +33,28 @@
     </div>
 </section>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+        // -------------------Ngày nhận và ngày trả--------------------
+        document.addEventListener("DOMContentLoaded", function() {
         const checkinInput = document.querySelector("[name='check_in']");
         const checkoutInput = document.querySelector("[name='check_out']");
         const bookingForm = document.querySelector("form");
 
+        // Lấy ngày hiện tại và ngày mai
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Ngày mai
+
+        // Định dạng ngày thành YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split("T")[0];
+
+        // Thiết lập giá trị mặc định & min cho input ngày
+        checkinInput.value = formatDate(today);
+        checkinInput.setAttribute("min", formatDate(today));
+
+        checkoutInput.value = formatDate(tomorrow);
+        checkoutInput.setAttribute("min", formatDate(today));
+
+        //  Kiểm tra trước khi gửi form
         bookingForm.addEventListener("submit", function(event) {
             const checkinDate = new Date(checkinInput.value);
             const checkoutDate = new Date(checkoutInput.value);
@@ -45,12 +62,10 @@
             if (checkinDate >= checkoutDate) {
                 alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
                 event.preventDefault(); // Ngăn form gửi đi
-                return;
             }
         });
     });
-</script>
-
+    </script>
 @if(isset($data))
 <section class="room-list">
     <div class="container">
@@ -62,7 +77,8 @@
             <div class="room-grid">
                 @foreach($available_rooms as $room)
                 <div class="room-card" style="width:600px">
-                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">                    <div class="room-details">
+                <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" style="width: 300px">
+                    <div class="room-details">
                         <h3>{{ $room->room_type }}</h3>
                         <p><i class="fas fa-bed"></i> Loại giường: <strong>{{ $room->bed_type ?? 'Không xác định' }}</strong></p>
                         <p><i class="fas fa-ruler-combined"></i> Diện tích: <strong>{{ $room->area ?? 'Không xác định' }} m²</strong></p>
@@ -74,6 +90,7 @@
                         
                         <div class="room-actions">
                             <form method="GET" action="{{ route('thongtin') }}">
+                            @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
@@ -82,14 +99,15 @@
                                 <button type="submit" class="btn primary-btn">Đặt ngay</button>
                             </form>
 
-                            <form id="addToCartForm">
+                            <form method="POST" action="{{ route('cart.add') }}">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
+                                <input type="hidden" name="adults" value="{{ $data['adults'] }}">
+                                <input type="hidden" name="children" value="{{ $data['children'] }}">
                                 <button type="submit" class="btn primary-btn">Thêm vào giỏ hàng</button>
                             </form>
-                            <div id="cart-message" style="color: green; display: none;">✅ Đã thêm vào giỏ hàng!</div>
                         </div>
                     </div>
                 </div>
@@ -99,32 +117,6 @@
     </div>
 </section>
 @endif
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll("form#addToCartForm").forEach(function (form) {
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Ngăn trang tải lại
-
-            let formData = new FormData(this);
-
-            fetch("{{ route('cart.add') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector("input[name=_token]").value
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("✅ " + data.message); // Chỉ hiển thị alert khi thành công
-                }
-            })
-            .catch(error => console.error("Lỗi:", error));
-        });
-    });
-});
-</script>
 
 
 
