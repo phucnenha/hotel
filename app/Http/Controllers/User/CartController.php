@@ -10,33 +10,17 @@ use Carbon\Carbon;
 
 class CartController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $sessionId = session()->getId();
-
-        // Lấy dữ liệu giỏ hàng theo session_id
-        $cartItems = Cart::where('session_id', $sessionId)->get();
-
-        // Kiểm tra nếu giỏ hàng trống
-        if ($cartItems->isEmpty()) {
-            return view('user.cart', ['shoppingCart' => []]);
-        }
-
-        $shoppingCart = $cartItems->map(function ($cart) {
-            $room = Room::find($cart->room_id);
-            return [
-                'room_id' => $cart->room_id,
-                'room_type' => $room->room_type ?? 'Không xác định',
-                'image_url' => $room->image_url ?? '',
-                'price_per_night' => $room->price_per_night ?? 0,
-                'check_in' => $cart->check_in,
-                'check_out' => $cart->check_out
-            ];
-        });
-
+        // Lấy giỏ hàng từ session
+        $shoppingCart = session('bookedRooms', []);
         return view('user.cart', compact('shoppingCart'));
     }
 
+    public function count() {
+        return response()->json(count(session('bookedRooms') ?? []));
+    }
+    
 
     public function remove($index)
     {
@@ -50,6 +34,8 @@ class CartController extends Controller
 
         return redirect()->route('cart')->with('error', 'Không tìm thấy phòng để xóa!');
     }
+
+
     public function add(Request $request)
     {
         $data = $request->validate([
@@ -59,6 +45,7 @@ class CartController extends Controller
             'adults' => 'nullable|integer|min:1|max:10',
             'children' => 'nullable|integer|min:0|max:10',
             'rooms' => 'nullable|integer|min:1|max:5',
+            
         ]);
     
         $data['check_in'] = $data['check_in'] ?? now()->toDateString();
@@ -129,7 +116,9 @@ class CartController extends Controller
                 'discount_percent' => $discountPercent,
                 'stay_days' => $stayDays,
                 'discounted_price' => $discountedPrice,
-                'room_total' => $roomTotal
+                'room_total' => $roomTotal,
+                'file_anh'  => $room->file_anh
+                
             ];
         }
     

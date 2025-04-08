@@ -60,57 +60,63 @@ class SearchController extends Controller
 
 public function hienThiThongTin(Request $request)
 {
-    $data = $request->validate([
-        'room_id' => 'required|exists:room_detail,id',
-        'check_in' => 'nullable|date|after_or_equal:today',
-        'check_out' => 'nullable|date|after:check_in',
-        'rooms' => 'nullable|integer|min:1|max:10'
-    ]);
+    $source = $request->input('source', 'book_now'); // Mặc định là đặt ngay nếu không có source
 
-    // Thiết lập mặc định nếu thiếu
-    $data['check_in'] = $data['check_in'] ?? now()->toDateString();
-    $data['check_out'] = $data['check_out'] ?? now()->addDays(1)->toDateString();
-    $data['adults'] = $data['adults'] ?? 1;
-    $data['children'] = $data['children'] ?? 0;
-    $data['rooms'] = $data['rooms'] ?? 1;
+    if ($source === 'book_now') {
+        // Lấy dữ liệu từ form Đặt Ngay
+        $selectedRoom = $request->input('room');
+        $checkIn = $request->input('check_in');
+        $checkOut = $request->input('check_out');
+        $adults = $request->input('adults');
+        $children = $request->input('children');
+        $numRooms = $request->input('num_rooms');
+        $pricePerNight = $request->input('price_per_night');
 
-    // Lấy thông tin phòng
-    $room = \App\Models\Room::find($data['room_id']);
+        $days = (new \DateTime($checkIn))->diff(new \DateTime($checkOut))->days;
+        $roomTotal = $pricePerNight * $days * $numRooms;
 
-    // Tính số đêm
-    $stayDays = \Carbon\Carbon::parse($data['check_out'])->diffInDays(\Carbon\Carbon::parse($data['check_in']));
+        // Tạo mảng dữ liệu đặt ngay
+        $bookingData = [
+            'rooms' => [
+                [
+                    'room_type' => $selectedRoom,
+                    'check_in' => $checkIn,
+                    'check_out' => $checkOut,
+                    'adults' => $adults,
+                    'children' => $children,
+                    'rooms' => $numRooms,
+                    'price_per_night' => $pricePerNight,
+                    'room_total' => $roomTotal,
+                ],
+            ],
+            'total' => $roomTotal
+        ];
 
-    // Tính giảm giá nếu có
-    $discount = DB::table('discount')
-        ->where('room_id', $room->id)
-        ->where('start_date', '<=', $data['check_in'])
-        ->where('end_date', '>=', $data['check_out'])
-        ->first();
+        // Lưu vào session riêng
+        session(['book_now' => $bookingData]);
 
-    $discountPercent = $discount->discount_percent ?? 0;
-    $discountedPrice = $room->price_per_night * (1 - ($discountPercent / 100));
-    $roomTotal = $discountedPrice * $stayDays * $data['rooms'];
+        return view('pages.thongtin', [
+            'source' => 'book_now',
+            'sessionBookNow' => $bookingData
+        ]);
+    }
 
+    elseif ($source === 'cart') {
+        // Lấy dữ liệu từ session giỏ hàng
+        $bookedRooms = session('bookedRooms', []);
 
-    // Tạo dữ liệu hiển thị
-    $bookedRooms = [[
-        'room_id' => $room->id,
-        'room_type' => $room->room_type,
-        'check_in' => $data['check_in'],
-        'check_out' => $data['check_out'],
-        'adults' => $data['adults'],
-        'children' => $data['children'],
-        'rooms' => $data['rooms'],
-        'price_per_night' => $room->price_per_night,
-        'discount_percent' => $discountPercent,
-        'stay_days' => $stayDays,
-        'discounted_price' => $discountedPrice,
-        'room_total' => $roomTotal
-    ]];
+        $totalAmount = collect($bookedRooms)->sum('room_total');
 
-    $totalAmount = $roomTotal;
+        return view('pages.thongtin', [
+            'source' => 'cart',
+            'bookedRooms' => $bookedRooms,
+            'totalAmount' => $totalAmount
+        ]);
+    }
 
-    return view('pages.thongtin', compact('bookedRooms', 'totalAmount'));
+    // Nếu source không hợp lệ → về trang chủ
+    return redirect()->route('home')->with('error', 'Nguồn không hợp lệ!');
 }
+
 
 }

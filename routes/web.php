@@ -40,6 +40,8 @@ Route::get('/cart/checkout/{room_id}', [CartController::class, 'checkout'])->nam
 Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('cart.update');
 Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+
 
 
 
@@ -49,6 +51,13 @@ Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->n
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+
+//---------Thanh toán-----------//
+
+
+Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+Route::get('/thanh-toan', [BookingController::class, 'showPaymentPage'])->name('showPaymentPage');
+Route::post('/thanh-toan', [BookingController::class, 'processPayment'])->name('payment');
 // Admin
 
 Route::prefix('admins')

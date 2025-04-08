@@ -3,52 +3,58 @@
 @section('title', 'Golden Tree Apartment')
 
 @section('content')
-    <!-- Hiển thị thông báo thành công -->
-    @if(session('success'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: green;">
-        <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    {{ session('success') }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+<style>.text-bg-success {
+    background-color: #28a745 !important; /* Green background */
+    color: #ffffff !important;          /* White text */
+}
+
+.text-bg-danger {
+    background-color: #dc3545 !important; /* Red background */
+    color: #ffffff !important;           /* White text */
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1); /* Ensure close button remains white */
+}
+</style>
+   <!-- Toast dynamic with JS -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="dynamicToast" class="toast align-items-center border-0 text-bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div id="toast-body-content" class="toast-body">Thông báo sẽ xuất hiện ở đây</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var toastEl = document.getElementById("liveToast");
-            var toast = new bootstrap.Toast(toastEl, {
-                delay: 8000 // Hiển thị trong 8 giây
-            });
-            toast.show();
-        });
-    </script>
+<!-- Error notification -->
+@if(session('error'))
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+    <div id="liveToastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('error') }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 @endif
-    <!-- Hiển thị thông báo lỗi -->
-    @if(session('error'))
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; color: red;">
-        <div id="liveToastError" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    {{ session('error') }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+
+<!-- Success notification -->
+@if(session('success'))
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+    <div id="liveToastSuccess" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ session('success') }}
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+</div>
+@endif
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var toastEl = document.getElementById("liveToastError");
-            var toast = new bootstrap.Toast(toastEl, {
-                delay: 8000 // Hiển thị trong 8 giây
-            });
-            toast.show();
-        });
-    </script>
-    @endif
 
      <!-- Home Section -->
      <section class="home">
@@ -209,15 +215,15 @@
                         <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
                     </form>
 
-                    
-                    <form method="POST" action="{{ route('cart.add') }}">
-                        @csrf
-                        <input type="hidden" name="room_id" value="{{ $room->id }}">
-                        <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                        <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-                        <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
-                    </form>
-                </div>
+                    <form class="add-to-cart" data-room-id="{{ $room->id }}">
+                    @csrf
+                    <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
+                    <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
+
+                    <button type="button" class="add-cart">Thêm vào giỏ hàng</button>
+                </form>
+
+                                </div>
             </div>
         </div>
         @endif
@@ -257,4 +263,71 @@
         </div>
     </div>
 </section>
+<script>
+function showToast(message, isSuccess = true) {
+    let toastEl = document.getElementById("dynamicToast");
+    let toastBody = document.getElementById("toast-body-content");
+
+    // Remove previous background class
+    toastEl.classList.remove('text-bg-success', 'text-bg-danger');
+
+    // Add new background class depending on success/error
+    toastEl.classList.add(isSuccess ? 'text-bg-success' : 'text-bg-danger');
+    toastBody.innerHTML = message;
+
+    // Show the toast dynamically
+    let toast = new bootstrap.Toast(toastEl, {
+        delay: 4000 // 4 seconds display duration
+    });
+    toast.show();
+}
+
+$(document).ready(function () {
+    $('.add-to-cart').on('click', '.add-cart', function (e) {
+        e.preventDefault();
+
+        let form = $(this).closest('.add-to-cart');
+        let room_id = form.data('room-id');
+        let check_in = form.find('input[name="check_in"]').val();
+        let check_out = form.find('input[name="check_out"]').val();
+        let adults = form.find('input[name="adults"]').val();
+        let children = form.find('input[name="children"]').val();
+        let rooms = form.find('input[name="rooms"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: "{{ route('cart.add') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                room_id: room_id,
+                check_in: check_in,
+                check_out: check_out,
+                adults: adults,
+                children: children,
+                rooms: rooms
+            },
+            success: function (response) {
+                $.ajax({
+                    url: "{{ route('cart.count') }}",
+                    success: function(count) {
+                        $('#cart-number-product').text(count);
+                    }
+                });
+
+                showToast(response.success, true); // Show success toast
+            },
+            error: function (xhr) {
+                let res = xhr.responseJSON;
+                if (res && res.error) {
+                    showToast(res.error, false); // Show error toast
+                } else {
+                    showToast("Đã xảy ra lỗi, vui lòng thử lại!", false);
+                }
+            }
+        });
+    });
+});
+
+</script>
+
 @endsection

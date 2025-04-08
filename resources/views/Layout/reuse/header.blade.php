@@ -173,9 +173,18 @@ header .navlinks span {
           <li><a href="#about">About</a></li>
           <li><a href="#rooms">Rooms</a></li>
           <li>
-            <a href="{{ route('cart') }}" title="Giỏ hàng">
-              <i class="fa-solid fa-cart-shopping"></i>
-            </a>
+          <div style="color:black; position:relative; margin-right:10px;">
+    <a href="{{ route('cart') }}" title="Giỏ hàng" style="cursor:pointer; color:black; position:relative; display:inline-block;">
+        <i class="fa-solid fa-cart-shopping fa-lg"></i>
+        <div id="cart-number-product"
+             style="width:14px; height:14px; background-color:#B88A44; font-size:9px;
+                    border:none; border-radius:50%; position:absolute; top:10px; right:10px;
+                    display:flex; align-items:center; justify-content:center; color:white;">
+             {{ session('bookedRooms') ? count(session('bookedRooms')) : 0 }}
+        </div>
+    </a>
+</div>
+
           </li>
           <li>
             <a  href="#"><button class="btn">Login</button></a>
@@ -183,6 +192,19 @@ header .navlinks span {
         </ul>
       </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  @stack('scripts')
+  <script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "{{ route('cart.count') }}",
+            type: "GET",
+            success: function (count) {
+                $('#cart-number-product').text(count);
+            }
+        });
+    });
+  </script>
 </header>
 
 

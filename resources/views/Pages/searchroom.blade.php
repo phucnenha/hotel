@@ -3,7 +3,29 @@
 @section("title","Trang tìm phòng")
 
 @section("content")
+<style>.text-bg-success {
+    background-color: #28a745 !important; /* Green background */
+    color: #ffffff !important;          /* White text */
+}
 
+.text-bg-danger {
+    background-color: #dc3545 !important; /* Red background */
+    color: #ffffff !important;           /* White text */
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1); /* Ensure close button remains white */
+}
+</style>
+<!-- Toast dynamic notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+    <div id="dynamicToast" class="toast align-items-center border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div id="toast-body-content" class="toast-body">Thông báo sẽ xuất hiện ở đây</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <section class="book" style="margin-top: 10vh">
     <div class="container flex_space">
         <div class="text">
@@ -122,7 +144,7 @@
                                     <input type="hidden" name="rooms" class="roomsField" value="1">
                                     <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Đặt ngay</button>
                             </form>
-                            <form method="POST" action="{{ route('cart.add') }}" id="formAdd_{{ $room->id }}">
+                            <form method="POST" action="{{ route('cart.add') }}" id="formAdd_{{ $room->id }}" class="add-to-cart" data-room-id="{{ $room->id }}">
                                 @csrf
                                 <input type="hidden" name="room_id" value="{{ $room->id }}">
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
@@ -130,33 +152,69 @@
                                 <input type="hidden" name="rooms" id="hiddenRooms_{{ $room->id }}" value="1">
                                 <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
                             </form>
-                            
-                            <div class="cart-message" style="color: green; display: none;">✅ Đã thêm vào giỏ hàng!</div>
-
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                            <script type="text/javascript">
-                                $(document).on('submit', '#formAdd_{{ $room->id }}', function(e) {
-                                    e.preventDefault();  // Ngừng việc gửi form thông thường
+                            <script >//chỉnh cái này nè
+                          // Listen for form submission
+$(document).on('submit', '#formAdd_{{ $room->id }}', function (e) {
+    e.preventDefault(); // Stop the normal form submission
 
-                                    var form = $(this);
-                                    var url = form.attr('action');
-                                    var data = form.serialize();  // Lấy tất cả dữ liệu form
+    var form = $(this);
+    var url = form.attr('action');
+    var data = form.serialize();
 
-                                    $.ajax({
-                                        url: url,
-                                        method: 'POST',
-                                        data: data,
-                                        success: function(response) {
-                                            // Hiển thị thông báo thành công bằng alert
-                                            alert(response.success);
-                                        },
-                                        error: function(response) {
-                                            // Hiển thị thông báo lỗi nếu có
-                                            alert(response.responseJSON.error);
-                                        }
-                                    });
-                                });
-                            </script>
+    // Perform AJAX request
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: data,
+        success: function (response) {
+            // Show success toast
+            showToast(response.success, true);
+
+            // Update the cart count dynamically
+            $.ajax({
+                url: "{{ route('cart.count') }}", // Ensure this route returns the cart count
+                success: function (count) {
+                    $('#cart-number-product').text(count);
+                }
+            });
+        },
+        error: function (response) {
+            let message = response.responseJSON && response.responseJSON.error
+                ? response.responseJSON.error
+                : 'Có lỗi xảy ra, vui lòng thử lại.';
+            // Show error toast
+            showToast(message, false);
+        }
+    });
+});
+
+// Toast display function
+function showToast(message, success) {
+    const toastBody = document.getElementById("toast-body-content");
+    const toastContainer = document.getElementById("dynamicToast");
+
+    // Update the toast message
+    toastBody.textContent = message;
+
+    // Change toast background color based on success or error
+    if (success) {
+        toastContainer.classList.add("bg-success", "text-white");
+        toastContainer.classList.remove("bg-danger");
+    } else {
+        toastContainer.classList.add("bg-danger", "text-white");
+        toastContainer.classList.remove("bg-success");
+    }
+
+    // Show the toast
+    const toastEl = new bootstrap.Toast(toastContainer, {
+        delay: 5000 // 5-second display
+    });
+    toastEl.show();
+}
+
+                        </script>
+
                         </div>
                     </div>
                 </div>

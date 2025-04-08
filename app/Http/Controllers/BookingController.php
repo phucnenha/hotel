@@ -27,44 +27,67 @@ class BookingController extends Controller
 
         return view('Pages.thongtin', compact('bookedRooms', 'totalAmount'));
     }
-    public function saveCustomerInfo(Request $request)
-    {
-        $validatedData = $request->validate([
-            'ho_ten' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'sdt' => 'nullable|regex:/^[0-9]{10,15}$/',
-            'nationality' => 'required|string|max:100',
-            'payment_method' => 'required|string',
-        ]);
+   // Lưu thông tin khách hàng và đặt phòng vào session
+   public function saveCustomerInfo(Request $request)
+   {
+       // Validate dữ liệu đầu vào
+       $validated = $request->validate([
+           'ho_ten' => 'required|string|max:255',
+           'email' => 'required|email|max:255',
+           'sdt' => 'nullable|digits_between:10,15',
+           'nationality' => 'required|string|max:100',
+           'payment_method' => 'required|string|in:CASH,VNPAY',
+       ]);
 
-        // Lấy thông tin phòng đã đặt từ session
-        $bookedRooms = session()->get('bookedRooms', []);
-        $totalAmount = array_sum(array_column($bookedRooms, 'room_total'));
+       // Giả sử $bookedRooms và $totalAmount đã được lưu vào session trước đó khi chọn phòng
+       $bookedRooms = session('bookedRooms', []);
+       $totalAmount = session('totalAmount', 0);
 
-        // Lưu thông tin khách hàng vào session
-        session()->put('customer_info', [
-            'full_name' => $validatedData['ho_ten'],
-            'email' => $validatedData['email'],
-            'phone' => $validatedData['sdt'] ?? '',
-            'nationality' => $validatedData['nationality'],
-            'payment_method' => $validatedData['payment_method'],
-            'booked_rooms' => $bookedRooms,
-            'total_amount' => $totalAmount,
-        ]);
+       // Tạo mảng lưu thông tin khách hàng và booking
+       $customerInfo = [
+           'full_name' => $validated['ho_ten'],
+           'email' => $validated['email'],
+           'phone' => $validated['sdt'],
+           'nationality' => $validated['nationality'],
+           'payment_method' => $validated['payment_method'],
+           'booked_rooms' => $bookedRooms,
+           'total_amount' => $totalAmount,
+       ];
 
-        return redirect()->route('paymentPage');
-    }
-    public function showPaymentPage()
-{
-    $customerInfo = session()->get('customer_info', []);
-    
-    if (empty($customerInfo)) {
-        return redirect()->route('showBooking')->with('error', 'Vui lòng nhập thông tin khách hàng trước khi thanh toán.');
-    }
+       // Lưu vào session
+       session(['customerInfo' => $customerInfo]);
 
-    return view('Pages.payment', compact('customerInfo'));
-}
+       // Chuyển đến trang thanh toán
+       return redirect()->route('showPaymentPage');
+   }
 
+   // Hiển thị trang thanh toán
+   public function showPaymentPage()
+   {
+       $customerInfo = session('customerInfo');
 
+       if (!$customerInfo) {
+           return redirect()->route('showBooking')->with('error', 'Thông tin đặt phòng không tồn tại.');
+       }
+
+       return view('pages.thanhtoan', compact('customerInfo'));
+   }
+
+   // Xử lý sau khi nhấn "Đặt phòng" tại trang thanh toán
+   public function processPayment(Request $request)
+   {
+       $customerInfo = session('customerInfo');
+
+       if (!$customerInfo) {
+           return redirect()->route('showBooking')->with('error', 'Dữ liệu thanh toán bị thiếu.');
+       }
+
+       // Xử lý thanh toán tại đây (giả lập hoặc gọi API)
+
+       // Xoá session sau khi hoàn tất
+       session()->forget(['customerInfo', 'bookedRooms', 'totalAmount']);
+
+       return redirect()->route('showBooking')->with('success', 'Đặt phòng thành công!');
+   }
 
 }

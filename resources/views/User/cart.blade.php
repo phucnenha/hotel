@@ -39,83 +39,62 @@
 </script>
 @endif
 <h2 class="mt-4 mb-3" style="padding: 30px; margin-top: 20px; margin-bottom: 20px; text-align: center;">
-    GIỎ HÀNG CỦA BẠN
-</h2>
-<table class="table table-bordered">
-    <thead class="table-light">
-        <tr>
-            <th>Loại phòng</th>
-            <th>Ngày check-in</th>
-            <th>Ngày check-out</th>
-            <th>Số phòng</th> <!-- New column for number of rooms -->
-            <th>Giá phòng/đêm</th>
-            <th>Giảm giá</th>
-            <th>Giá sau khi giảm</th>
-            <th>Thành tiền</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (session('bookedRooms', []) as $index => $room)
-<tr>
-    <td>{{ $room['room_type'] }}</td>
-    <td>{{ $room['check_in'] }}</td>
-    <td>{{ $room['check_out'] }}</td>
+        GIỎ HÀNG CỦA BẠN
+    </h2>
 
+    <div class="container">
+    @foreach ($shoppingCart as $index => $room)
+    <div class="row mb-3 p-3 border rounded bg-light" style="min-height: 180px; display: flex; align-items: center;">
+        <div class="col-md-3 d-flex align-items-center justify-content-center">
 
-    <td>
-    <form action="{{ route('cart.update', $index) }}" method="POST">
-        @csrf
-        <input type="number" name="rooms" value="{{ old('rooms', $room['rooms'] ?? 1) }}"
-               min="1" max="5" class="form-control @error('rooms') is-invalid @enderror"
-               onchange="this.form.submit()" />
-        @if ($errors->has('rooms') && session('last_error_index') == $index)
-            <small class="text-danger">{{ $errors->first('rooms') }}</small>
-        @endif
-    </form>
-</td>
-    <td>{{ number_format($room['price_per_night']) }} VND</td>
-    <td>
-        @if($room['discount_percent'] > 0)
-            <span class="badge bg-success">{{ $room['discount_percent'] }}% OFF</span>
-        @else
-            <span class="badge bg-secondary">Không giảm giá</span>
-        @endif
-    </td>
-    <td>
-        @if($room['discount_percent'] > 0)
-            <span class="text-muted text-decoration-line-through">
-                {{ number_format($room['price_per_night']) }} VND
-            </span>
-            <br>
-            <span class="fw-bold">{{ number_format($room['discounted_price']) }} VND/đêm</span>
-        @else
-            {{ number_format($room['price_per_night']) }} VND
-        @endif
-    </td>
-    <td>
-        <span class="fw-bold text-primary">{{ number_format($room['room_total']) }} VND</span>
-    </td>
+            <img src="{{ asset('room_img/'.$room['file_anh']) }}" alt="Room Image" class="img-fluid rounded" style="object-fit: cover;">
+                </div>
+                <div class="col-md-4">
+                    <h5 class="fw-bold">Phòng: {{ $room['room_type'] }}</h5>
+                    <p class="mb-1">Ngày check-in: {{ $room['check_in'] }}</p>
+                    <p class="mb-1">Ngày check-out: {{ $room['check_out'] }}</p>
+                    <p class="mb-1">Giá phòng/đêm: {{ number_format($room['price_per_night']) }} VND</p>
 
+                    <p>
+                        @if($room['discount_percent'] > 0)
+                            <span class="badge bg-success">{{ $room['discount_percent'] }}% OFF</span>
+                            <span class="text-decoration-line-through">{{ number_format($room['price_per_night']) }} VND</span>
+                            <br>
+                            <span class="fw-bold">{{ number_format($room['discounted_price']) }} VND/đêm</span>
+                        @endif
+                    </p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <label class="fw-bold">Số lượng</label>
+                    <form action="{{ route('cart.update', $index) }}" method="POST" class="d-flex align-items-center justify-content-center">
+                        @csrf
+                        <input type="number" name="rooms" value="{{ old('rooms', $room['rooms'] ?? 1) }}" min="1" max="5" class="form-control w-25 text-center" style="max-width: 100px;" onchange="this.form.submit()">
+                    </form>
+                    <a href="{{ route('cart.remove', $index) }}" class="d-block text-decoration-underline text-dark mt-4" 
+                    style="color: #B88A44 !important;" onclick="return confirm('Bạn có chắc muốn xóa phòng này khỏi giỏ hàng?');">Xóa</a>
+                </div>
+                <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
+                    <p class="fw-bold text-primary fs-5 mb-0">{{ number_format($room['room_total']) }} VND</p>
+                </div>
+            </div>
+        @endforeach
+    </div>
 
-    <td>
-    <a href="{{ route('cart.remove', $index) }}"
-       class="btn btn-danger btn-sm"
-       onclick="return confirm('Bạn có chắc muốn xóa phòng này khỏi giỏ hàng?');">
-        Xóa
-    </a>
-    </td>
-</tr>
-@endforeach
-    </tbody>
-</table>
-<div class="mt-3">
-    <h4>Tổng tiền: <span class="fw-bold text-danger">{{ number_format(array_sum(array_column(session('bookedRooms', []), 'room_total'))) }} VND</span></h4>
-</div>
+    <div class="mt-3 container p-0">
+        <div class="row justify-content-end align-items-center mx-0">
+            <div class="col-auto text-end">
+                <p class="fw-bold text-dark fs-4 mb-0">
+                    Tổng tiền: {{ number_format(array_sum(array_column(session('bookedRooms', []), 'room_total'))) }} VND
+                </p>
+            </div>
+        </div>
+    </div>
 
+    <div class="container mt-3">
+        <div class="d-flex justify-content-between">
+            <a href="{{ route('home') }}" class="btn btn-outline-secondary">Quay lại</a>
+            <a href="{{ route('showBooking') }}" class="btn btn-primary">Chuyển sang trang đặt phòng</a>
+        </div>
+    </div>
 
-<div class="mt-3">
-<a href="{{ route('home') }}" class="btn btn-outline-secondary">Quay lại</a>
-    <a href="{{ route('showBooking') }}" class="btn btn-primary">Chuyển sang trang đặt phòng</a>
-</div>
 @endsection
