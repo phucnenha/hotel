@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 08, 2025 at 11:45 AM
--- Server version: 8.0.30
--- PHP Version: 8.2.28
+-- Máy chủ: 127.0.0.1:3306
+-- Thời gian đã tạo: Th4 08, 2025 lúc 04:10 PM
+-- Phiên bản máy phục vụ: 9.1.0
+-- Phiên bản PHP: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,22 +18,24 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `work_project_booking`
+-- Cơ sở dữ liệu: `rooms`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `capacity`
+-- Cấu trúc bảng cho bảng `capacity`
 --
 
-CREATE TABLE `capacity` (
+DROP TABLE IF EXISTS `capacity`;
+CREATE TABLE IF NOT EXISTS `capacity` (
   `room_id` int NOT NULL,
-  `max_capacity` int NOT NULL
+  `max_capacity` int NOT NULL,
+  PRIMARY KEY (`room_id`,`max_capacity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `capacity`
+-- Đang đổ dữ liệu cho bảng `capacity`
 --
 
 INSERT INTO `capacity` (`room_id`, `max_capacity`) VALUES
@@ -51,11 +53,12 @@ INSERT INTO `capacity` (`room_id`, `max_capacity`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cart`
+-- Cấu trúc bảng cho bảng `cart`
 --
 
-CREATE TABLE `cart` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `cart`;
+CREATE TABLE IF NOT EXISTS `cart` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `session_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `room_id` int NOT NULL,
   `check_in` date NOT NULL,
@@ -63,11 +66,13 @@ CREATE TABLE `cart` (
   `adults` int NOT NULL DEFAULT '1',
   `children` int NOT NULL DEFAULT '0',
   `quantity` int NOT NULL DEFAULT '1',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `room_id` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `cart`
+-- Đang đổ dữ liệu cho bảng `cart`
 --
 
 INSERT INTO `cart` (`id`, `session_id`, `room_id`, `check_in`, `check_out`, `adults`, `children`, `quantity`, `created_at`) VALUES
@@ -85,19 +90,21 @@ INSERT INTO `cart` (`id`, `session_id`, `room_id`, `check_in`, `check_out`, `adu
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer`
+-- Cấu trúc bảng cho bảng `customer`
 --
 
-CREATE TABLE `customer` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `customer`;
+CREATE TABLE IF NOT EXISTS `customer` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `full_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `nationality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `nationality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `customer`
+-- Đang đổ dữ liệu cho bảng `customer`
 --
 
 INSERT INTO `customer` (`id`, `full_name`, `email`, `phone`, `nationality`) VALUES
@@ -165,104 +172,113 @@ INSERT INTO `customer` (`id`, `full_name`, `email`, `phone`, `nationality`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `discount`
+-- Cấu trúc bảng cho bảng `discount`
 --
 
-CREATE TABLE `discount` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `discount`;
+CREATE TABLE IF NOT EXISTS `discount` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `room_id` int NOT NULL,
   `discount_percent` decimal(5,2) NOT NULL,
   `start_date` date NOT NULL,
-  `end_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `end_date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `room_id` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `discount`
+-- Đang đổ dữ liệu cho bảng `discount`
 --
 
 INSERT INTO `discount` (`id`, `room_id`, `discount_percent`, `start_date`, `end_date`) VALUES
-(1, 1, '10.00', '2025-04-01', '2025-05-01'),
-(2, 2, '15.50', '2025-04-10', '2025-04-20'),
-(3, 3, '20.00', '2025-05-01', '2025-05-10'),
-(4, 4, '10.00', '2025-04-10', '2025-04-20'),
-(5, 5, '15.00', '2025-05-05', '2025-05-15'),
-(6, 6, '20.00', '2025-06-01', '2025-06-10'),
-(7, 7, '12.00', '2025-07-07', '2025-07-17'),
-(8, 8, '18.00', '2025-04-25', '2025-05-05'),
-(9, 9, '25.00', '2025-06-15', '2025-06-25'),
-(26, 1, '10.00', '2025-04-01', '2025-05-01'),
-(27, 2, '15.50', '2025-04-10', '2025-04-20'),
-(28, 3, '20.00', '2025-05-01', '2025-05-10');
+(1, 1, 10.00, '2025-04-01', '2025-05-01'),
+(2, 2, 15.50, '2025-04-10', '2025-04-20'),
+(3, 3, 20.00, '2025-05-01', '2025-05-10'),
+(4, 4, 10.00, '2025-04-10', '2025-04-20'),
+(5, 5, 15.00, '2025-05-05', '2025-05-15'),
+(6, 6, 20.00, '2025-06-01', '2025-06-10'),
+(7, 7, 12.00, '2025-07-07', '2025-07-17'),
+(8, 8, 18.00, '2025-04-25', '2025-05-05'),
+(9, 9, 25.00, '2025-06-15', '2025-06-25'),
+(26, 1, 10.00, '2025-04-01', '2025-05-01'),
+(27, 2, 15.50, '2025-04-10', '2025-04-20'),
+(28, 3, 20.00, '2025-05-01', '2025-05-10');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payment`
+-- Cấu trúc bảng cho bảng `payment`
 --
 
-CREATE TABLE `payment` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `payment`;
+CREATE TABLE IF NOT EXISTS `payment` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `booking_id` int NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `tax` decimal(10,2) NOT NULL,
   `total_amount` decimal(10,2) NOT NULL,
   `payment_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `payment_method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Bank Transfer'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `payment_method` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Bank Transfer',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `booking_id` (`booking_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `payment`
+-- Đang đổ dữ liệu cho bảng `payment`
 --
 
 INSERT INTO `payment` (`id`, `booking_id`, `amount`, `tax`, `total_amount`, `payment_date`, `payment_method`) VALUES
-(1, 4, '600000.00', '0.00', '600000.00', '2025-01-12 06:08:45', 'Bank Transfer'),
-(2, 5, '600000.00', '0.00', '600000.00', '2025-01-12 06:08:49', 'Bank Transfer'),
-(3, 6, '600000.00', '0.00', '600000.00', '2025-01-12 06:33:08', 'Bank Transfer'),
-(5, 8, '600000.00', '0.00', '600000.00', '2025-01-12 06:41:42', 'Bank Transfer'),
-(9, 12, '1000000.00', '0.00', '1000000.00', '2025-01-13 06:20:45', 'Bank Transfer'),
-(10, 13, '500000.00', '0.00', '500000.00', '2025-01-13 06:53:02', 'Bank Transfer'),
-(11, 14, '800000.00', '0.00', '800000.00', '2025-01-15 01:56:52', 'Bank Transfer'),
-(12, 15, '800000.00', '0.00', '800000.00', '2025-01-15 01:58:56', 'Bank Transfer'),
-(13, 16, '600000.00', '0.00', '600000.00', '2025-01-15 01:59:29', 'Bank Transfer'),
-(14, 17, '1500000.00', '0.00', '1500000.00', '2025-01-15 07:16:17', 'Bank Transfer'),
-(15, 18, '300000.00', '0.00', '300000.00', '2025-01-21 07:15:13', 'Bank Transfer'),
-(16, 19, '3500000.00', '0.00', '3500000.00', '2025-03-02 14:38:39', 'Bank Transfer'),
-(18, 23, '500000.00', '0.00', '500000.00', '2025-04-05 00:48:45', 'CASH'),
-(19, 24, '500000.00', '0.00', '500000.00', '2025-04-05 00:50:04', 'VNPAY'),
-(20, 25, '500000.00', '0.00', '500000.00', '2025-04-05 00:51:58', 'VNPAY'),
-(21, 26, '1000000.00', '0.00', '1000000.00', '2025-04-05 00:52:21', 'VNPAY'),
-(22, 27, '450000.00', '0.00', '450000.00', '2025-04-05 19:02:59', 'VNPAY'),
-(23, 28, '800000.00', '0.00', '800000.00', '2025-04-05 19:02:59', 'VNPAY'),
-(25, 30, '800000.00', '0.00', '800000.00', '2025-04-05 19:04:25', 'VNPAY'),
-(26, 31, '800000.00', '0.00', '800000.00', '2025-04-05 19:04:25', 'VNPAY'),
-(28, 33, '800000.00', '0.00', '800000.00', '2025-04-07 12:57:11', 'CASH'),
-(29, 34, '800000.00', '0.00', '800000.00', '2025-04-07 12:57:11', 'CASH'),
-(30, 35, '800000.00', '0.00', '800000.00', '2025-04-07 12:57:48', 'CASH'),
-(31, 36, '800000.00', '0.00', '800000.00', '2025-04-07 12:58:21', 'CASH'),
-(32, 37, '800000.00', '0.00', '800000.00', '2025-04-07 12:58:21', 'CASH'),
-(33, 38, '450000.00', '0.00', '450000.00', '2025-04-07 14:35:53', 'CASH'),
-(34, 39, '450000.00', '0.00', '450000.00', '2025-04-07 14:36:18', 'CASH'),
-(35, 40, '450000.00', '0.00', '450000.00', '2025-04-07 14:36:19', 'CASH'),
-(36, 41, '600000.00', '0.00', '600000.00', '2025-04-07 14:48:56', 'CASH'),
-(37, 42, '600000.00', '0.00', '600000.00', '2025-04-07 14:49:12', 'CASH');
+(1, 4, 600000.00, 0.00, 600000.00, '2025-01-12 06:08:45', 'Bank Transfer'),
+(2, 5, 600000.00, 0.00, 600000.00, '2025-01-12 06:08:49', 'Bank Transfer'),
+(3, 6, 600000.00, 0.00, 600000.00, '2025-01-12 06:33:08', 'Bank Transfer'),
+(5, 8, 600000.00, 0.00, 600000.00, '2025-01-12 06:41:42', 'Bank Transfer'),
+(9, 12, 1000000.00, 0.00, 1000000.00, '2025-01-13 06:20:45', 'Bank Transfer'),
+(10, 13, 500000.00, 0.00, 500000.00, '2025-01-13 06:53:02', 'Bank Transfer'),
+(11, 14, 800000.00, 0.00, 800000.00, '2025-01-15 01:56:52', 'Bank Transfer'),
+(12, 15, 800000.00, 0.00, 800000.00, '2025-01-15 01:58:56', 'Bank Transfer'),
+(13, 16, 600000.00, 0.00, 600000.00, '2025-01-15 01:59:29', 'Bank Transfer'),
+(14, 17, 1500000.00, 0.00, 1500000.00, '2025-01-15 07:16:17', 'Bank Transfer'),
+(15, 18, 300000.00, 0.00, 300000.00, '2025-01-21 07:15:13', 'Bank Transfer'),
+(16, 19, 3500000.00, 0.00, 3500000.00, '2025-03-02 14:38:39', 'Bank Transfer'),
+(18, 23, 500000.00, 0.00, 500000.00, '2025-04-05 00:48:45', 'CASH'),
+(19, 24, 500000.00, 0.00, 500000.00, '2025-04-05 00:50:04', 'VNPAY'),
+(20, 25, 500000.00, 0.00, 500000.00, '2025-04-05 00:51:58', 'VNPAY'),
+(21, 26, 1000000.00, 0.00, 1000000.00, '2025-04-05 00:52:21', 'VNPAY'),
+(22, 27, 450000.00, 0.00, 450000.00, '2025-04-05 19:02:59', 'VNPAY'),
+(23, 28, 800000.00, 0.00, 800000.00, '2025-04-05 19:02:59', 'VNPAY'),
+(25, 30, 800000.00, 0.00, 800000.00, '2025-04-05 19:04:25', 'VNPAY'),
+(26, 31, 800000.00, 0.00, 800000.00, '2025-04-05 19:04:25', 'VNPAY'),
+(28, 33, 800000.00, 0.00, 800000.00, '2025-04-07 12:57:11', 'CASH'),
+(29, 34, 800000.00, 0.00, 800000.00, '2025-04-07 12:57:11', 'CASH'),
+(30, 35, 800000.00, 0.00, 800000.00, '2025-04-07 12:57:48', 'CASH'),
+(31, 36, 800000.00, 0.00, 800000.00, '2025-04-07 12:58:21', 'CASH'),
+(32, 37, 800000.00, 0.00, 800000.00, '2025-04-07 12:58:21', 'CASH'),
+(33, 38, 450000.00, 0.00, 450000.00, '2025-04-07 14:35:53', 'CASH'),
+(34, 39, 450000.00, 0.00, 450000.00, '2025-04-07 14:36:18', 'CASH'),
+(35, 40, 450000.00, 0.00, 450000.00, '2025-04-07 14:36:19', 'CASH'),
+(36, 41, 600000.00, 0.00, 600000.00, '2025-04-07 14:48:56', 'CASH'),
+(37, 42, 600000.00, 0.00, 600000.00, '2025-04-07 14:49:12', 'CASH');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room_booking`
+-- Cấu trúc bảng cho bảng `room_booking`
 --
 
-CREATE TABLE `room_booking` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `room_booking`;
+CREATE TABLE IF NOT EXISTS `room_booking` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `check_in` date NOT NULL,
   `check_out` date NOT NULL,
   `booking_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `customer_id` int DEFAULT NULL,
-  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'đang xử lý'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'đang xử lý',
+  PRIMARY KEY (`id`),
+  KEY `fk_booking_customer` (`customer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `room_booking`
+-- Đang đổ dữ liệu cho bảng `room_booking`
 --
 
 INSERT INTO `room_booking` (`id`, `check_in`, `check_out`, `booking_date`, `customer_id`, `status`) VALUES
@@ -304,17 +320,21 @@ INSERT INTO `room_booking` (`id`, `check_in`, `check_out`, `booking_date`, `cust
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room_booking_detail`
+-- Cấu trúc bảng cho bảng `room_booking_detail`
 --
 
-CREATE TABLE `room_booking_detail` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `room_booking_detail`;
+CREATE TABLE IF NOT EXISTS `room_booking_detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `booking_id` int NOT NULL,
-  `room_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `room_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `booking_id` (`booking_id`),
+  KEY `room_id` (`room_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `room_booking_detail`
+-- Đang đổ dữ liệu cho bảng `room_booking_detail`
 --
 
 INSERT INTO `room_booking_detail` (`id`, `booking_id`, `room_id`) VALUES
@@ -353,11 +373,12 @@ INSERT INTO `room_booking_detail` (`id`, `booking_id`, `room_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room_detail`
+-- Cấu trúc bảng cho bảng `room_detail`
 --
 
-CREATE TABLE `room_detail` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `room_detail`;
+CREATE TABLE IF NOT EXISTS `room_detail` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `room_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `bed_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `area` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -365,67 +386,76 @@ CREATE TABLE `room_detail` (
   `price_per_night` decimal(10,0) NOT NULL,
   `remaining_rooms` int DEFAULT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-  `file_anh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `file_anh` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `room_detail`
+-- Đang đổ dữ liệu cho bảng `room_detail`
 --
 
 INSERT INTO `room_detail` (`id`, `room_type`, `bed_type`, `area`, `view`, `price_per_night`, `remaining_rooms`, `description`, `file_anh`) VALUES
-(1, 'Standard', 'vip', '25', 'Garden View', '500000', -1, 'Phòng Standard với thiết kế tối giản nhưng tinh tế, phù hợp với khách du lịch hoặc công tác. Phòng rộng 25m², có giường VIP thoải mái, tầm nhìn ra khu vườn xanh mát giúp tạo cảm giác thư giãn. Trang bị đầy đủ tiện nghi: TV màn hình phẳng, điều hòa, minibar, bàn làm việc và WiFi tốc độ cao.', 'rooms/bmTwOFkNRamMtE2tuhaWZ7gb49WgnX9Q7HtYtAXY.png'),
-(2, 'Deluxe', 'King', '35', 'Sea View', '800000', 0, 'Phòng Deluxe rộng rãi với diện tích 35m², giường King cỡ lớn mang lại giấc ngủ thoải mái. Tầm nhìn hướng biển tuyệt đẹp, lý tưởng cho các cặp đôi hoặc kỳ nghỉ thư giãn. Phòng được trang bị phòng tắm riêng với bồn tắm sang trọng, TV 50 inch, minibar, máy pha cà phê và khu vực tiếp khách.', 'deluxe.jpg'),
-(3, 'Superior', 'Twin', '30', 'Mountain View', '600000', 6, 'Phòng Superior rộng 30m², thiết kế hiện đại với hai giường đơn, phù hợp cho nhóm bạn hoặc gia đình nhỏ. Hướng nhìn ra núi tạo không gian yên bình, thư giãn. Phòng có đầy đủ tiện ích: điều hòa, TV truyền hình cáp, minibar, két an toàn, bàn làm việc và phòng tắm riêng với vòi sen cao cấp.', 'superior.jpg'),
-(4, 'Suite', 'King', '42', 'Ocean View', '1100000', 5, 'Phòng Suite cao cấp, rộng rãi với tầm nhìn hướng biển.', 'suite.jpg'),
-(5, 'Grand Deluxe', 'Queen', '38', 'City View', '950000', 4, 'Phòng Grand Deluxe sang trọng, đầy đủ tiện nghi.', 'grand_deluxe.jpg'),
-(6, 'Family', 'Double', '40', 'Pool View', '900000', 4, 'Phòng Family rộng rãi, phù hợp cho gia đình.', 'family.jpg'),
-(7, 'Presidential Suite', 'King', '50', 'Ocean View', '1500000', 2, 'Phòng Tổng thống sang trọng, view biển.', 'presidential.jpg'),
-(8, 'Executive', 'Queen', '32', 'City View', '700000', 6, 'Phòng Executive hiện đại, tiện nghi cao cấp.', 'executive.jpg'),
-(9, 'Classic', 'Twin', '28', 'Garden View', '550000', 6, 'Phòng Classic có thiết kế ấm cúng, gần gũi.', 'classic.jpg'),
-(20, 'VIP', 'VIP', '35', 'Mountain', '600000', 6, 'dfgdfg', 'rooms/qn1DH3k7FlAfAJCfr3xANlyHYnlmMtq1D5Fum6MJ.png');
+(1, 'Standard', 'vip', '25', 'Garden View', 500000, -1, 'Phòng Standard với thiết kế tối giản nhưng tinh tế, phù hợp với khách du lịch hoặc công tác. Phòng rộng 25m², có giường VIP thoải mái, tầm nhìn ra khu vườn xanh mát giúp tạo cảm giác thư giãn. Trang bị đầy đủ tiện nghi: TV màn hình phẳng, điều hòa, minibar, bàn làm việc và WiFi tốc độ cao.', 'rooms/bmTwOFkNRamMtE2tuhaWZ7gb49WgnX9Q7HtYtAXY.png'),
+(2, 'Deluxe', 'King', '35', 'Sea View', 800000, 0, 'Phòng Deluxe rộng rãi với diện tích 35m², giường King cỡ lớn mang lại giấc ngủ thoải mái. Tầm nhìn hướng biển tuyệt đẹp, lý tưởng cho các cặp đôi hoặc kỳ nghỉ thư giãn. Phòng được trang bị phòng tắm riêng với bồn tắm sang trọng, TV 50 inch, minibar, máy pha cà phê và khu vực tiếp khách.', 'deluxe.jpg'),
+(3, 'Superior', 'Twin', '30', 'Mountain View', 600000, 6, 'Phòng Superior rộng 30m², thiết kế hiện đại với hai giường đơn, phù hợp cho nhóm bạn hoặc gia đình nhỏ. Hướng nhìn ra núi tạo không gian yên bình, thư giãn. Phòng có đầy đủ tiện ích: điều hòa, TV truyền hình cáp, minibar, két an toàn, bàn làm việc và phòng tắm riêng với vòi sen cao cấp.', 'superior.jpg'),
+(4, 'Suite', 'King', '42', 'Ocean View', 1100000, 5, 'Phòng Suite cao cấp, rộng rãi với tầm nhìn hướng biển.', 'suite.jpg'),
+(5, 'Grand Deluxe', 'Queen', '38', 'City View', 950000, 4, 'Phòng Grand Deluxe sang trọng, đầy đủ tiện nghi.', 'grand_deluxe.jpg'),
+(6, 'Family', 'Double', '40', 'Pool View', 900000, 4, 'Phòng Family rộng rãi, phù hợp cho gia đình.', 'family.jpg'),
+(7, 'Presidential Suite', 'King', '50', 'Ocean View', 1500000, 2, 'Phòng Tổng thống sang trọng, view biển.', 'presidential.jpg'),
+(8, 'Executive', 'Queen', '32', 'City View', 700000, 6, 'Phòng Executive hiện đại, tiện nghi cao cấp.', 'executive.jpg'),
+(9, 'Classic', 'Twin', '28', 'Garden View', 550000, 6, 'Phòng Classic có thiết kế ấm cúng, gần gũi.', 'classic.jpg'),
+(20, 'VIP', 'VIP', '35', 'Mountain', 600000, 6, 'dfgdfg', 'rooms/qn1DH3k7FlAfAJCfr3xANlyHYnlmMtq1D5Fum6MJ.png');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `room_discount`
+-- Cấu trúc bảng cho bảng `room_discount`
 --
 
-CREATE TABLE `room_discount` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `room_discount`;
+CREATE TABLE IF NOT EXISTS `room_discount` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `room_id` int NOT NULL,
-  `discount_id` int NOT NULL
+  `discount_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `room_id` (`room_id`),
+  KEY `discount_id` (`discount_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `searching`
+-- Cấu trúc bảng cho bảng `searching`
 --
 
-CREATE TABLE `searching` (
-  `id` int NOT NULL,
+DROP TABLE IF EXISTS `searching`;
+CREATE TABLE IF NOT EXISTS `searching` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `check_in` date NOT NULL,
   `check_out` date NOT NULL,
   `adults` int NOT NULL,
-  `children` int NOT NULL
+  `children` int NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `slideshow`
+-- Cấu trúc bảng cho bảng `slideshow`
 --
 
-CREATE TABLE `slideshow` (
-  `S_ID` int NOT NULL,
+DROP TABLE IF EXISTS `slideshow`;
+CREATE TABLE IF NOT EXISTS `slideshow` (
+  `S_ID` int NOT NULL AUTO_INCREMENT,
   `S_img` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `S_file` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `caption1` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `caption2` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `caption2` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`S_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `slideshow`
+-- Đang đổ dữ liệu cho bảng `slideshow`
 --
 
 INSERT INTO `slideshow` (`S_ID`, `S_img`, `S_file`, `caption1`, `caption2`) VALUES
@@ -438,224 +468,70 @@ INSERT INTO `slideshow` (`S_ID`, `S_img`, `S_file`, `caption1`, `caption2`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `taikhoan`
+-- Cấu trúc bảng cho bảng `taikhoan`
 --
 
-CREATE TABLE `taikhoan` (
-  `id_taikhoan` int NOT NULL,
+DROP TABLE IF EXISTS `taikhoan`;
+CREATE TABLE IF NOT EXISTS `taikhoan` (
+  `id_taikhoan` int NOT NULL AUTO_INCREMENT,
   `ten` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
   `password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
-  `is_admin` tinyint(1) DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_vietnamese_ci;
+  `is_admin` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id_taikhoan`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_vietnamese_ci;
 
 --
--- Dumping data for table `taikhoan`
+-- Đang đổ dữ liệu cho bảng `taikhoan`
 --
 
 INSERT INTO `taikhoan` (`id_taikhoan`, `ten`, `email`, `password`, `is_admin`) VALUES
 (1, 'Admin1', 'phuc08@gmail.com', '6c722b61037af619c6441b0d73f5d2d8', 1),
-(4, 'Admin', 'admin@gmail.com', '$2y$10$TRI/nQOtj6rj/itqywxw7eY0jh88u.uypidjoKNASHXv0eJYKc7.C', 1),
-(6, 'Chu Hoài Nam 1', 'chunam2606@gmail.com', '$2y$10$wJ1GMXwQHuLDK1OIwFBBheOU9cLoqSTdlti2KbxfjDWcDaNbyGSCO', 0),
-(7, 'Chu Hoài Nam 2', 'hoainamchu@gmail.com', '$2y$10$n0tqfYXv2PeNbtS1EWdQUuWdJZeLyXooAhvimYiyq7mLmJ2AEdo0e', 0);
+(4, 'Admin', 'admin@gmail.com', '$2y$10$TRI/nQOtj6rj/itqywxw7eY0jh88u.uypidjoKNASHXv0eJYKc7.C', 1);
 
 --
--- Indexes for dumped tables
---
-
---
--- Indexes for table `capacity`
---
-ALTER TABLE `capacity`
-  ADD PRIMARY KEY (`room_id`,`max_capacity`);
-
---
--- Indexes for table `cart`
---
-ALTER TABLE `cart`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `room_id` (`room_id`);
-
---
--- Indexes for table `customer`
---
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `discount`
---
-ALTER TABLE `discount`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `room_id` (`room_id`);
-
---
--- Indexes for table `payment`
---
-ALTER TABLE `payment`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `booking_id` (`booking_id`);
-
---
--- Indexes for table `room_booking`
---
-ALTER TABLE `room_booking`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_booking_customer` (`customer_id`);
-
---
--- Indexes for table `room_booking_detail`
---
-ALTER TABLE `room_booking_detail`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `booking_id` (`booking_id`),
-  ADD KEY `room_id` (`room_id`);
-
---
--- Indexes for table `room_detail`
---
-ALTER TABLE `room_detail`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `room_discount`
---
-ALTER TABLE `room_discount`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `room_id` (`room_id`),
-  ADD KEY `discount_id` (`discount_id`);
-
---
--- Indexes for table `searching`
---
-ALTER TABLE `searching`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `slideshow`
---
-ALTER TABLE `slideshow`
-  ADD PRIMARY KEY (`S_ID`);
-
---
--- Indexes for table `taikhoan`
---
-ALTER TABLE `taikhoan`
-  ADD PRIMARY KEY (`id_taikhoan`);
-
---
--- AUTO_INCREMENT for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `cart`
---
-ALTER TABLE `cart`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
-
---
--- AUTO_INCREMENT for table `customer`
---
-ALTER TABLE `customer`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
-
---
--- AUTO_INCREMENT for table `discount`
---
-ALTER TABLE `discount`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-
---
--- AUTO_INCREMENT for table `payment`
---
-ALTER TABLE `payment`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
-
---
--- AUTO_INCREMENT for table `room_booking`
---
-ALTER TABLE `room_booking`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
-
---
--- AUTO_INCREMENT for table `room_booking_detail`
---
-ALTER TABLE `room_booking_detail`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
-
---
--- AUTO_INCREMENT for table `room_detail`
---
-ALTER TABLE `room_detail`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT for table `room_discount`
---
-ALTER TABLE `room_discount`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `searching`
---
-ALTER TABLE `searching`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `slideshow`
---
-ALTER TABLE `slideshow`
-  MODIFY `S_ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
--- AUTO_INCREMENT for table `taikhoan`
---
-ALTER TABLE `taikhoan`
-  MODIFY `id_taikhoan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `capacity`
+-- Các ràng buộc cho bảng `capacity`
 --
 ALTER TABLE `capacity`
   ADD CONSTRAINT `fk_capacity_room` FOREIGN KEY (`room_id`) REFERENCES `room_detail` (`id`);
 
 --
--- Constraints for table `cart`
+-- Các ràng buộc cho bảng `cart`
 --
 ALTER TABLE `cart`
   ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_detail` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `discount`
+-- Các ràng buộc cho bảng `discount`
 --
 ALTER TABLE `discount`
   ADD CONSTRAINT `discount_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_detail` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `payment`
+-- Các ràng buộc cho bảng `payment`
 --
 ALTER TABLE `payment`
   ADD CONSTRAINT `fk_payment_booking` FOREIGN KEY (`booking_id`) REFERENCES `room_booking` (`id`);
 
 --
--- Constraints for table `room_booking`
+-- Các ràng buộc cho bảng `room_booking`
 --
 ALTER TABLE `room_booking`
   ADD CONSTRAINT `fk_booking_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT;
 
 --
--- Constraints for table `room_booking_detail`
+-- Các ràng buộc cho bảng `room_booking_detail`
 --
 ALTER TABLE `room_booking_detail`
   ADD CONSTRAINT `room_booking_detail_ibfk_1` FOREIGN KEY (`booking_id`) REFERENCES `room_booking` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `room_booking_detail_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `room_detail` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `room_discount`
+-- Các ràng buộc cho bảng `room_discount`
 --
 ALTER TABLE `room_discount`
   ADD CONSTRAINT `room_discount_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `room_detail` (`id`) ON DELETE CASCADE,
