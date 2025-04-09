@@ -84,7 +84,7 @@ class BookingController extends Controller
     $booking = session('finalBooking');
     $bookedRooms = $booking['rooms']; // nếu lưu nhiều phòng
 
-    return view('confirm', compact('booking', 'bookedRooms'));////sửa lại cái view này thành pages.thanhtoan 
+    return view('pages.thanhtoan', compact('booking', 'bookedRooms'));////sửa lại cái view này thành pages.thanhtoan 
 }
 
 
