@@ -42,9 +42,4 @@ class Room extends Model
     {
         return $this->hasMany(RoomDiscount::class, 'room_id');
     }
-
-    public function bookings()
-    {
-        return $this->belongsToMany(Booking::class,'room_booking_detail', 'room_id', 'booking_id');
-    }
 }
