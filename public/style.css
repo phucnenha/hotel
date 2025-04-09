@@ -44,7 +44,7 @@ button {
 }
 
 .primary-btn {
-  padding: 5px 10px;
+  padding: 10px 10px;
   background: #B88A44;
   font-weight: bold;
   color: white;
@@ -976,7 +976,7 @@ button {
 .book-now {
   background-color: #B88A44;
   color: white;
-  width: 200px;
+  width: 150px;
 }
 
 
@@ -1014,12 +1014,13 @@ button:hover {
 
 /* Room List */
 .room-list {
-  padding: 20px 0;
+  padding: 40px 0;
   background-color: #f8f8f8;
 }
 
 .room-grid {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   justify-content: center;
 }
@@ -1038,19 +1039,15 @@ button:hover {
 }
 
 .room-actions {
-  margin-top: 20px;
   display: flex;
-  gap: 30px;
+  justify-content: space-between;
+  margin-top: 15px;
+  gap: 10px;
 }
 
 .room-details {
-  padding: 10px 0 0 30px;
+  padding: 30px;
   background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-.room-details p {
-  margin-bottom: 10px; /* Khoảng cách giữa các dòng */
 }
 .cart-container{
     display: flex;
@@ -1071,9 +1068,3 @@ button:hover {
   transform: translateX(-50%);
   font-weight: bold;  
 }
-/* --------------------Cộng trừ--------------- */
-.quantity-input {
-  width: 30px; 
-  height: 30px;
-}
-
