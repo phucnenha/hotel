@@ -205,7 +205,7 @@
                 
                 <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
                 <div class="room-actions">
-                    <form method="GET" action="{{ route('thongtin') }}">
+                    <form method="post" action="{{ route('thongtin') }}">
                     @csrf
                         <input type="hidden" name="room_id" value="{{ $room->id }}">
                         <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">

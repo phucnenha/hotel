@@ -136,7 +136,7 @@
                         </p>
 
                         <div class="room-actions" >
-                            <form method="GET" action="{{ route('thongtin') }}" >
+                            <form method="POST" action="{{ route('thongtin') }}" >
                                 @csrf
                                     <input type="hidden" name="room_id" value="{{ $room->id }}">
                                     <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">

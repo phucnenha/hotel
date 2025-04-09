@@ -31,7 +31,7 @@ Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add')
 use App\Http\Controllers\SearchController;
 Route::get('/search-room', [SearchController::class, 'showForm'])->name('searchroom.form'); 
 Route::post('/search-room', [SearchController::class, 'searchRoom'])->name('searchroom.search'); 
-Route::get('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
+Route::post('/booking-information', [SearchController::class, 'hienThiThongTin'])->name('thongtin');
 
 // ----------------Giỏ hàng-----------------------
 Route::get('/cart', [CartController::class, 'index'])->name('cart');
@@ -49,15 +49,15 @@ Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 use App\Http\Controllers\BookingController;
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
-Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
+// Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
 
 //---------Thanh toán-----------//
 
 
-Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
-Route::get('/thanh-toan', [BookingController::class, 'showPaymentPage'])->name('showPaymentPage');
-Route::post('/thanh-toan', [BookingController::class, 'processPayment'])->name('payment');
+//Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+Route::post('/booking/submit', [BookingController::class, 'saveBookingWithCustomerInfo'])->name('saveBookingWithCustomerInfo');
+Route::get('/booking/confirm', [BookingController::class, 'showConfirmPage'])->name('confirmBooking');
 // Admin
 
 Route::prefix('admins')

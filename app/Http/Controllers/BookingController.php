@@ -27,42 +27,64 @@ class BookingController extends Controller
 
         return view('Pages.thongtin', compact('bookedRooms', 'totalAmount'));
     }
-    public function saveCustomerInfo(Request $request)
+
+    public function saveBookingWithCustomerInfo(Request $request)
     {
-        $validatedData = $request->validate([
-            'ho_ten' => 'required|string|max:255',
+        $validated = $request->validate([
+            'ho_ten' => 'required|max:255',
             'email' => 'required|email|max:255',
             'sdt' => 'nullable|regex:/^[0-9]{10,15}$/',
-            'nationality' => 'required|string|max:100',
-            'payment_method' => 'required|string',
+            'nationality' => 'required|max:100',
+            'payment_method' => 'required|in:CASH,VNPAY',
+            'rooms' => 'required|array',
+            'rooms.*.room_type' => 'required|string',
+            'rooms.*.check_in' => 'required|date',
+            'rooms.*.check_out' => 'required|date|after:rooms.*.check_in',
+            'rooms.*.rooms' => 'required|integer|min:1',
+            'rooms.*.price_per_night' => 'required|numeric|min:0',
+            'rooms.*.discount_percent' => 'required|numeric|min:0|max:100',
         ]);
-
-        // Lấy thông tin phòng đã đặt từ session
-        $bookedRooms = session()->get('bookedRooms', []);
-        $totalAmount = array_sum(array_column($bookedRooms, 'room_total'));
-
-        // Lưu thông tin khách hàng vào session
-        session()->put('customer_info', [
-            'full_name' => $validatedData['ho_ten'],
-            'email' => $validatedData['email'],
-            'phone' => $validatedData['sdt'] ?? '',
-            'nationality' => $validatedData['nationality'],
-            'payment_method' => $validatedData['payment_method'],
-            'booked_rooms' => $bookedRooms,
-            'total_amount' => $totalAmount,
-        ]);
-
-        return redirect()->route('paymentPage');
-    }
-    public function showPaymentPage()
-{
-    $customerInfo = session()->get('customer_info', []);
     
-    if (empty($customerInfo)) {
-        return redirect()->route('showBooking')->with('error', 'Vui lòng nhập thông tin khách hàng trước khi thanh toán.');
+        $bookedRooms = [];
+        $totalAmount = 0;
+    
+        foreach ($validated['rooms'] as $room) {
+            $stayDays = \Carbon\Carbon::parse($room['check_out'])->diffInDays(\Carbon\Carbon::parse($room['check_in']));
+            $discountedPrice = $room['price_per_night'] * (1 - ($room['discount_percent'] / 100));
+            $roomTotal = $discountedPrice * $stayDays * $room['rooms'];
+    
+            $room['stay_days'] = $stayDays;
+            $room['discounted_price'] = $discountedPrice;
+            $room['room_total'] = $roomTotal;
+    
+            $bookedRooms[] = $room;
+            $totalAmount += $roomTotal;
+        }
+    
+        session([
+            'finalBooking' => [
+                'rooms' => $bookedRooms,
+                'customer' => [
+                    'ho_ten' => $validated['ho_ten'],
+                    'email' => $validated['email'],
+                    'sdt' => $validated['sdt'] ?? '',
+                    'nationality' => $validated['nationality'],
+                    'payment_method' => $validated['payment_method'],
+                ],
+                'total_amount' => $totalAmount,
+            ]
+        ]);
+    
+        return redirect()->route('confirmBooking')->with('success', 'Thông tin đặt phòng đã được lưu!');
     }
+    
 
-    return view('Pages.thanhtoan', compact('customerInfo'));
+    public function showConfirmPage()
+{
+    $booking = session('finalBooking');
+    $bookedRooms = $booking['rooms']; // nếu lưu nhiều phòng
+
+    return view('confirm', compact('booking', 'bookedRooms'));////sửa lại cái view này thành pages.thanhtoan 
 }
 
 
