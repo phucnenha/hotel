@@ -15,6 +15,8 @@ class Booking extends Model
         'check_in', 'check_out', 'booking_date', 'customer_id', 'status'
     ];
 
+    public $timestamps = false;
+
     // Liên kết với khách hàng
     public function customer()
     {
@@ -22,10 +24,6 @@ class Booking extends Model
     }
 
     // Liên kết với chi tiết đặt phòng
-    public function bookingDetails()
-    {
-        return $this->hasMany(RoomBookingDetail::class, 'booking_id');
-    }
 
     // Liên kết với thanh toán
     public function payment()
@@ -36,6 +34,7 @@ class Booking extends Model
     // Lấy danh sách các phòng trong đặt phòng
     public function rooms()
     {
-        return $this->hasManyThrough(Room::class, RoomBookingDetail::class, 'booking_id', 'id', 'id', 'room_id');
+        return $this->belongsToMany(Room::class, 'room_booking_detail', 'booking_id', 'room_id');
     }
+
 }
