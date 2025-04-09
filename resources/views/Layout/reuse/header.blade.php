@@ -187,8 +187,19 @@ header .navlinks span {
 
           </li>
           <li>
-            <a  href="#"><button class="btn">Login</button></a>
-          </li>
+                     @if(session('user'))
+                         <a href="#">
+                             {{session('user')->ten}}
+                         </a>
+                         <a href="{{route('logout')}}">
+                             <button class="btn">Logout</button>
+                         </a>
+                     @else
+                         <a href="{{route('login')}}">
+                             <button class="btn">Login</button>
+                         </a>
+                     @endif
+                 </li>
         </ul>
       </div>
     </div>

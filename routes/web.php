@@ -1,10 +1,5 @@
 <?php
 
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\RoomController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,4 +73,6 @@ Route::prefix('admins')
         Route::resource('customers', \App\Http\Controllers\Admin\CustomerManagementController::class);
         Route::resource('rooms', \App\Http\Controllers\Admin\RoomManagementController::class);
         Route::resource('bookings', \App\Http\Controllers\Admin\BookingManagementController::class);
+        Route::post('bookings/{id}/update-rooms', [BookingManagementController::class, 'updateRooms'])->name('bookings.updateRooms');
+
     });

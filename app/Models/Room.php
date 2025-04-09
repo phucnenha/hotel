@@ -50,5 +50,3 @@ class Room extends Model
     }
 }
 
-}
-
