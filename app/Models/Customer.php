@@ -19,10 +19,10 @@ class Customer extends Model
     ];
 
     public $timestamps = false;
-
-
     public function bookings(){
         return $this->hasMany(Booking::class);
     }
 
 }
+}
+
