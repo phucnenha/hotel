@@ -24,7 +24,6 @@ class BookingController extends Controller
     {
         $bookedRooms = session()->get('bookedRooms', []);
         $totalAmount = array_sum(array_column($bookedRooms, 'room_total'));
-
         return view('Pages.thongtin', compact('bookedRooms', 'totalAmount'));
     }
 

@@ -41,10 +41,6 @@ Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('ca
 Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
-
-
-
-
 //-----------ĐIỀN THÔNG TIN-----------------//
 use App\Http\Controllers\BookingController;
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
