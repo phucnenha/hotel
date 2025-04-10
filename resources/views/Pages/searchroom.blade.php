@@ -211,7 +211,7 @@
                                     <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                     <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
                                     <input type="hidden" name="rooms" class="roomsField" value="1">
-                                    <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Đặt ngay</button>
+                                    <button type="submit" class="book-now" style="margin-top: -10px;width:130px">Đặt ngay</button>
                             </form>
                             <form method="POST" action="{{ route('cart.add') }}" id="formAdd_{{ $room->id }}" class="add-to-cart" data-room-id="{{ $room->id }}">
                                 @csrf
@@ -219,7 +219,7 @@
                                 <input type="hidden" name="check_in" value="{{ $data['check_in'] }}">
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
                                 <input type="hidden" name="rooms" id="hiddenRooms_{{ $room->id }}" value="1">
-                                <button type="submit" class="btn primary-btn" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
+                                <button type="submit" class="add-cart" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
                             </form>
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script >//chỉnh cái này nè

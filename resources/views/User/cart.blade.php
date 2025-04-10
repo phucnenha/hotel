@@ -7,6 +7,9 @@
 @section('content')
 
 
+<a href="{{ route('showBooking') }}" class="booking-btn">Chuyển sang trang đặt phòng</a>
+</style>
+
    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
      <link rel="stylesheet" href="style.css">
@@ -93,8 +96,14 @@
 
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
-            <a href="{{ route('home') }}" class="btn btn-outline-secondary">Quay lại</a>
-            <a href="{{ route('showBooking') }}" class="btn btn-primary">Chuyển sang trang đặt phòng</a>
+        <a href="{{ route('home') }}" class="primary-btn" 
+style="width: 150px; border-radius: 5px; padding: 8px 12px; background: none;
+  border: 2px solid black; text-align: center; color: black; transition: background-color 0.3s;">
+    <<< Quay lại</a>
+
+    <a href="{{ route('showBooking') }}" class="btn" >
+    Chuyển sang trang đặt phòng
+</a>
         </div>
     </div>
 

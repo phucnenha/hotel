@@ -166,7 +166,7 @@
                     <h2> Golden Tree Hotel</h2>
                 </div>
                 <p>Golden Tree Hotel là điểm đến lý tưởng cho những ai tìm kiếm sự thoải mái và đẳng cấp. Với không gian sang trọng, dịch vụ chuyên nghiệp và tiện ích hiện đại, chúng tôi luôn sẵn sàng mang đến cho bạn những trải nghiệm tuyệt vời. Hãy tận hưởng kỳ nghỉ trọn vẹn cùng Golden Tree!</p>
-                <button class="primary-btn">ABOUT US</button>
+                <button class="primary-btn" style="background-color: #B88A44; color: white;">ABOUT US</button>
             </div>
             <div class="right">
                 <img src="{{ asset('slideshow/about.png') }}" alt="">
@@ -188,7 +188,6 @@
 
     <div class="grid-container">
     @foreach ($rooms as $room)
-        @if ($loop->index < 6)
         <div class="item">
             <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
             <div class="infor_room">
@@ -200,7 +199,7 @@
 
                 @if (!empty($room->discount_percent))
                 
-                <p class="discount mb-1"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%
+                <p class="discount"><i class="fas fa-percent"></i> <strong>Giảm giá:</strong>  {{ $room->discount_percent }}%
                     <a class="text-primary" data-bs-toggle="collapse" href="#discountDetail{{ $room->id }}" role="button" aria-expanded="false" aria-controls="discountDetail{{ $room->id }}">
                     - <i>Xem chi tiết</i> 
                     </a>
@@ -208,8 +207,8 @@
 
                 <div class="collapse" id="discountDetail{{ $room->id }}">
                     <div class="card card-body bg-light border-0 shadow-sm mb-2">
-                        <p><strong>Bắt đầu:</strong> {{ \Carbon\Carbon::parse($room->start_date)->format('d/m/Y') }}</p>
-                        <p><strong>Kết thúc:</strong> {{ \Carbon\Carbon::parse($room->end_date)->format('d/m/Y') }}</p>
+                        <p><strong>Ngày bắt đầu:</strong> {{ \Carbon\Carbon::parse($room->start_date)->format('d/m/Y') }}</p>
+                        <p><strong>Ngày kết thúc:</strong> {{ \Carbon\Carbon::parse($room->end_date)->format('d/m/Y') }}</p>
                     </div>
                 </div>
             @else
@@ -238,7 +237,7 @@
                                 </div>
             </div>
         </div>
-        @endif
+
     @endforeach
     </div>
 </section>
