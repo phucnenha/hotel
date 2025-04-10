@@ -3,6 +3,8 @@
 @section('title', 'Golden Tree Apartment')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>.text-bg-success {
     background-color: #28a745 !important; /* Green background */
     color: #ffffff !important;          /* White text */
@@ -196,13 +198,23 @@
                 <p><i class="fas fa-umbrella-beach"></i> <strong>Hướng phòng:</strong> {{ $room->view }}</p>
                 <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
 
-                <!-- Hiển thị giảm giá nếu có -->
                 @if (!empty($room->discount_percent))
-                    <p class="discount"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%</p>
-                @else
-                    <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
-                @endif
                 
+                <p class="discount mb-1"><i class="fas fa-percent"></i> Giảm giá: {{ $room->discount_percent }}%
+                    <a class="text-primary" data-bs-toggle="collapse" href="#discountDetail{{ $room->id }}" role="button" aria-expanded="false" aria-controls="discountDetail{{ $room->id }}">
+                    - <i>Xem chi tiết</i> 
+                    </a>
+                </p>
+
+                <div class="collapse" id="discountDetail{{ $room->id }}">
+                    <div class="card card-body bg-light border-0 shadow-sm mb-2">
+                        <p><strong>Bắt đầu:</strong> {{ \Carbon\Carbon::parse($room->start_date)->format('d/m/Y') }}</p>
+                        <p><strong>Kết thúc:</strong> {{ \Carbon\Carbon::parse($room->end_date)->format('d/m/Y') }}</p>
+                    </div>
+                </div>
+            @else
+                <p class="discount"><i class="fas fa-percent"></i> Không có giảm giá</p>
+            @endif
                 <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
                 <div class="room-actions">
                     <form method="post" action="{{ route('thongtin') }}">
@@ -329,5 +341,7 @@ $(document).ready(function () {
 });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 @endsection

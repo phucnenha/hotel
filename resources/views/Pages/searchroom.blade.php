@@ -16,6 +16,48 @@
 .btn-close-white {
     filter: brightness(0) invert(1); /* Ensure close button remains white */
 }
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 0;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.filter-form {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+}
+
+.form-group label {
+    margin-bottom: 4px;
+    color: #444;
+    font-weight: 500;
+}
+
+.form-group select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 160px;
+}
+
 </style>
 <!-- Toast dynamic notification -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
@@ -55,11 +97,28 @@
     </div>
 </section>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    //------------------Ngày nhận và ngày trả--------------------//
+        document.addEventListener("DOMContentLoaded", function() {
         const checkinInput = document.querySelector("[name='check_in']");
         const checkoutInput = document.querySelector("[name='check_out']");
         const bookingForm = document.querySelector("form");
 
+        // Lấy ngày hiện tại và ngày mai
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); // Ngày mai
+
+        // Định dạng ngày thành YYYY-MM-DD
+        const formatDate = (date) => date.toISOString().split("T")[0];
+
+        // Thiết lập giá trị mặc định & min cho input ngày
+        checkinInput.value = formatDate(today);
+        checkinInput.setAttribute("min", formatDate(today));
+
+        checkoutInput.value = formatDate(tomorrow);
+        checkoutInput.setAttribute("min", formatDate(today));
+
+        //  Kiểm tra trước khi gửi form
         bookingForm.addEventListener("submit", function(event) {
             const checkinDate = new Date(checkinInput.value);
             const checkoutDate = new Date(checkoutInput.value);
@@ -67,7 +126,6 @@
             if (checkinDate >= checkoutDate) {
                 alert("❌ Ngày nhận phòng phải trước ngày trả phòng!");
                 event.preventDefault(); // Ngăn form gửi đi
-                return;
             }
         });
     });
@@ -76,22 +134,33 @@
 @if(isset($data))
 <section class="room-list">
     <div class="container">
-        <div style="display: grid; grid-template-columns: auto auto; align-items: center; width: 100%;">
-            <h2 class="section-title">Danh sách phòng trống</h2>
-            <form id="sort-form" method="POST" action="{{ route('searchroom.search') }}" style="text-align: right;">
-                @csrf
-                <input type="hidden" name="check_in" value="{{ request('check_in') }}">
-                <input type="hidden" name="check_out" value="{{ request('check_out') }}">
-                <input type="hidden" name="adults" value="{{ request('adults') }}">
-                <input type="hidden" name="children" value="{{ request('children') }}">
+    <div class="filter-container">
+    <h2 class="section-title">Danh sách phòng trống</h2>
+    <form id="sort-form" method="POST" action="{{ route('searchroom.search') }}" class="filter-form">
+        @csrf
+        <input type="hidden" name="check_in" value="{{ request('check_in') }}">
+        <input type="hidden" name="check_out" value="{{ request('check_out') }}">
+        <input type="hidden" name="adults" value="{{ request('adults') }}">
+        <input type="hidden" name="children" value="{{ request('children') }}">
 
-                <label for="sort_by">Sắp xếp theo giá:</label>
-                <select name="sort_by" id="sort_by" onchange="this.form.submit()">
-                    <option value="asc" {{ request('sort_by') == 'asc' ? 'selected' : '' }}>Tăng dần</option>
-                    <option value="desc" {{ request('sort_by') == 'desc' ? 'selected' : '' }}>Giảm dần</option>
-                </select>
-            </form>
+        <div class="form-group">
+            <label for="sort_by">Sắp xếp theo giá:</label>
+            <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+                <option value="asc" {{ request('sort_by') == 'asc' ? 'selected' : '' }}>Tăng dần</option>
+                <option value="desc" {{ request('sort_by') == 'desc' ? 'selected' : '' }}>Giảm dần</option>
+            </select>
         </div>
+
+        <div class="form-group">
+            <label for="has_discount">Hiện phòng có ưu đãi:</label>
+            <select name="has_discount" id="has_discount" onchange="this.form.submit()">
+                <option value="">Tất cả</option>
+                <option value="1" {{ request('has_discount') == '1' ? 'selected' : '' }}>Chỉ hiện phòng có ưu đãi</option>
+            </select>
+        </div>
+    </form>
+</div>
+
 
         @if($available_rooms->isEmpty())
             <p class="no-rooms">Không có phòng trống phù hợp!</p>
@@ -155,63 +224,63 @@
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script >//chỉnh cái này nè
                           // Listen for form submission
-$(document).on('submit', '#formAdd_{{ $room->id }}', function (e) {
-    e.preventDefault(); // Stop the normal form submission
+                    $(document).on('submit', '#formAdd_{{ $room->id }}', function (e) {
+                        e.preventDefault(); // Stop the normal form submission
 
-    var form = $(this);
-    var url = form.attr('action');
-    var data = form.serialize();
+                        var form = $(this);
+                        var url = form.attr('action');
+                        var data = form.serialize();
 
-    // Perform AJAX request
-    $.ajax({
-        url: url,
-        method: 'POST',
-        data: data,
-        success: function (response) {
-            // Show success toast
-            showToast(response.success, true);
+                        // Perform AJAX request
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: data,
+                            success: function (response) {
+                                // Show success toast
+                                showToast(response.success, true);
 
-            // Update the cart count dynamically
-            $.ajax({
-                url: "{{ route('cart.count') }}", // Ensure this route returns the cart count
-                success: function (count) {
-                    $('#cart-number-product').text(count);
-                }
-            });
-        },
-        error: function (response) {
-            let message = response.responseJSON && response.responseJSON.error
-                ? response.responseJSON.error
-                : 'Có lỗi xảy ra, vui lòng thử lại.';
-            // Show error toast
-            showToast(message, false);
-        }
-    });
-});
+                                // Update the cart count dynamically
+                                $.ajax({
+                                    url: "{{ route('cart.count') }}", // Ensure this route returns the cart count
+                                    success: function (count) {
+                                        $('#cart-number-product').text(count);
+                                    }
+                                });
+                            },
+                            error: function (response) {
+                                let message = response.responseJSON && response.responseJSON.error
+                                    ? response.responseJSON.error
+                                    : 'Có lỗi xảy ra, vui lòng thử lại.';
+                                // Show error toast
+                                showToast(message, false);
+                            }
+                        });
+                    });
 
-// Toast display function
-function showToast(message, success) {
-    const toastBody = document.getElementById("toast-body-content");
-    const toastContainer = document.getElementById("dynamicToast");
+                    // Toast display function
+                    function showToast(message, success) {
+                        const toastBody = document.getElementById("toast-body-content");
+                        const toastContainer = document.getElementById("dynamicToast");
 
-    // Update the toast message
-    toastBody.textContent = message;
+                        // Update the toast message
+                        toastBody.textContent = message;
 
-    // Change toast background color based on success or error
-    if (success) {
-        toastContainer.classList.add("bg-success", "text-white");
-        toastContainer.classList.remove("bg-danger");
-    } else {
-        toastContainer.classList.add("bg-danger", "text-white");
-        toastContainer.classList.remove("bg-success");
-    }
+                        // Change toast background color based on success or error
+                        if (success) {
+                            toastContainer.classList.add("bg-success", "text-white");
+                            toastContainer.classList.remove("bg-danger");
+                        } else {
+                            toastContainer.classList.add("bg-danger", "text-white");
+                            toastContainer.classList.remove("bg-success");
+                        }
 
-    // Show the toast
-    const toastEl = new bootstrap.Toast(toastContainer, {
-        delay: 5000 // 5-second display
-    });
-    toastEl.show();
-}
+                        // Show the toast
+                        const toastEl = new bootstrap.Toast(toastContainer, {
+                            delay: 5000 // 5-second display
+                        });
+                        toastEl.show();
+                    }
 
                         </script>
 

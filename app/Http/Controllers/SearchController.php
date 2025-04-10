@@ -20,26 +20,30 @@ class SearchController extends Controller
     public function searchRoom(Request $request)
 {
     $data = $request->validate([
-        'check_in'  => 'required|date|after_or_equal:today',
-        'check_out' => 'required|date|after:check_in',
-        'adults'    => 'required|integer|min:1|max:10',
-        'children'  => 'required|integer|min:0|max:10',
-        'sort_by'   => 'nullable|in:asc,desc',
+        'check_in'     => 'required|date|after_or_equal:today',
+        'check_out'    => 'required|date|after:check_in',
+        'adults'       => 'required|integer|min:1|max:10',
+        'children'     => 'required|integer|min:0|max:10',
+        'sort_by'      => 'nullable|in:asc,desc',
+        'has_discount' => 'nullable|in:1', // chỉ chấp nhận 1 nếu có
     ]);
+    
 
     // Lưu vào session
     session([
-        'check_in'  => $data['check_in'],
-        'check_out' => $data['check_out'],
-        'adults'    => $data['adults'],
-        'children'  => $data['children'],
-        'sort_by'   => $data['sort_by'] ?? 'asc',
+        'check_in'     => $data['check_in'],
+        'check_out'    => $data['check_out'],
+        'adults'       => $data['adults'],
+        'children'     => $data['children'],
+        'sort_by'      => $data['sort_by'] ?? 'asc',
+        'has_discount' => $data['has_discount'] ?? null,
     ]);
+    
 
     $total_guests = $data['adults'] + $data['children'];
-    $sort_by = $request->input('sort_by', 'asc');
-
-    // ✅ Lấy danh sách phòng và giảm giá phù hợp với từng phòng
+    $sort_by = $data['sort_by'] ?? 'asc';
+    $has_discount = $data['has_discount'] ?? null;
+    
     $available_rooms = Room::with('capacity')
         ->leftJoin('discount', function ($join) use ($data) {
             $join->on('room_detail.id', '=', 'discount.room_id')
@@ -51,9 +55,14 @@ class SearchController extends Controller
             $query->where('max_capacity', '>=', $total_guests);
         })
         ->where('remaining_rooms', '>', 0)
+        ->when($has_discount == '1', function ($query) {
+            // chỉ chọn những phòng có discount_percent > 0
+            $query->whereRaw('COALESCE(discount.discount_percent, 0) > 0');
+        })
         ->orderBy('price_per_night', $sort_by)
-        ->distinct()  // đảm bảo ko bị trùng
+        ->distinct()
         ->get();
+    
 
     return view("Pages.searchroom", compact('data', 'available_rooms'));
 }
