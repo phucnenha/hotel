@@ -3,7 +3,6 @@
 @section('title', 'Golden Tree Apartment')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>.text-bg-success {
     background-color: #28a745 !important; /* Green background */

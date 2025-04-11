@@ -36,7 +36,7 @@ public function index(Request $request)
 
     if (request('check_in') !== null && request('check_out') !== null) {
         if (Carbon::parse(request('check_in'))->format('Y-m-d') > Carbon::parse(request('check_out'))->format('Y-m-d')) {
-            return redirect()->back()->with('error', 'Check-in must be after check out');
+            return redirect()->back()->with('error', 'Ngày trả phòng phải sau ngày nhận phòng');
         }
 
         $query->where('check_in', '>=', Carbon::parse(request('check_in'))->format('Y-m-d'))

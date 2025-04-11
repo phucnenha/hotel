@@ -5,7 +5,29 @@
 
 
 @section('content')
+<style>
+.booking-btn {
+    background-color: #8B4513;
+    color: #fff;
+    border-radius: 5px;
+    padding: 8px 12px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    display: inline-block;
+    outline: none;
+    box-shadow: none;
+}
 
+.booking-btn:hover,
+.booking-btn:focus,
+.booking-btn:active {
+    background-color: #5e2f0e;
+    color: #fff !important;         /* giữ màu trắng */
+    text-decoration: none !important; /* xóa gạch chân */
+}
+
+</style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
      <link rel="stylesheet" href="style.css">
     <div class="infor-container-right">
     @if(session('error'))
@@ -95,7 +117,7 @@ style="width: 150px; border-radius: 5px; padding: 8px 12px; background: none;
   border: 2px solid black; text-align: center; color: black; transition: background-color 0.3s;">
     <<< Quay lại</a>
 
-    <a href="{{ route('showBooking') }}" class="btn" >
+    <a href="{{ route('showBooking') }}" class="booking-btn" >
     Chuyển sang trang đặt phòng
 </a>
         </div>

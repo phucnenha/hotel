@@ -197,7 +197,7 @@ header .navlinks span {
                          </a>
                      @else
                          <a href="{{route('login')}}">
-                             <button class="btn" >Login</button>
+                             <button class="btn" style=" background: #B88A44;padding: 10px 20px;  color: white; ">Login</button>
                          </a>
                      @endif
                  </li>

@@ -12,7 +12,8 @@
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
 
-    <!-- Bootstrap CSS -->
+ <!-- Bootstrap CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
@@ -149,7 +150,7 @@
 @endforeach
 
 
-    <button type="submit" class="btn btn-primary">Tiếp tục</button>
+    <button type="submit" class="btn" style=" background: #B88A44; color: white;">Tiếp tục</button>
 </form>
 
 
