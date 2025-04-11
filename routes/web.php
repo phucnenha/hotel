@@ -85,3 +85,4 @@ Route::prefix('admins')
         Route::post('bookings/{id}/update-rooms', [BookingManagementController::class, 'updateRooms'])->name('bookings.updateRooms');
 
     });
+

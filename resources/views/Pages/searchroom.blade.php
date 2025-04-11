@@ -220,6 +220,7 @@
                                 <input type="hidden" name="check_out" value="{{ $data['check_out'] }}">
                                 <input type="hidden" name="rooms" id="hiddenRooms_{{ $room->id }}" value="1">
                                 <button type="submit" class="add-cart" style="margin-top: -10px;">Thêm vào giỏ hàng</button>
+
                             </form>
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <script >//chỉnh cái này nè

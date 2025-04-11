@@ -149,8 +149,8 @@ class RoomManagementController extends Controller
         $room->capacity()->update([
             'max_capacity' => request('max_capacity'),
         ]);
-
         return redirect()->route('admin.rooms.index')->with('success', 'Cập nhật phòng thành công!');
+
     }
 
     /**
@@ -166,7 +166,7 @@ class RoomManagementController extends Controller
         $room = Room::findOrFail($id);
 
         $room->delete();
-
         return redirect()->route('admin.rooms.index')->with('success', 'Xóa phòng thành công!');
+
     }
 }

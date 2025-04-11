@@ -11,7 +11,6 @@
 @section('content')
     @include('layout.reuse.steps', ['step' => 1]) <!-- Hiển thị các bước -->
     @include('layout.reuse.count-time') <!-- Nhúng đồng hồ đếm ngược -->
-
  <!-- Bootstrap CSS -->
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -35,7 +34,6 @@
                 </div>
             </div>
         </div>
-
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -148,7 +146,6 @@
     <input type="hidden" name="rooms[{{ $index }}][price_per_night]" value="{{ $room['price_per_night'] }}">
     <input type="hidden" name="rooms[{{ $index }}][discount_percent]" value="{{ $room['discount_percent'] }}">
 @endforeach
-
 
     <button type="submit" class="btn" style=" background: #B88A44; color: white;">Tiếp tục</button>
 </form>

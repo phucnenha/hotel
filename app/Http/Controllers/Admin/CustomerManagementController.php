@@ -118,4 +118,6 @@ class CustomerManagementController extends Controller
 
         return redirect()->route('admin.customers.index')->with('success', 'Customer deleted successfully');
     }
+
 }
+

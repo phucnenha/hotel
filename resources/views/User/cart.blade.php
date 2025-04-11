@@ -5,6 +5,7 @@
 
 
 @section('content')
+
 <style>
 .booking-btn {
     background-color: #8B4513;
@@ -112,6 +113,7 @@
 
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
+
         <a href="{{ route('home') }}" class="primary-btn" 
 style="width: 150px; border-radius: 5px; padding: 8px 12px; background: none;
   border: 2px solid black; text-align: center; color: black; transition: background-color 0.3s;">
@@ -120,6 +122,7 @@ style="width: 150px; border-radius: 5px; padding: 8px 12px; background: none;
     <a href="{{ route('showBooking') }}" class="booking-btn" >
     Chuyển sang trang đặt phòng
 </a>
+
         </div>
     </div>
 

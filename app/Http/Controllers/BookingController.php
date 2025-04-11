@@ -42,7 +42,6 @@ class BookingController extends Controller
             'nationality' => 'required|max:100',
             'payment_method' => 'required|in:CASH,VNPAY',
             'rooms' => 'required|array',
-            'rooms.*.room_id' => 'required|exists:room_detail,id',
             'rooms.*.room_type' => 'required|string',
             'rooms.*.check_in' => 'required|date',
             'rooms.*.check_out' => 'required|date|after:rooms.*.check_in',
@@ -58,14 +57,15 @@ class BookingController extends Controller
             $stayDays = \Carbon\Carbon::parse($room['check_out'])->diffInDays(\Carbon\Carbon::parse($room['check_in']));
             $discountedPrice = $room['price_per_night'] * (1 - ($room['discount_percent'] / 100));
             $roomTotal = $discountedPrice * $stayDays * $room['rooms'];
+
             $room['stay_days'] = $stayDays;
             $room['discounted_price'] = $discountedPrice;
             $room['room_total'] = $roomTotal;
-        
-            // $room['room_id'] vẫn được giữ nguyên
+
             $bookedRooms[] = $room;
             $totalAmount += $roomTotal;
         }
+
         session([
             'finalBooking' => [
                 'rooms' => $bookedRooms,
