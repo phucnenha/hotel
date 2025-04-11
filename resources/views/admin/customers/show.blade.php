@@ -9,12 +9,12 @@
             <!--begin::Row-->
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Sửa thông tin khách hàng</h3>
+                    <h3 class="mb-0">Xem thông tin khách hàng</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Sửa thông tin khách hàng</li>
+                        <li class="breadcrumb-item active" aria-current="page">Xem thông tin khách hàng</li>
                     </ol>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                     <div class="card card-primary card-outline mb-4">
                         <!--begin::Header-->
                         <div class="card-header">
-                            <div class="card-title">Sửa thông tin khách hàng</div>
+                            <div class="card-title">Xem thông tin khách hàng</div>
                         </div>
                         <!--end::Header-->
                         <!--begin::Form-->
