@@ -2,6 +2,7 @@
 @section('title', 'Chi Tiết Thanh Toán')
 
 @section('content')
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .tab-thongtinkhachhang, .tab-chitietthanhtoan {
             padding: 1rem;
@@ -185,7 +186,13 @@
         // Cập nhật đồng hồ mỗi giây
         const countdownInterval = setInterval(updateCountdown, 1000);
     </script>
-
+    <div class="container mt-3">
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+</div>
     <div class="thongtinthanhtoan container">
         <form action="{{route('payment')}}" method="post">
             @csrf
@@ -301,4 +308,5 @@
         }
 
     </script>
+
 @endsection

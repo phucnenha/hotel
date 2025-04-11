@@ -96,11 +96,12 @@ class BookingController extends Controller
     {
         $bookingInfo = session('finalBooking');
         foreach ($bookingInfo['rooms'] as $item) {
-            $room = Room::query()->where('id', $item['room_id'])->first();
+            $room = Room::where('id', $item['room_id'])->first();
             if ($room->remaining_rooms < $item['rooms']) {
-                return redirect()->back();
+                return redirect()->back()->with('error', 'Phòng ' . $room->room_type . ' không còn đủ số lượng. Vui lòng chọn phòng khác!!');
             }
         }
+        
 
         $customerInfo = session('finalBooking')['customer'];
 
