@@ -143,6 +143,8 @@
 
     <!-- Thông tin phòng (ẩn nếu không cần chỉnh sửa) -->
     @foreach ($bookedRooms as $index => $room)
+    <input type="hidden" name="rooms[{{ $index }}][room_id]" value="{{ $room['room_id'] }}">
+
     <input type="hidden" name="rooms[{{ $index }}][room_type]" value="{{ $room['room_type'] }}">
     <input type="hidden" name="rooms[{{ $index }}][check_in]" value="{{ $room['check_in'] }}">
     <input type="hidden" name="rooms[{{ $index }}][check_out]" value="{{ $room['check_out'] }}">
