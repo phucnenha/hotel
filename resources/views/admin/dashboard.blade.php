@@ -78,7 +78,7 @@
                     <div class="small-box text-bg-warning">
                         <div class="inner">
                             <h3>{{ $customerCount }}</h3>
-                            <p>Tổng số tài khoản</p>
+                            <p>Tổng số khách hàng</p>
                         </div>
                         <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
                              xmlns="http://www.w3.org/2000/svg"
