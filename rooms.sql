@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th3 31, 2025 lúc 10:14 AM
+-- Thời gian đã tạo: Th4 09, 2025 lúc 03:08 PM
 -- Phiên bản máy phục vụ: 8.3.0
 -- Phiên bản PHP: 8.2.18
 
@@ -59,7 +59,7 @@ INSERT INTO `capacity` (`room_id`, `max_capacity`) VALUES
 DROP TABLE IF EXISTS `cart`;
 CREATE TABLE IF NOT EXISTS `cart` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `session_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `room_id` int NOT NULL,
   `check_in` date NOT NULL,
   `check_out` date NOT NULL,
@@ -92,52 +92,31 @@ CREATE TABLE IF NOT EXISTS `customer` (
 --
 
 INSERT INTO `customer` (`id`, `full_name`, `email`, `phone`, `nationality`) VALUES
-(1, 'Nguyen Van A', '0987654300', 'user1@example.c', 'South Korea'),
-(2, 'Tran Thi B', '0987654301', 'user2@example.c', 'Việt Nam'),
-(3, 'Le Van C', '0987654302', 'user3@example.c', 'Việt Nam'),
-(4, 'Pham Thi D', '0987654303', 'user4@example.c', 'Việt Nam'),
-(5, 'Hoang Van E', '0987654304', 'user5@example.c', 'Việt Nam'),
-(6, 'Vo Thi F', '0987654305', 'user6@example.c', 'Japan'),
-(7, 'Dang Van G', '0987654306', 'user7@example.c', 'Việt Nam'),
-(8, 'Bui Thi H', '0987654307', 'user8@example.c', 'Việt Nam'),
-(9, 'Do Van I', '0987654308', 'user9@example.c', 'Việt Nam'),
-(10, 'Ngo Thi J', '0987654309', 'user10@example.', 'France'),
-(11, 'Dinh Van K', '0987654310', 'user11@example.', 'Việt Nam'),
-(12, 'Phan Thi L', '0987654311', 'user12@example.', 'Việt Nam'),
-(13, 'Vu Van M', '0987654312', 'user13@example.', 'Việt Nam'),
-(14, 'Ly Thi N', '0987654313', 'user14@example.', 'Việt Nam'),
-(15, 'Quach Van O', '0987654314', 'user15@example.', 'Việt Nam'),
-(16, 'Chu Thi P', '0987654315', 'user16@example.', 'Canada'),
-(17, 'La Van Q', '0987654316', 'user17@example.', 'Việt Nam'),
-(18, 'Trinh Thi R', '0987654317', 'user18@example.', 'Việt Nam'),
-(19, 'Duong Van S', '0987654318', 'user19@example.', 'Việt Nam'),
-(20, 'Mac Thi T', '0987654319', 'user20@example.', 'Singapore'),
-(21, 'aaaaaa', 'nhinhi004@gmail.com', '0828594345', 'ss'),
-(22, 'aaaaaa', 'nhinhi051004@gmail.com', '0828594345', 'ss'),
-(23, 'aaaaaa', 'nhinhi051004@gmail.com', '0828594345', 'ss'),
-(24, 'aaaaaa', 'nhinhi051004@gmail.com', '0828594345', 'ss'),
-(25, 'nhi', 'nhinhi004@gmail.com', '0828594345', 'ss'),
-(26, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(27, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(28, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(29, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(30, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(31, 'qqqqq', 'nhinhi004@gmail.com', '1111111', 'ss'),
-(32, 'helloo', 'phuc08@gmail.com', '0828594', 'VN'),
-(33, 'helloo', 'phuc08@gmail.com', '0828594', 'VN'),
-(34, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(35, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(36, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(37, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(38, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(39, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(40, 'aaaaaa', 'phuc08@gmail.com', '1111111', 'TQ'),
-(41, 'test', 'phuc08@gmail.com', '1111111', 'TQ'),
-(42, 'test', 'phuc08@gmail.com', '1111111', 'TQ'),
-(43, 'qqqqq', 'phuc08@gmail.com', '1111111', 'TQ'),
-(44, 'qqqqq', 'phuc08@gmail.com', '1111111', 'TQ'),
-(45, 'nhi', 'phuc08@gmail.com', '1111111', 'TQ'),
-(46, 'nhi', 'nhinhi004@gmail.com', '0828594345', 'VN');
+(1, 'Nguyen Van A', 'nguyenvana@example.com', '0909123456', 'Vietnam'),
+(2, 'Tran Thi B', 'tranthib@example.com', '0912233445', 'Vietnam'),
+(3, 'Le Hoang C', 'lehoangc@example.com', '0988776655', 'Vietnam'),
+(4, 'Smith John', 'smithjohn@example.com', '1234567890', 'USA'),
+(5, 'Maria Garcia', 'maria.garcia@example.com', '9876543210', 'Spain'),
+(6, 'Pham Minh Tuan', 'tuanpm@example.com', '0909000001', 'Vietnam'),
+(7, 'Nguyen Thi Lan', 'lannt@example.com', '0909000002', 'Vietnam'),
+(8, 'Dang Hoang Long', 'longdh@example.com', '0909000003', 'Vietnam'),
+(9, 'Vo Thi Thu', 'thuvt@example.com', '0909000004', 'Vietnam'),
+(10, 'Phan Quoc Bao', 'baopq@example.com', '0909000005', 'Vietnam'),
+(11, 'Doan Ngoc Anh', 'anhdn@example.com', '0909000006', 'Vietnam'),
+(12, 'Le Van Nam', 'namlv@example.com', '0909000007', 'Vietnam'),
+(13, 'Nguyen Hong Ha', 'hahg@example.com', '0909000008', 'Vietnam'),
+(14, 'Tran Van Thanh', 'thanhtv@example.com', '0909000009', 'Vietnam'),
+(15, 'Ngo Thi Huong', 'huongnt@example.com', '0909000010', 'Vietnam'),
+(16, 'Nguyen Van Tinh', 'tinhnv@example.com', '0909000011', 'Vietnam'),
+(17, 'Pham Thi Mai', 'maipt@example.com', '0909000012', 'Vietnam'),
+(18, 'Bui Hoang Son', 'sonbh@example.com', '0909000013', 'Vietnam'),
+(19, 'Tran Thi Cam', 'camtt@example.com', '0909000014', 'Vietnam'),
+(20, 'Do Thi Hoa', 'hoadt@example.com', '0909000015', 'Vietnam'),
+(21, 'Le Quang Hieu', 'hieulq@example.com', '0909000016', 'Vietnam'),
+(22, 'Hoang Minh Phat', 'phathm@example.com', '0909000017', 'Vietnam'),
+(23, 'Ly Bao Chau', 'chaulb@example.com', '0909000018', 'Vietnam'),
+(24, 'Nguyen Tuan Kiet', 'kietnt@example.com', '0909000019', 'Vietnam'),
+(25, 'Vo Minh Quan', 'quanvm@example.com', '0909000020', 'Vietnam');
 
 -- --------------------------------------------------------
 
@@ -181,7 +160,7 @@ INSERT INTO `discount` (`id`, `room_id`, `discount_percent`, `start_date`, `end_
 DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -239,29 +218,38 @@ CREATE TABLE IF NOT EXISTS `room_booking` (
   `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'đang xử lý',
   PRIMARY KEY (`id`),
   KEY `fk_booking_customer` (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `room_booking`
 --
 
 INSERT INTO `room_booking` (`id`, `check_in`, `check_out`, `booking_date`, `customer_id`, `status`) VALUES
-(1, '2024-12-20', '2024-12-30', '2024-12-27 09:02:58', 1, 'đã xác nhận'),
-(2, '2024-12-21', '2024-12-31', '2024-12-27 09:02:58', 2, 'đã xác nhận'),
-(3, '2024-12-22', '2024-12-25', '2024-12-27 09:02:58', 3, 'đã xác nhận'),
-(4, '2025-01-12', '2025-01-13', '2025-01-12 06:08:45', 23, 'đã xác nhận'),
-(5, '2025-01-12', '2025-01-13', '2025-01-12 06:08:49', 24, 'huỷ'),
-(6, '2025-01-12', '2025-01-13', '2025-01-12 06:33:08', 25, 'huỷ'),
-(7, '2025-01-12', '2025-01-13', '2025-01-12 06:37:39', 26, 'huỷ'),
-(8, '2025-01-12', '2025-01-13', '2025-01-12 06:41:42', 27, 'đã xác nhận'),
-(12, '2025-01-15', '2025-01-17', '2025-01-13 06:20:45', 32, 'đã xác nhận'),
-(13, '2025-01-13', '2025-01-14', '2025-01-13 06:53:02', 34, 'huỷ'),
-(14, '2025-01-15', '2025-01-16', '2025-01-15 01:56:52', 36, 'đang xử lý'),
-(15, '2025-01-15', '2025-01-16', '2025-01-15 01:58:56', 39, 'đang xử lý'),
-(16, '2025-01-15', '2025-01-16', '2025-01-15 01:59:29', 41, 'đã xác nhận'),
-(17, '2025-01-17', '2025-01-20', '2025-01-15 07:16:17', 43, 'đang xử lý'),
-(18, '2025-01-21', '2025-01-22', '2025-01-21 07:15:12', 45, 'đang xử lý'),
-(19, '2025-03-05', '2025-03-12', '2025-03-02 14:38:39', 46, 'đang xử lý');
+(1, '2025-04-15', '2025-04-17', '2025-03-05 08:30:00', 1, 'đã xác nhận'),
+(2, '2025-04-20', '2025-04-22', '2025-03-08 15:20:00', 2, 'đang xử lý'),
+(3, '2025-04-10', '2025-04-12', '2025-03-15 11:45:00', 3, 'hủy'),
+(4, '2025-05-01', '2025-05-03', '2025-03-20 09:10:00', 4, 'đã xác nhận'),
+(5, '2025-04-25', '2025-04-28', '2025-03-22 14:35:00', 5, 'đang xử lý'),
+(6, '2025-04-12', '2025-04-14', '2025-03-30 10:25:00', 6, 'đã xác nhận'),
+(7, '2025-04-15', '2025-04-17', '2025-04-01 09:00:00', 7, 'đang xử lý'),
+(8, '2025-04-18', '2025-04-20', '2025-04-02 18:45:00', 8, 'hủy'),
+(9, '2025-04-21', '2025-04-23', '2025-04-03 14:10:00', 9, 'đã xác nhận'),
+(10, '2025-04-24', '2025-04-26', '2025-04-04 16:30:00', 10, 'đang xử lý'),
+(11, '2025-04-27', '2025-04-29', '2025-04-05 20:15:00', 11, 'hủy'),
+(12, '2025-04-30', '2025-05-02', '2025-04-06 08:50:00', 12, 'đã xác nhận'),
+(13, '2025-05-03', '2025-05-05', '2025-04-06 11:05:00', 13, 'đang xử lý'),
+(14, '2025-05-06', '2025-05-08', '2025-04-07 13:30:00', 14, 'hủy'),
+(15, '2025-05-09', '2025-05-11', '2025-04-07 17:00:00', 15, 'đã xác nhận'),
+(16, '2025-05-12', '2025-05-14', '2025-04-08 09:25:00', 16, 'đang xử lý'),
+(17, '2025-05-15', '2025-05-17', '2025-04-08 15:15:00', 17, 'hủy'),
+(18, '2025-05-18', '2025-05-20', '2025-04-09 08:00:00', 18, 'đã xác nhận'),
+(19, '2025-05-21', '2025-05-23', '2025-04-09 12:45:00', 19, 'đang xử lý'),
+(20, '2025-05-24', '2025-05-26', '2025-04-09 20:30:00', 20, 'hủy'),
+(21, '2025-05-27', '2025-05-29', '2025-04-10 07:20:00', 21, 'đã xác nhận'),
+(22, '2025-05-30', '2025-06-01', '2025-04-10 09:10:00', 22, 'hủy'),
+(23, '2025-06-02', '2025-06-04', '2025-04-10 13:45:00', 23, 'Đã huỷ'),
+(24, '2025-06-05', '2025-06-07', '2025-04-10 16:00:00', 24, 'Đã xác nhận'),
+(25, '2025-06-08', '2025-06-10', '2025-04-10 21:45:00', 25, 'đang xử lý');
 
 -- --------------------------------------------------------
 
@@ -277,25 +265,38 @@ CREATE TABLE IF NOT EXISTS `room_booking_detail` (
   PRIMARY KEY (`id`),
   KEY `booking_id` (`booking_id`),
   KEY `room_id` (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `room_booking_detail`
 --
 
 INSERT INTO `room_booking_detail` (`id`, `booking_id`, `room_id`) VALUES
-(1, 4, 3),
-(2, 5, 3),
-(3, 6, 3),
-(4, 7, 3),
-(5, 8, 3),
-(9, 12, 1),
-(10, 13, 1),
-(11, 14, 2),
-(12, 15, 2),
-(13, 16, 3),
-(14, 17, 1),
-(16, 19, 1);
+(1, 1, 2),
+(2, 2, 5),
+(3, 3, 3),
+(4, 4, 1),
+(5, 5, 7),
+(6, 6, 4),
+(7, 7, 6),
+(8, 8, 8),
+(9, 9, 2),
+(10, 10, 9),
+(11, 11, 10),
+(12, 12, 1),
+(13, 13, 5),
+(14, 14, 3),
+(15, 15, 6),
+(16, 16, 7),
+(17, 17, 8),
+(18, 18, 4),
+(19, 19, 9),
+(20, 20, 2),
+(21, 21, 3),
+(23, 23, 10),
+(24, 24, 6),
+(26, 25, 5),
+(27, 22, 2);
 
 -- --------------------------------------------------------
 
@@ -402,35 +403,20 @@ CREATE TABLE IF NOT EXISTS `taikhoan` (
   `id_taikhoan` int NOT NULL AUTO_INCREMENT,
   `ten` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
-  `password` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_vietnamese_ci NOT NULL,
+  `is_admin` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id_taikhoan`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_vietnamese_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_vietnamese_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `taikhoan`
 --
 
-INSERT INTO `taikhoan` (`id_taikhoan`, `ten`, `email`, `password`) VALUES
-(1, 'Admin1', 'phuc08@gmail.com', '6c722b61037af619c6441b0d73f5d2d8');
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `taikhoan` (`id_taikhoan`, `ten`, `email`, `password`, `is_admin`) VALUES
+(1, 'Admin1', 'phuc08@gmail.com', '6c722b61037af619c6441b0d73f5d2d8', 1),
+(4, 'Admin', 'admin@gmail.com', '$2y$10$TRI/nQOtj6rj/itqywxw7eY0jh88u.uypidjoKNASHXv0eJYKc7.C', 1),
+(6, 'phuc', 'phuc1310@gmail.com', '$2y$10$wJ1GMXwQHuLDK1OIwFBBheOU9cLoqSTdlti2KbxfjDWcDaNbyGSCO', 0),
+(7, 'ha', 'giaoha@gmail.com', '$2y$10$n0tqfYXv2PeNbtS1EWdQUuWdJZeLyXooAhvimYiyq7mLmJ2AEdo0e', 0);
 
 --
 -- Các ràng buộc cho các bảng đã đổ
