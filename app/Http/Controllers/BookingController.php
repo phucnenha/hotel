@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\Room;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
@@ -32,131 +33,147 @@ class BookingController extends Controller
         return view('Pages.thongtin', compact('bookedRooms', 'totalAmount'));
     }
 
-    public function saveCustomerInfo(Request $request)
+    public function saveBookingWithCustomerInfo(Request $request)
     {
-        $validatedData = $request->validate([
-            'ho_ten' => 'required|string|max:255',
+        $validated = $request->validate([
+            'ho_ten' => 'required|max:255',
             'email' => 'required|email|max:255',
             'sdt' => 'nullable|regex:/^[0-9]{10,15}$/',
-            'nationality' => 'required|string|max:100',
-            'payment_method' => 'required|string',
+            'nationality' => 'required|max:100',
+            'payment_method' => 'required|in:CASH,VNPAY',
+            'rooms' => 'required|array',
+            'rooms.*.room_type' => 'required|string',
+            'rooms.*.check_in' => 'required|date',
+            'rooms.*.check_out' => 'required|date|after:rooms.*.check_in',
+            'rooms.*.rooms' => 'required|integer|min:1',
+            'rooms.*.price_per_night' => 'required|numeric|min:0',
+            'rooms.*.discount_percent' => 'required|numeric|min:0|max:100',
         ]);
 
-        // Lấy thông tin phòng đã đặt từ session
-        $bookedRooms = session()->get('bookedRooms', []);
-        foreach ($bookedRooms as $index => $room) {
-            $room = Room::query()->find($room['room_id']);
-            if ($room->remaining_rooms <= 0){
-                return redirect()->route('showBooking')->with('Error', 'Room is out of stock');
-            }
+        $bookedRooms = [];
+        $totalAmount = 0;
+
+        foreach ($validated['rooms'] as $room) {
+            $stayDays = \Carbon\Carbon::parse($room['check_out'])->diffInDays(\Carbon\Carbon::parse($room['check_in']));
+            $discountedPrice = $room['price_per_night'] * (1 - ($room['discount_percent'] / 100));
+            $roomTotal = $discountedPrice * $stayDays * $room['rooms'];
+
+            $room['stay_days'] = $stayDays;
+            $room['discounted_price'] = $discountedPrice;
+            $room['room_total'] = $roomTotal;
+
+            $bookedRooms[] = $room;
+            $totalAmount += $roomTotal;
         }
-        $totalAmount = array_sum(array_column($bookedRooms, 'room_total'));
 
-        // Lưu thông tin khách hàng vào session
-        session()->put('customer_info', [
-            'full_name' => $validatedData['ho_ten'],
-            'email' => $validatedData['email'],
-            'phone' => $validatedData['sdt'] ?? '',
-            'nationality' => $validatedData['nationality'],
-            'payment_method' => $validatedData['payment_method'],
-            'booked_rooms' => $bookedRooms,
-            'total_amount' => $totalAmount,
+        session([
+            'finalBooking' => [
+                'rooms' => $bookedRooms,
+                'customer' => [
+                    'ho_ten' => $validated['ho_ten'],
+                    'email' => $validated['email'],
+                    'sdt' => $validated['sdt'] ?? '',
+                    'nationality' => $validated['nationality'],
+                    'payment_method' => $validated['payment_method'],
+                ],
+                'total_amount' => $totalAmount,
+            ]
         ]);
 
-        return redirect()->route('paymentPage');
+        return redirect()->route('confirmBooking')->with('success', 'Thông tin đặt phòng đã được lưu!');
     }
 
-    public function showPaymentPage()
+
+    public function showConfirmPage()
     {
-        $customerInfo = session()->get('customer_info', []);
+        $booking = session('finalBooking');
+        $bookedRooms = $booking['rooms']; // nếu lưu nhiều phòng
 
-        if (empty($customerInfo)) {
-            return redirect()->route('showBooking')->with('error', 'Vui lòng nhập thông tin khách hàng trước khi thanh toán.');
-        }
-
-        return view('Pages.thanhtoan', compact('customerInfo'));
+        return view('pages.thanhtoan', compact('booking', 'bookedRooms'));
     }
-
 
     public function payment(Request $request)
     {
-
-        $customerInfo = session()->get('customer_info', []);
-        foreach ($customerInfo['booked_rooms'] as $index => $room) {
-            $room = Room::query()->find($room['room_id']);
-            if ($room->remaining_rooms <= 0){
-                return redirect()->route('showBooking')->with('Error', 'Room is out of stock');
+        $bookingInfo = session('finalBooking');
+        foreach ($bookingInfo['rooms'] as $item) {
+            $room = Room::where('id', $item['room_id'])->first();
+            if ($room->remaining_rooms < $item['rooms']) {
+                return redirect()->back()->with('error', 'Phòng ' . $room->room_type . ' không còn đủ số lượng. Vui lòng chọn phòng khác!!');
             }
         }
+        
 
-        $customer = Customer::create([
-            'full_name' => $customerInfo['full_name'],
+        $customerInfo = session('finalBooking')['customer'];
+
+
+        $customer = Customer::query()->create([
+            'full_name' => $customerInfo['ho_ten'],
             'email' => $customerInfo['email'],
-            'phone' => $customerInfo['phone'],
+            'phone' => $customerInfo['sdt'],
             'nationality' => $customerInfo['nationality'],
         ]);
 
-        $booking = Booking::create([
+        $booking = Booking::query()->create([
             'check_in' => Carbon::now(),
             'check_out' => Carbon::now(),
             'booking_date' => Carbon::now(),
-            'status' => 'đang xử lý',
             'customer_id' => $customer->id,
         ]);
-        $discountedPrice = 0;
-        $totalAmount = 0;
-        foreach ($customerInfo['booked_rooms'] as $value) {
+
+        foreach ($bookingInfo['rooms'] as $item) {
             $booking->update([
-                'check_in' => $value['check_in'],
-                'check_out' => $value['check_out'],
+                'check_in' => $item['check_in'],
+                'check_out' => $item['check_out'],
             ]);
+
             DB::table('room_booking_detail')->insert([
+                'room_id' => $item['room_id'],
                 'booking_id' => $booking->id,
-                'room_id' => $value['room_id'],
             ]);
-            $discountedPrice += $value['discounted_price'];
-            $totalAmount += $value['discounted_price'];
         }
 
-        $payment = Payment::create([
+        $payment = Payment::query()->create([
             'booking_id' => $booking->id,
-            'amount' => $discountedPrice,
+            'amount' => $bookingInfo['total_amount'],
             'tax' => 0,
-            'total_amount' => $totalAmount,
+            'total_amount' => $bookingInfo['total_amount'],
             'payment_date' => Carbon::now(),
-            'payment_method' => $customerInfo['payment_method'],
+            'payment_method' => $bookingInfo['customer']['payment_method'],
         ]);
 
-        if ($customerInfo['payment_method'] === 'VNPAY') {
+        if ($bookingInfo['customer']['payment_method'] == 'VNPAY') {
             return $this->processOnlinePayment($payment);
         }
 
-        foreach ($customerInfo['booked_rooms'] as $value) {
-           $room =  Room::query()->where('id', $value['room_id'])->first();
-            if ($room->remaining_rooms <= 0) {
-                return 0;
+        foreach ($bookingInfo['rooms'] as $item) {
+            $room = Room::query()->where('id', $item['room_id'])->first();
+
+            if ($room->remaining_rooms >= $item['rooms'] && $room->remaining_rooms != 0) {
+                $room->update([
+                    'remaining_rooms' => $room->remaining_rooms - $item['rooms'],
+                ]);
             }
-           $room->update([
-               'remaining_rooms' => (int)$room->remaining_rooms - 1,
-           ]);
         }
 
-        session()->forget('bookedRooms');
+        session()->forget('finalBooking');
 
-        return redirect()->route('home')->with('success', 'Đặt phòng thành công !');
+        return redirect()->route('thankYou')->with('success', 'Đặt phòng thành công!');
+
+
     }
 
-    private function processOnlinePayment($payment)
+
+    private function processOnlinePayment($order)
     {
         // Cấu hình cổng thanh toán (ví dụ với VNPAY)
         $vnp_TmnCode = "VE6K2G0A";
         $vnp_HashSecret = "2YZEFBP627O8ZXMP8H5XH0YWF19QXCV1";
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = route('payment.callback');
+        $vnp_Returnurl = route('paymentCallback');
 
-        $vnp_TxnRef = $payment->id . '_' . time();
-        $vnp_OrderInfo = "Thanh toan don hang #$payment->id";
-        $vnp_Amount = $payment->total_amount * 100;
+        $vnp_TxnRef = $order->id . '_' . time();
+        $vnp_OrderInfo = "Thanh toan don hang #$order->id";
+        $vnp_Amount = $order->total_amount * 100;
         $vnp_Locale = 'vn';
         $vnp_IpAddr = request()->ip();
 
@@ -174,7 +191,6 @@ class BookingController extends Controller
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
         );
-
         ksort($inputData);
         $query = "";
         $i = 0;
@@ -192,16 +208,11 @@ class BookingController extends Controller
         $vnp_Url = $vnp_Url . "?" . $query;
         $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
         $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
-
         return redirect($vnp_Url);
     }
 
     public function paymentCallback(Request $request)
     {
-        $orderId = explode('_', $request->vnp_TxnRef)[0];
-
-        $order = Payment::findOrFail($orderId);
-
 
         // Xác minh tính hợp lệ của response từ VNPAY
         $vnp_HashSecret = "2YZEFBP627O8ZXMP8H5XH0YWF19QXCV1";
@@ -229,10 +240,31 @@ class BookingController extends Controller
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
         if ($secureHash === $vnp_SecureHash && $request->vnp_ResponseCode == '00') {
-            return redirect()->route('home', $order->id);
+
+
+            $bookingInfo = session('finalBooking');
+
+            foreach ($bookingInfo['rooms'] as $item) {
+                $room = Room::query()->where('id', $item['room_id'])->first();
+
+                if ($room->remaining_rooms >= $item['rooms'] && $room->remaining_rooms != 0) {
+                    $room->update([
+                        'remaining_rooms' => $room->remaining_rooms - $item['rooms'],
+                    ]);
+                }
+            }
+
+            session()->forget('finalBooking');
+
+            return redirect()->route('thankYou')->with('success', 'Đặt phòng thành công !');
         }
 
-        return redirect()->route('home')->with('failed', 'Thanh toán không thành công');
+        return redirect()->route('thankYou')->with('error', 'Đặt phòng không thành công!');
+    }
+
+    public function thankYou(Request $request)
+    {
+        return view('pages.thankyou');
     }
 
 
