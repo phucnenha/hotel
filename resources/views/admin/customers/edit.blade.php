@@ -64,7 +64,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label">Số điện thoại</label>
+                                    <label for="phone" class="form-label">Phone</label>
                                     <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                            name="phone" id="phone"
                                            value="{{$customer->phone}}"/>
@@ -73,7 +73,7 @@
                                     @enderror
                                 </div>
                                 <div class="mb-3">
-                                    <label for="nationality" class="form-label">Quốc tịch</label>
+                                    <label for="nationality" class="form-label">Nationality</label>
                                     <input type="text" class="form-control @error('nationality') is-invalid @enderror"
                                            name="nationality" id="nationality"
                                            value="{{$customer->nationality}}"/>

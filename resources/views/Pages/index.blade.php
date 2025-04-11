@@ -198,6 +198,7 @@
                 <p><i class="fas fa-tag"></i> <strong>Giá phòng/đêm:</strong> {{ number_format($room->price_per_night, 0, ',', '.') }}đ</p>
 
                 @if (!empty($room->discount_percent))
+                
                 <p class="discount"><i class="fas fa-percent"></i> <strong>Giảm giá:</strong>  {{ $room->discount_percent }}%
                     <a class="text-primary" data-bs-toggle="collapse" href="#discountDetail{{ $room->id }}" role="button" aria-expanded="false" aria-controls="discountDetail{{ $room->id }}">
                     - <i>Xem chi tiết</i> 
