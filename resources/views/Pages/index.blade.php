@@ -215,25 +215,29 @@
             @endif
                 <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
                 <div class="room-actions">
-                    <form method="post" action="{{ route('thongtin') }}">
-                    @csrf
-                        <input type="hidden" name="room_id" value="{{ $room->id }}">
-                        <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
-                        <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
-                        <input type="hidden" name="adults" value="1">
-                        <input type="hidden" name="children" value="0">
-                        <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
-                    </form>
+    @if ($room->remaining_rooms > 0)
+        <form method="post" action="{{ route('thongtin') }}">
+            @csrf
+            <input type="hidden" name="room_id" value="{{ $room->id }}">
+            <input type="hidden" name="check_in" value="{{ now()->toDateString() }}">
+            <input type="hidden" name="check_out" value="{{ now()->addDays(1)->toDateString() }}">
+            <input type="hidden" name="adults" value="1">
+            <input type="hidden" name="children" value="0">
+            <button type="submit" class="book-now" style="width:150px">Đặt ngay</button>
+        </form>
+        <form class="add-to-cart" method="post" action="{{ route('cart.add') }}">
+            @csrf
+            <input type="hidden" name="room_id" value="{{ $room->id }}">
+            <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
+            <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
+            <button type="submit" class="add-cart">Thêm vào giỏ hàng</button>
+        </form>
+    @else
+        <button class="book-now btn btn-secondary" style="width:150px" disabled>Hết phòng</button>
+        <p class="text-danger mt-2"><i class="fas fa-exclamation-circle"></i> Phòng này hiện đã hết!</p>
+    @endif
+</div>
 
-                    <form class="add-to-cart" data-room-id="{{ $room->id }}">
-                    @csrf
-                    <input type="hidden" name="check_in" value="{{ today()->toDateString() }}">
-                    <input type="hidden" name="check_out" value="{{ today()->addDay()->toDateString() }}">
-
-                    <button type="button" class="add-cart">Thêm vào giỏ hàng</button>
-                </form>
-
-                                </div>
             </div>
         </div>
 

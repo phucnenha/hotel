@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class RoomManagementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
 
@@ -29,22 +25,12 @@ class RoomManagementController extends Controller
         return view('admin.rooms.index', compact('rooms'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
         return view('admin.rooms.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
 
@@ -79,7 +65,7 @@ class RoomManagementController extends Controller
             'max_capacity' => request('max_capacity'),
         ]);
 
-        return redirect()->route('admin.rooms.index')->with('success', 'Room created successfully!');
+        return redirect()->route('admin.rooms.index')->with('success', 'Thêm phòng thành công!');
 
     }
 
@@ -96,12 +82,7 @@ class RoomManagementController extends Controller
         return view('admin.rooms.show', compact('room'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit($id)
     {
         $room = Room::query()->with('capacity')->findOrFail($id);
@@ -109,13 +90,7 @@ class RoomManagementController extends Controller
         return view('admin.rooms.edit', compact('room'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         request()->validate([
@@ -153,12 +128,7 @@ class RoomManagementController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         DB::table('capacity')->where('room_id', $id)->delete();
