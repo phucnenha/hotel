@@ -41,12 +41,15 @@ Route::post('/cart/update/{index}', [CartController::class, 'Update'])->name('ca
 Route::get('/proceed-to-booking', [CartController::class, 'proceedToBooking'])->name('cart.proceedToBooking');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+
 //-----------ĐIỀN THÔNG TIN-----------------//
 use App\Http\Controllers\BookingController;
 Route::get('/thong-tin-dat-phong', [BookingController::class, 'showBooking'])->name('showBooking');
 Route::get('/xoa-phong/{index}', [BookingController::class, 'xoaPhong'])->name('xoaPhong');
 // Route::post('/save-customer-info', [BookingController::class, 'saveCustomerInfo'])->name('saveCustomerInfo');
 Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
+Route::get('/booking/from-cart', [BookingController::class, 'fromCart'])->name('booking.fromCart');
+
 //---------Thanh toán-----------//
 //Route::get('/payment', [BookingController::class, 'showPaymentPage'])->name('paymentPage');
 Route::post('/booking/submit', [BookingController::class, 'saveBookingWithCustomerInfo'])->name('saveBookingWithCustomerInfo');

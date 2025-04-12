@@ -119,9 +119,10 @@ style="width: 150px; border-radius: 5px; padding: 8px 12px; background: none;
   border: 2px solid black; text-align: center; color: black; transition: background-color 0.3s;">
     <<< Quay lại</a>
 
-    <a href="{{ route('showBooking') }}" class="booking-btn" >
+    <a href="{{ route('booking.fromCart') }}" class="booking-btn">
     Chuyển sang trang đặt phòng
 </a>
+
 
         </div>
     </div>

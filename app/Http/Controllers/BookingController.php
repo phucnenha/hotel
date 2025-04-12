@@ -26,6 +26,12 @@ class BookingController extends Controller
         return redirect()->route('showBooking');
     }
 
+    public function fromCart()
+{
+    session(['booking_from_cart' => true]);
+    return redirect()->route('showBooking'); // hoặc route xác nhận
+}
+
     public function showBooking()
     {
         $bookedRooms = session()->get('bookedRooms', []);
@@ -144,7 +150,11 @@ class BookingController extends Controller
         if ($bookingInfo['customer']['payment_method'] == 'VNPAY') {
             return $this->processOnlinePayment($payment);
         }
-
+        if (session()->has('booking_from_cart') && session('booking_from_cart') === true) {
+            session()->forget('bookedRooms'); // Xóa giỏ hàng nếu đặt từ giỏ hàng
+            session()->forget('booking_from_cart'); // Xóa cờ đánh dấu
+        }
+        
         foreach ($bookingInfo['rooms'] as $item) {
             $room = Room::query()->where('id', $item['room_id'])->first();
 
