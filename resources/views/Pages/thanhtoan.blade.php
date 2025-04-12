@@ -121,7 +121,7 @@
         }
 
         .btn-complete {
-            background-color: #4CAF50; /* Màu xanh */
+            background-color: #4CAF50; 
             color: white;
             padding: 10px 20px;
             text-align: center;
@@ -133,8 +133,17 @@
         }
 
         .btn-complete:hover {
-            background-color: #45a049; /* Màu xanh đậm khi hover */
+            background-color: #45a049; 
         }
+        .table td, .table th {
+            white-space: nowrap; 
+            vertical-align: middle;
+        }
+        .tab-chitietthanhtoan {
+            overflow-x: auto;
+        }
+
+
     </style>
     <div class="phandau">
         <div class="container">
@@ -197,8 +206,8 @@
         <form action="{{route('payment')}}" method="post">
             @csrf
             <div class="row mb-3">
-                <div class="col-md-7">
-                    <div class="tab-chitietthanhtoan h-100">
+                <div class="col-md-8">
+                    <div class="tab-chitietthanhtoan h-100" style="overflow-x:auto;">
                         <table class="table">
                             <thead>
                             <tr>
@@ -206,7 +215,7 @@
                                 <th>Check in</th>
                                 <th>Check out</th>
                                 <th>Số người</th>
-                                <th>Gía</th>
+                                <th>Giá</th>
                                 <th> Giảm giá</th>
                                 <th> Thành tiền</th>
 
@@ -237,7 +246,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <div class="tab-thongtinkhachhang ">
                         <div class="mb-3">
                             <label for="" class="form-label">Họ tên:</label>

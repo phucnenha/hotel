@@ -215,7 +215,7 @@
             @endif
                 <p><i class="fas fa-door-open"></i> <strong>Số phòng còn lại:</strong> {{ $room->remaining_rooms }}</p>
                 <div class="room-actions">
-    @if ($room->remaining_rooms > 0)
+         @if ($room->remaining_rooms > 0)
         <form method="post" action="{{ route('thongtin') }}">
             @csrf
             <input type="hidden" name="room_id" value="{{ $room->id }}">
@@ -301,7 +301,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         let form = $(this).closest('.add-to-cart');
-        let room_id = form.data('room-id');
+        let room_id = form.find('input[name="room_id"]').val();
         let check_in = form.find('input[name="check_in"]').val();
         let check_out = form.find('input[name="check_out"]').val();
         let adults = form.find('input[name="adults"]').val();
