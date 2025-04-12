@@ -2,7 +2,7 @@
     <!--begin::Sidebar Brand-->
     <div class="sidebar-brand" style="background-color: #B88A44; ">
         <!--begin::Brand Link-->
-        <a href="{{ route('home') }}" class="brand-link">
+        <a href="{{ route('logout') }}" class="brand-link">
             <!--begin::Brand Text-->
             <h1 class="brand-text fw-light ">Golden Tree</h1>
             <!--end::Brand Text-->

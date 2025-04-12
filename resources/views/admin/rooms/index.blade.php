@@ -51,7 +51,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" style="text-align: center;">
                                 <thead>
                                 <tr>
                                     <th style="width: 10px">STT</th>
@@ -70,8 +70,7 @@
                                 @foreach($rooms as $room)
                                     <tr class="align-middle">
                                         <td>{{$room->id}}.</td>
-                                        <td><img src="{{\Illuminate\Support\Facades\Storage::url($room->file_anh)}}"
-                                                 alt="" srcset="" width="100" height="100">
+                                        <td> <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="100" height="100"  style="object-fit: cover;">
                                         </td>
                                         <td>{{$room->room_type}}</td>
                                         <td>{{$room->bed_type}}</td>

@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="mb-3">
                                     @if(isset($room->file_anh))
-                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($room->file_anh) }}" alt="" width="70" height="70">
+                                        <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="" width="70" height="70">
                                     @endif
                                 </div>
                                 <div class="mb-3">
