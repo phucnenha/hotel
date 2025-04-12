@@ -263,7 +263,10 @@ class BookingController extends Controller
                     ]);
                 }
             }
-
+            if (session()->has('booking_from_cart') && session('booking_from_cart') === true) {
+                session()->forget('bookedRooms'); // Xóa giỏ hàng nếu đặt từ giỏ hàng
+                session()->forget('booking_from_cart'); // Xóa cờ đánh dấu
+            }
             session()->forget('finalBooking');
 
             return redirect()->route('thankYou')->with('success', 'Đặt phòng thành công !');
