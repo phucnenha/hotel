@@ -186,7 +186,8 @@
     </div>
 
     <div class="grid-container">
-    @foreach ($rooms as $room)
+    @foreach ($rooms as $index => $room)
+        <div class="item room-item {{ $index >= 6 ? 'd-none' : '' }}">
         <div class="item">
             <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
             <div class="infor_room">
@@ -240,8 +241,11 @@
 
             </div>
         </div>
-
+        </div>
     @endforeach
+    <div class="text-center mt-3">
+        <button id="toggleRooms" class="primary-btn">Xem thêm</button>
+    </div>
     </div>
 </section>
 
@@ -343,6 +347,25 @@ $(document).ready(function () {
 });
 
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleRooms');
+        const roomItems = document.querySelectorAll('.room-item');
+        let isExpanded = false;
+
+        toggleBtn.addEventListener('click', function () {
+            roomItems.forEach((item, index) => {
+                if (index >= 6) {
+                    item.classList.toggle('d-none');
+                }
+            });
+
+            isExpanded = !isExpanded;
+            toggleBtn.textContent = isExpanded ? 'Ẩn bớt' : 'Xem thêm';
+        });
+    });
+</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

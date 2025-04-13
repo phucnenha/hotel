@@ -51,7 +51,7 @@
                                     @enderror
                                 </div>
                                 <div class="input-group mb-3">
-                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($room->file_anh) }}" alt="" width="100" height="100">
+                                    <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="" width="100" height="100">
 
                                 </div>
                                 <div class="mb-3">

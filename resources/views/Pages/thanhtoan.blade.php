@@ -202,6 +202,7 @@
         </div>
     @endif
 </div>
+
     <div class="thongtinthanhtoan container">
         <form action="{{route('payment')}}" method="post">
             @csrf
@@ -244,6 +245,7 @@
                             @endforeach
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -280,11 +282,12 @@
                                    name="total_amount" class="form-control" disabled required>
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="btn-complete">Đặt phòng</button>
-                        </div>
+                        <button type="submit" class="btn-complete" style="width: 150px;">
+                            Đặt phòng
+                        </button>
+                    </div>
                     </div>
                 </div>
-
             </div>
         </form>
     </div>
