@@ -101,6 +101,7 @@ class RoomManagementController extends Controller
             'price_per_night' => 'required',
             'max_capacity' => 'required',
             'description' => 'nullable',
+            
         ]);
 
         $data = [

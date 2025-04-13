@@ -54,7 +54,7 @@
                     <th>Loại phòng</th>
                     <th>Ngày check-in</th>
                     <th>Ngày check-out</th>
-                    <th>Số phòng</th> <!-- New column for number of rooms -->
+                    <th>Số phòng</th> 
                     <th>Giá phòng/đêm</th>
                     <th>Giảm giá</th>
                     <th>Giá phòng sau khi giảm</th>

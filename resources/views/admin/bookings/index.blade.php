@@ -70,7 +70,7 @@
                                 </form>
                             </div>
 
-                            <table id="booking-table" class="table table-bordered">
+                            <table id="booking-table" class="table table-bordered"  style="text-align: center;">
                                 <thead>
                                 <tr>
                                     <th style="width: 10px">#</th>
@@ -101,15 +101,8 @@
                                         </td>
                                         <td>
                                             <a href="{{route('admin.bookings.edit', $roomBooking->id)}}"
-                                               class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i></a>
-                                            <form action="{{route('admin.bookings.destroy', $roomBooking->id)}}"
-                                                  class="d-inline" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-danger" type="submit"
-                                                        onclick="return confirm('Bạn có muốn xóa đơn này không?')"><i
-                                                        class="fa-solid fa-trash"></i></button>
-                                            </form>
+                                               class="btn btn-sm btn-warning" style="text-align:center;"><i class="fa-solid fa-pen-to-square"></i></a>
+                                           
                                         </td>
                                     </tr>
                                 @endforeach

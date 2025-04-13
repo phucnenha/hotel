@@ -186,7 +186,7 @@
     </div>
 
     <div class="grid-container">
-    @foreach ($rooms as $index => $room)
+    @foreach ($rooms as $index => $room) <!--$index là chỉ số của phần tử-->
         <div class="item room-item {{ $index >= 6 ? 'd-none' : '' }}">
         <div class="item">
             <img src="{{ asset('room_img/'.$room->file_anh) }}" alt="{{ $room->room_type }}" width="400px">
@@ -283,27 +283,29 @@
 </section>
 <script>
 function showToast(message, isSuccess = true) {
+    // Lấy phần tử Toast từ HTML
     let toastEl = document.getElementById("dynamicToast");
     let toastBody = document.getElementById("toast-body-content");
-
-    // Remove previous background class
+    // Xoá class màu nền cũ nếu có
     toastEl.classList.remove('text-bg-success', 'text-bg-danger');
-
-    // Add new background class depending on success/error
+    // Thêm class màu nền mới tùy theo loại thông báo (thành công/thất bại)
     toastEl.classList.add(isSuccess ? 'text-bg-success' : 'text-bg-danger');
+    // Cập nhật nội dung thông báo
     toastBody.innerHTML = message;
-
-    // Show the toast dynamically
+    // Tạo đối tượng Toast Bootstrap với thời gian hiển thị 4 giây
     let toast = new bootstrap.Toast(toastEl, {
-        delay: 4000 // 4 seconds display duration
+        delay: 4000
     });
+    // Hiển thị Toast
     toast.show();
 }
 
+
 $(document).ready(function () {
+     // Gắn sự kiện click vào nút "add-cart" nằm trong thẻ có class "add-to-cart"
     $('.add-to-cart').on('click', '.add-cart', function (e) {
         e.preventDefault();
-
+ // Tìm form chứa các input liên quan đến phòng đang được thêm vào giỏ
         let form = $(this).closest('.add-to-cart');
         let room_id = form.find('input[name="room_id"]').val();
         let check_in = form.find('input[name="check_in"]').val();
@@ -354,6 +356,7 @@ $(document).ready(function () {
         let isExpanded = false;
 
         toggleBtn.addEventListener('click', function () {
+              // Duyệt qua các phòng và ẩn/hiện những phòng có index >= 6
             roomItems.forEach((item, index) => {
                 if (index >= 6) {
                     item.classList.toggle('d-none');

@@ -71,15 +71,6 @@
                                             <a href="{{route('admin.customers.edit', $customer->id)}}"
                                                class="btn btn-sm btn-warning"><i
                                                     class="fa-solid fa-pen-to-square"></i></a>
-                                            <form
-                                                action="{{route('admin.customers.destroy', $customer->id)}}"
-                                                class="d-inline" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('Bạn có muốn xóa người dùng này không?')">
-                                                    <i class="fa-solid fa-trash"></i></button>
-                                            </form>
                                         </td>
                                     </tr>
 
